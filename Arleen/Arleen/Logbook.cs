@@ -75,17 +75,6 @@ namespace Arleen
             return Instance = new Logbook(level, allowDefaultListener, listeners);
         }
 
-        /// <summary>
-        /// Returns the current time in iso format.
-        /// </summary>
-        /// <returns>The current time in iso format.</returns>
-        /// <remarks>I just wrote that this method returns the current time in iso format...
-        /// And I did it 5 times:
-        /// A) In the code.
-        /// B) In the method name.
-        /// C) In the summary.
-        /// D) In the returns.
-        /// E) In this remarks.</remarks>
         private static string UtcNowIsoFormat()
         {
             // UtcTime to miliseconds presition.

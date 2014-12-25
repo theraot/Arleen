@@ -39,11 +39,6 @@ namespace Arleen
             }
         }
 
-        /// <summary>
-        /// "Handler" for unhandled exceptions.
-        /// </summary>
-        /// <param name="sender">Ignored.</param>
-        /// <param name="eventArgs">It is attempted to read eventArgs.ExceptionObject as an Exception</param>
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
             // Legendary Pokémon
@@ -76,19 +71,12 @@ namespace Arleen
             }
         }
 
-        /// <summary>
-        /// Get a string with the directory separator for the current system.
-        /// </summary>
-        /// <returns>The directory separator for the current system as a string.</returns>
         private static string GetDirectorySeparator()
         {
             // At this point we don't worry about threading
             return _directorySeparator ?? (_directorySeparator = System.IO.Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture));
         }
 
-        /// <summary>
-        /// Initializing fiels with metadata about the the assembly
-        /// </summary>
         private static void Initialize()
         {
             // *********************************
@@ -116,7 +104,7 @@ namespace Arleen
             // Creating the logbook
             // *********************************
 
-            var logStreamWriter = new StreamWriter(_folder + "log.txt") {AutoFlush = true};
+            var logStreamWriter = new StreamWriter(_folder + "log.txt") { AutoFlush = true };
 
             _logBook = Logbook.Initialize
             (
@@ -130,9 +118,6 @@ namespace Arleen
             );
         }
 
-        /// <summary>
-        /// Entry point
-        /// </summary>
         private static void Main()
         {
             // Initialize
@@ -170,10 +155,6 @@ namespace Arleen
             }
         }
 
-        /// <summary>
-        /// Letting everybody know that the program is terminating on a managed yet unexpected way.
-        /// </summary>
-        /// <remarks>More information should be available on the logs - if any.</remarks>
         private static void Panic()
         {
             _logBook.Trace
@@ -190,10 +171,6 @@ namespace Arleen
             }
         }
 
-        /// <summary>
-        /// Writes exception information to the logs.
-        /// </summary>
-        /// <param name="exception">The exception that is being reported.</param>
         private static void ReportException(Exception exception)
         {
             _logBook.Trace
@@ -205,9 +182,6 @@ namespace Arleen
                 );
         }
 
-        /// <summary>
-        /// Annotates that the program is running on debug mode - this method only exists on debug builds.
-        /// </summary>
         [Conditional("DEBUG")]
         private static void SetDebugMode()
         {
