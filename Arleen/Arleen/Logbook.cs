@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Arleen
 {
@@ -25,12 +26,20 @@ namespace Arleen
 
         public void Trace(TraceEventType eventType, string format, params object[] args)
         {
-            _logSource.TraceEvent(eventType, 0, format, args);
+            _logSource.TraceEvent(eventType, 0, UtcNowIsoFormat() + " " + format, args);
         }
 
         public void Trace(TraceEventType eventType, string message)
         {
-            _logSource.TraceEvent(eventType, 0, message);
+            _logSource.TraceEvent(eventType, 0, UtcNowIsoFormat() + " " + message);
+        }
+
+        private static string UtcNowIsoFormat()
+        {
+            // UtcTime to miliseconds presition.
+            // using Z to denote Zero offset.
+            // No, that's not the time zone of zulu people.
+            return DateTime.UtcNow.ToString("yyyy-MM-dd HH':'mm':'ss'.'fff'Z'");
         }
     }
 }

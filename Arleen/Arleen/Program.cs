@@ -107,16 +107,17 @@ namespace Arleen
             // *********************************
             // Creating the logbook
             // *********************************
+
+            var logStreamWriter = new StreamWriter(_folder + "log.txt") {AutoFlush = true};
+
             _logBook = new Logbook
             (
                 _debugMode ? SourceLevels.All : SourceLevels.Information,
                 true,
                 new TraceListener[]
                             {
-                                new ConsoleTraceListener
-                                {
-                                    TraceOutputOptions = TraceOptions.DateTime
-                                }
+                                new ConsoleTraceListener(),
+                                new TextWriterTraceListener(logStreamWriter)
                             }
             );
         }
