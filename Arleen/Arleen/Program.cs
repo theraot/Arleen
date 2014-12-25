@@ -1,13 +1,17 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 
 namespace Arleen
 {
     public static class Program
     {
+        private static bool _debugMode;
         private static string _directorySeparator;
         private static string _displayName;
         private static string _folder;
+        private static Logbook _logBook;
 
         /// <summary>
         /// Returns the display name for the Program.
@@ -47,6 +51,9 @@ namespace Arleen
         /// </summary>
         private static void Initialize()
         {
+            // *********************************
+            // Getting folder and display name
+            // *********************************
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             var location = assembly.Location;
             _folder = Path.GetDirectoryName(location);
@@ -60,6 +67,26 @@ namespace Arleen
                 _folder += System.IO.Path.DirectorySeparatorChar;
             }
             _displayName = assembly.GetName().Name;
+            // *********************************
+            // Setting debug mode
+            // *********************************
+            _debugMode = false;
+            SetDebugMode();
+            // *********************************
+            // Creating the logbook
+            // *********************************
+            _logBook = new Logbook
+            (
+                _debugMode ? SourceLevels.All : SourceLevels.Information,
+                true,
+                new TraceListener[]
+                            {
+                                new ConsoleTraceListener
+                                {
+                                    TraceOutputOptions = TraceOptions.DateTime
+                                }
+                            }
+            );
         }
 
         /// <summary>
@@ -67,7 +94,27 @@ namespace Arleen
         /// </summary>
         private static void Main()
         {
+            // Initialize
             Initialize();
+            // Salute
+            _logBook.Trace(TraceEventType.Information, "Hello, my name is {0}.", _displayName);
+            // Exit
+            _logBook.Trace(TraceEventType.Information, "Goodbye.", _displayName);
+
+            if (_debugMode)
+            {
+                Console.WriteLine("[Press a key to exit]");
+                Console.ReadKey();
+            }
+        }
+
+        /// <summary>
+        /// Annotates that the program is running on debug mode - this method only exists on debug builds.
+        /// </summary>
+        [Conditional("DEBUG")]
+        private static void SetDebugMode()
+        {
+            _debugMode = true;
         }
     }
 }
