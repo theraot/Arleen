@@ -39,6 +39,20 @@ namespace Arleen
         public static Logbook Instance { get; private set; }
 
         /// <summary>
+        /// Adds a new listener to the Logbook.
+        /// </summary>
+        /// <param name="listener">The new listener to be added.</param>
+        /// <returns>true if the listener was added, false otherwise.</returns>
+        public bool AddListener(TraceListener listener)
+        {
+            if (Instance == null)
+            {
+                return false;
+            }
+            return Instance.AddListener(listener);
+        }
+
+        /// <summary>
         /// Writes a message to the logs.
         /// </summary>
         /// <param name="eventType">The relevance of the message.</param>
