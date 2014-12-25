@@ -118,7 +118,7 @@ namespace Arleen
 
             var logStreamWriter = new StreamWriter(_folder + "log.txt") {AutoFlush = true};
 
-            _logBook = new Logbook
+            _logBook = Logbook.Initialize
             (
                 _debugMode ? SourceLevels.All : SourceLevels.Information,
                 true,
