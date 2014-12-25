@@ -5,6 +5,9 @@ using System.IO;
 
 namespace Arleen
 {
+    /// <summary>
+    /// The Program class contains the entry point
+    /// </summary>
     public static class Program
     {
         private static bool _debugMode;
@@ -36,12 +39,17 @@ namespace Arleen
             }
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        /// <summary>
+        /// "Handler" for unhandled exceptions.
+        /// </summary>
+        /// <param name="sender">Ignored.</param>
+        /// <param name="eventArgs">It is attempted to read eventArgs.ExceptionObject as an Exception</param>
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
             // Legendary Pokémon
-            if (e.ExceptionObject is Exception)
+            if (eventArgs.ExceptionObject is Exception)
             {
-                var exception = e.ExceptionObject as Exception;
+                var exception = eventArgs.ExceptionObject as Exception;
                 _logBook.Trace
                     (
                         TraceEventType.Critical,
@@ -50,7 +58,7 @@ namespace Arleen
                         exception.StackTrace
                     );
             }
-            else if (e.ExceptionObject != null)
+            else if (eventArgs.ExceptionObject != null)
             {
                 _logBook.Trace
                     (
@@ -162,6 +170,10 @@ namespace Arleen
             }
         }
 
+        /// <summary>
+        /// Letting everybody know that the program is terminating on a managed yet unexpected way.
+        /// </summary>
+        /// <remarks>More information should be available on the logs - if any.</remarks>
         private static void Panic()
         {
             _logBook.Trace
@@ -178,6 +190,10 @@ namespace Arleen
             }
         }
 
+        /// <summary>
+        /// Writes exception information to the logs.
+        /// </summary>
+        /// <param name="exception">The exception that is being reported.</param>
         private static void ReportException(Exception exception)
         {
             _logBook.Trace
