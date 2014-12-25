@@ -36,6 +36,38 @@ namespace Arleen
             }
         }
 
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Legendary Pokémon
+            if (e.ExceptionObject is Exception)
+            {
+                var exception = e.ExceptionObject as Exception;
+                _logBook.Trace
+                    (
+                        TraceEventType.Critical,
+                        "And suddently something went wrong, really wrong...\n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
+                        exception.Message,
+                        exception.StackTrace
+                    );
+            }
+            else if (e.ExceptionObject != null)
+            {
+                _logBook.Trace
+                    (
+                        TraceEventType.Critical,
+                        "Help me..."
+                    );
+            }
+            else
+            {
+                _logBook.Trace
+                    (
+                        TraceEventType.Critical,
+                        "It is all darkness..."
+                    );
+            }
+        }
+
         /// <summary>
         /// Get a string with the directory separator for the current system.
         /// </summary>
@@ -96,16 +128,64 @@ namespace Arleen
         {
             // Initialize
             Initialize();
+
+            if (_debugMode)
+            {
+                Console.Clear();
+            }
+
             // Salute
             _logBook.Trace(TraceEventType.Information, "Hello, my name is {0}.", _displayName);
-            // Exit
-            _logBook.Trace(TraceEventType.Information, "Goodbye.", _displayName);
 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            try
+            {
+                // TODO: life, the universe and everything
+
+                // Exit
+                _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", _displayName);
+
+                if (_debugMode)
+                {
+                    Console.WriteLine("[Press a key to exit]");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception exception)
+            {
+                // Pokémon
+                // Gotta catch'em all!
+                ReportException(exception);
+                Panic();
+            }
+        }
+
+        private static void Panic()
+        {
+            _logBook.Trace
+                    (
+                        TraceEventType.Critical,
+                        "Consider yourself lucky that this has been good to you so far.\n" +
+                        "Alternatively, if this hasn't been good to you so far,\n" +
+                        "consider yourself lucky that it won't be troubling you much longer."
+                    );
             if (_debugMode)
             {
                 Console.WriteLine("[Press a key to exit]");
                 Console.ReadKey();
             }
+        }
+
+        private static void ReportException(Exception exception)
+        {
+            _logBook.Trace
+                (
+                    TraceEventType.Error,
+                    "It has been a privilege, yet sometimes thing don't work as expected...\n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
+                    exception.Message,
+                    exception.StackTrace
+                );
         }
 
         /// <summary>
