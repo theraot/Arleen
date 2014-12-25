@@ -8,8 +8,8 @@ namespace Arleen
     /// </summary>
     /// <remarks>Logbook is a singleton.
     /// These are the reasons for this:
-    /// A) the responsability of creating Logbook belongs to Program
-    /// B) Logbook should not be responsable of getting the configuration to create itself.
+    /// A) the responsibility of creating Logbook belongs to Program
+    /// B) Logbook should not be responsible of getting the configuration to create itself.
     /// C) There should be only one Logbook per AppDomain. </remarks>
     public class Logbook
     {
@@ -85,7 +85,10 @@ namespace Arleen
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
             // Since that should not happen, let's accept the garbage if somehow that comes to be.
-            if (Instance != null) return Instance;
+            if (Instance != null)
+            {
+                return Instance;
+            }
             return Instance = new Logbook(level, allowDefaultListener, listeners);
         }
 

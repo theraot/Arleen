@@ -106,15 +106,17 @@ namespace Arleen
 
             var logStreamWriter = new StreamWriter(_folder + "log.txt") { AutoFlush = true };
 
+            var traceListeners = new TraceListener[]
+            {
+                new ConsoleTraceListener(),
+                new TextWriterTraceListener(logStreamWriter)
+            };
+
             _logBook = Logbook.Initialize
             (
                 _debugMode ? SourceLevels.All : SourceLevels.Information,
                 true,
-                new TraceListener[]
-                            {
-                                new ConsoleTraceListener(),
-                                new TextWriterTraceListener(logStreamWriter)
-                            }
+                traceListeners
             );
         }
 
@@ -157,13 +159,11 @@ namespace Arleen
 
         private static void Panic()
         {
-            _logBook.Trace
-                    (
-                        TraceEventType.Critical,
-                        "Consider yourself lucky that this has been good to you so far.\n" +
-                        "Alternatively, if this hasn't been good to you so far,\n" +
-                        "consider yourself lucky that it won't be troubling you much longer."
-                    );
+            const string STR_PanicMessage =
+                "Consider yourself lucky that this has been good to you so far.\n" +
+                "Alternatively, if this hasn't been good to you so far,\n" +
+                "consider yourself lucky that it won't be troubling you much longer.";
+            _logBook.Trace (TraceEventType.Critical, STR_PanicMessage);
             if (_debugMode)
             {
                 Console.WriteLine("[Press a key to exit]");
