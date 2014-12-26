@@ -184,7 +184,11 @@ namespace Arleen
 
             try
             {
-                // TODO: life, the universe and everything
+                using (var window = new Game.Window())
+                {
+                    // TODO: use configuration
+                    window.Run(45.0);
+                }
 
                 // Exit
                 _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
