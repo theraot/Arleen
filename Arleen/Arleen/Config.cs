@@ -48,7 +48,7 @@ namespace Arleen
             }
             var applicationDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                                 + System.IO.Path.DirectorySeparatorChar
-                                + Program.DisplayName;
+                                + Program.InternalName;
             if (applicationDataFolder != folder)
             {
                 if (TryReadJson(applicationDataFolder, assembly, out json))
@@ -72,7 +72,7 @@ namespace Arleen
             }
             var applicationDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                                 + System.IO.Path.DirectorySeparatorChar
-                                + Program.DisplayName;
+                                + Program.InternalName;
             if (applicationDataFolder != folder)
             {
                 if (TryWriteJson(applicationDataFolder, assembly, json))

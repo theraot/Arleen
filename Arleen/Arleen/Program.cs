@@ -10,20 +10,30 @@ namespace Arleen
     /// </summary>
     public static class Program
     {
-        private static Configuration _config;
         private static bool _debugMode;
         private static Logbook _logBook;
 
         /// <summary>
         /// Returns the display name for the Program.
         /// </summary>
-        /// <remarks>The display name is the simple name of the assembly, that is "Arleen"</remarks>
+        /// <remarks>By default this is equal to InternalName</remarks>
         public static string DisplayName { get; private set; }
 
         /// <summary>
         /// Gets the path to the folder from where Arleen is loaded
         /// </summary>
         public static string Folder { get; private set; }
+
+        /// <summary>
+        /// Returns the internal name for the Program.
+        /// </summary>
+        /// <remarks>The internal name is the simple name of the assembly, that is "Arleen"</remarks>
+        public static string InternalName { get; private set; }
+
+        /// <summary>
+        /// Gets the loaded configuration for the program.
+        /// </summary>
+        internal static Configuration Configuration { get; private set; }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
@@ -61,7 +71,7 @@ namespace Arleen
         {
             var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                 + System.IO.Path.DirectorySeparatorChar
-                + DisplayName;
+                + InternalName;
             System.IO.Directory.CreateDirectory(folder);
             return folder;
         }
@@ -73,7 +83,8 @@ namespace Arleen
             // *********************************
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            DisplayName = assembly.GetName().Name;
+            InternalName = assembly.GetName().Name;
+            DisplayName = InternalName;
 
             var location = assembly.Location;
             Folder = Path.GetDirectoryName(location);
@@ -156,17 +167,25 @@ namespace Arleen
             // Reading main configuration
             // *********************************
 
-            _config = Config.Load<Configuration>();
-            if (_config == null)
+            Configuration = Config.Load<Configuration>();
+            if (Configuration == null)
             {
                 return;
             }
-            if (_config.ForceDebugMode)
+            if (Configuration.ForceDebugMode)
             {
                 if (!_debugMode)
                 {
                     _logBook.ChangeLevel(SourceLevels.All);
                     _logBook.Trace(TraceEventType.Information, "[Forced debug mode]");
+                }
+                if (string.IsNullOrEmpty(Configuration.DisplayName))
+                {
+                    Configuration.DisplayName = DisplayName;
+                }
+                else
+                {
+                    DisplayName = Configuration.DisplayName;
                 }
                 _debugMode = true;
             }
@@ -186,8 +205,7 @@ namespace Arleen
             {
                 using (var window = new Game.Window())
                 {
-                    // TODO: use configuration
-                    window.Run(45.0);
+                    window.Run(Configuration.MaxUpdateRate, Configuration.MaxFrameRate);
                 }
 
                 // Exit

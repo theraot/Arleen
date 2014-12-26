@@ -28,10 +28,15 @@ namespace Arleen.Game
         // ---
 
         public Window()
-            : base(640, 480)
+            : this(Program.Configuration)
         {
-            // TODO: use configuration for initialization
-            VSync = VSyncMode.On;
+            // Empty
+        }
+
+        private Window(Configuration configuration)
+            : base(configuration.Resolution.Width, configuration.Resolution.Height)
+        {
+            VSync = configuration.VSync ? VSyncMode.On : VSyncMode.Off;
             Title = Program.DisplayName;
         }
 

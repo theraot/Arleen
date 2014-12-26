@@ -1,0 +1,6 @@
+﻿{
+    "MaxFrameRate": 60,
+    "MaxUpdateRate": 30,
+    "Resolution": "640, 480",
+    "VSync": true
+}
