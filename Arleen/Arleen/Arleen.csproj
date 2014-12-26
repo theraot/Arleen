@@ -43,6 +43,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Logbook.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Security.Permissions;
 
 namespace Arleen
 {
@@ -15,7 +16,7 @@ namespace Arleen
     {
         private readonly TraceSource _logSource;
 
-        private Logbook(SourceLevels level, bool allowDefaultListener, TraceListener[] listeners)
+        private Logbook(SourceLevels level, bool allowDefaultListener)
         {
             var displayName = Program.DisplayName;
             _logSource = new TraceSource(displayName)
@@ -29,7 +30,15 @@ namespace Arleen
             {
                 _logSource.Listeners.Clear();
             }
-            _logSource.Listeners.AddRange(listeners);
+        }
+
+        /// <summary>
+        /// Changes the level for the messages that will be recorded.
+        /// </summary>
+        /// <param name="level"></param>
+        internal void ChangeLevel(SourceLevels level)
+        {
+            _logSource.Switch.Level = level;
         }
 
         /// <summary>
@@ -42,14 +51,14 @@ namespace Arleen
         /// Adds a new listener to the Logbook.
         /// </summary>
         /// <param name="listener">The new listener to be added.</param>
-        /// <returns>true if the listener was added, false otherwise.</returns>
-        public bool AddListener(TraceListener listener)
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        public void AddListener(TraceListener listener)
         {
             if (Instance == null)
             {
-                return false;
+                return;
             }
-            return Instance.AddListener(listener);
+            Instance._logSource.Listeners.Add(listener);
         }
 
         /// <summary>
@@ -78,9 +87,8 @@ namespace Arleen
         /// </summary>
         /// <param name="level">The level for the messages that will be recorded.</param>
         /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
-        /// <param name="listeners">An array of TraceListener that will be used for the Logbook.</param>
         /// <returns>The working instance of Logbook.</returns>
-        internal static Logbook Initialize(SourceLevels level, bool allowDefaultListener, TraceListener[] listeners)
+        internal static Logbook Initialize(SourceLevels level, bool allowDefaultListener)
         {
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
@@ -89,7 +97,7 @@ namespace Arleen
             {
                 return Instance;
             }
-            return Instance = new Logbook(level, allowDefaultListener, listeners);
+            return Instance = new Logbook(level, allowDefaultListener);
         }
 
         private static string UtcNowIsoFormat()
