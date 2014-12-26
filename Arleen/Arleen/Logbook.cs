@@ -33,15 +33,6 @@ namespace Arleen
         }
 
         /// <summary>
-        /// Changes the level for the messages that will be recorded.
-        /// </summary>
-        /// <param name="level"></param>
-        internal void ChangeLevel(SourceLevels level)
-        {
-            _logSource.Switch.Level = level;
-        }
-
-        /// <summary>
         /// Gets the existing instance of Logbook.
         /// </summary>
         /// <remarks>This may be null during initialization. </remarks>
@@ -98,6 +89,15 @@ namespace Arleen
                 return Instance;
             }
             return Instance = new Logbook(level, allowDefaultListener);
+        }
+
+        /// <summary>
+        /// Changes the level for the messages that will be recorded.
+        /// </summary>
+        /// <param name="level"></param>
+        internal void ChangeLevel(SourceLevels level)
+        {
+            _logSource.Switch.Level = level;
         }
 
         private static string UtcNowIsoFormat()
