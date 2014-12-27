@@ -11,19 +11,19 @@ namespace Arleen
     internal class ResourceLoader
     {
         private readonly string _extension;
-        private readonly string _folder;
+        private readonly string[] _prefixes;
         private readonly string _resourceName;
 
         /// <summary>
         /// Creates a new instance of ResourceLoader.
         /// </summary>
         /// <param name="extension">The extension for the resources.</param>
-        /// <param name="folder">The name of the folder for the resources.</param>
+        /// <param name="prefixes">The name of the prefixes for the resources.</param>
         /// <param name="resourceName">The name of the internal resource used as default.</param>
-        internal ResourceLoader(string extension, string folder, string resourceName)
+        internal ResourceLoader(string extension, string[] prefixes, string resourceName)
         {
             _extension = extension;
-            _folder = folder;
+            _prefixes = prefixes;
             _resourceName = resourceName;
         }
 
@@ -44,7 +44,7 @@ namespace Arleen
                 }
             }
 
-            return TryReadDefaultJson(assembly, out stream) ? stream : null;
+            return TryReadDefaultStream(assembly, out stream) ? stream : null;
         }
 
         /// <summary>
@@ -76,46 +76,57 @@ namespace Arleen
             }
         }
 
-        private static IEnumerable<string> GetConfigurationStorageFolders()
-        {
-            var first = Program.Folder;
-            yield return first;
-            var second = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                         + Path.DirectorySeparatorChar
-                         + Program.InternalName;
-            if (first != second)
-            {
-                yield return second;
-            }
-        }
-
         private static bool TryProcessResource(Assembly assembly, string resource, out Stream stream)
         {
             stream = assembly.GetManifestResourceStream(resource);
             return stream != null;
         }
 
-        private bool TryReadDefaultJson(Assembly assembly, out Stream stream)
+        private IEnumerable<string> GetConfigurationStorageFolders()
+        {
+            var first = Program.Folder;
+            var second = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                         + Path.DirectorySeparatorChar
+                         + Program.InternalName;
+            if (first != second)
+            {
+                foreach (var prefix in _prefixes)
+                {
+                    yield return first + Path.DirectorySeparatorChar + prefix;
+                }
+            }
+            foreach (var prefix in _prefixes)
+            {
+                yield return second + Path.DirectorySeparatorChar + prefix;
+            }
+        }
+
+        private bool TryReadDefaultStream(Assembly assembly, out Stream stream)
         {
             var resources = assembly.GetManifestResourceNames();
             var selectedResources = new List<string>();
 
-            foreach (var resource in resources)
+            foreach (var prefix in _prefixes)
             {
-                if (resource.EndsWith(_resourceName))
+                foreach (var resource in resources)
                 {
-                    selectedResources.Add(resource);
+                    if (resource.EndsWith(prefix + "." + _resourceName))
+                    {
+                        selectedResources.Add(resource);
+                    }
                 }
-            }
 
-            selectedResources.Sort((left, right) => left.Length.CompareTo(right.Length));
+                selectedResources.Sort((left, right) => left.Length.CompareTo(right.Length));
 
-            foreach (var resource in selectedResources)
-            {
-                if (TryProcessResource(assembly, resource, out stream))
+                foreach (var resource in selectedResources)
                 {
-                    return true;
+                    if (TryProcessResource(assembly, resource, out stream))
+                    {
+                        return true;
+                    }
                 }
+
+                selectedResources.Clear();
             }
 
             stream = null;
@@ -124,7 +135,7 @@ namespace Arleen
 
         private bool TryReadStream(string basepath, Assembly assembly, out Stream stream)
         {
-            var path = basepath + _folder + Path.DirectorySeparatorChar + assembly.GetName().Name + _extension;
+            var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + _extension;
             try
             {
                 stream = File.OpenRead(path);
@@ -139,7 +150,7 @@ namespace Arleen
 
         private bool TryWriteStream(string basepath, Assembly assembly, Stream stream)
         {
-            var path = basepath + _folder + Path.DirectorySeparatorChar + assembly.GetName().Name + _extension;
+            var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + _extension;
             try
             {
                 using (var file = File.OpenWrite(path))

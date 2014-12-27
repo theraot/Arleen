@@ -15,7 +15,7 @@ namespace Arleen
 
         static Config()
         {
-            _loader = new ResourceLoader(".json", "configuration", "default.json");
+            _loader = new ResourceLoader(".json", new[] { "Config" }, "default.json");
         }
 
         /// <summary>
