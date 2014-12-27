@@ -20,12 +20,12 @@
         public bool ForceDebugMode { get; set; }
 
         /// <summary>
-        /// Sets or gets the maximun frame rate.
+        /// Sets or gets the maximum frame rate.
         /// </summary>
         public double MaxFrameRate { get; set; }
 
         /// <summary>
-        /// Sets or gets the maximun update rate.
+        /// Sets or gets the maximum update rate.
         /// </summary>
         public double MaxUpdateRate { get; set; }
 
