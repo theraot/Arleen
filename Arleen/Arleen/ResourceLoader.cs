@@ -136,8 +136,9 @@ namespace Arleen
                 stream = File.OpenRead(path);
                 return true;
             }
-            catch (IOException)
+            catch (IOException exception)
             {
+                Logbook.Instance.ReportException(exception);
                 stream = null;
                 return false;
             }
@@ -160,8 +161,9 @@ namespace Arleen
                 }
                 return true;
             }
-            catch (IOException)
+            catch (IOException exception)
             {
+                Logbook.Instance.ReportException(exception);
                 return false;
             }
         }
