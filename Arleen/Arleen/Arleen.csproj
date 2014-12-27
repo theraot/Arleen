@@ -50,6 +50,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Game\Window.cs" />
+    <Compile Include="ResourceLoader.cs" />
     <Compile Include="Logbook.cs">
       <SubType>Code</SubType>
     </Compile>
