@@ -53,6 +53,38 @@ namespace Arleen
         }
 
         /// <summary>
+        /// Reports the occurrence of an exception.
+        /// </summary>
+        /// <param name="exception">The exception to report.</param>
+        /// <param name="situation">A description of the situation when the exception happened. (Describe what was being attempted)</param>
+        public void ReportException(Exception exception, string situation)
+        {
+            Trace
+                (
+                    TraceEventType.Error,
+                    "Exception ocurred while {0}. \n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
+                    situation,
+                    exception.Message,
+                    exception.StackTrace
+                );
+        }
+
+        /// <summary>
+        /// Reports the occurrence of an exception.
+        /// </summary>
+        /// <param name="exception">The exception to report.</param>
+        public void ReportException(Exception exception)
+        {
+            Trace
+                (
+                    TraceEventType.Error,
+                    "Exception ocurred. \n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
+                    exception.Message,
+                    exception.StackTrace
+                );
+        }
+
+        /// <summary>
         /// Writes a message to the logs.
         /// </summary>
         /// <param name="eventType">The relevance of the message.</param>

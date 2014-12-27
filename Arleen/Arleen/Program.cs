@@ -132,7 +132,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                ReportException(exception, "trying to create the log file.");
+                _logBook.ReportException(exception, "trying to create the log file.");
                 try
                 {
                     Console.WriteLine("Unable to create log file.");
@@ -155,7 +155,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                ReportException(exception, "trying to access the Console.");
+                _logBook.ReportException(exception, "trying to access the Console.");
             }
 
             if (_debugMode)
@@ -225,7 +225,7 @@ namespace Arleen
             {
                 // Pokémon
                 // Gotta catch'em all!
-                ReportException(exception);
+                _logBook.ReportException(exception);
                 Panic();
             }
         }
@@ -242,29 +242,6 @@ namespace Arleen
                 Console.WriteLine("[Press a key to exit]");
                 Console.ReadKey();
             }
-        }
-
-        private static void ReportException(Exception exception)
-        {
-            _logBook.Trace
-                (
-                    TraceEventType.Error,
-                    "Exception ocurred. \n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
-                    exception.Message,
-                    exception.StackTrace
-                );
-        }
-
-        private static void ReportException(Exception exception, string situation)
-        {
-            _logBook.Trace
-                (
-                    TraceEventType.Error,
-                    "Exception ocurred while {0}. \n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
-                    situation,
-                    exception.Message,
-                    exception.StackTrace
-                );
         }
 
         [Conditional("DEBUG")]
