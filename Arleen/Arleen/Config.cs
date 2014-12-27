@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -46,8 +47,8 @@ namespace Arleen
             {
                 return json;
             }
-            var applicationDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
-                                + System.IO.Path.DirectorySeparatorChar
+            var applicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                                + Path.DirectorySeparatorChar
                                 + Program.InternalName;
             if (applicationDataFolder != folder)
             {
@@ -70,8 +71,8 @@ namespace Arleen
             {
                 return true;
             }
-            var applicationDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
-                                + System.IO.Path.DirectorySeparatorChar
+            var applicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                                + Path.DirectorySeparatorChar
                                 + Program.InternalName;
             if (applicationDataFolder != folder)
             {
@@ -129,10 +130,10 @@ namespace Arleen
 
         private static bool TryReadJson(string basepath, Assembly assembly, out string json)
         {
-            var path = basepath + "configuration" + System.IO.Path.DirectorySeparatorChar + assembly.GetName().Name + ".json";
+            var path = basepath + "configuration" + Path.DirectorySeparatorChar + assembly.GetName().Name + ".json";
             try
             {
-                json = System.IO.File.ReadAllText(path);
+                json = File.ReadAllText(path);
                 return true;
             }
             catch (IOException)
@@ -144,10 +145,10 @@ namespace Arleen
 
         private static bool TryWriteJson(string basepath, Assembly assembly, string json)
         {
-            var path = basepath + "configuration" + System.IO.Path.DirectorySeparatorChar + assembly.GetName().Name + ".json";
+            var path = basepath + "configuration" + Path.DirectorySeparatorChar + assembly.GetName().Name + ".json";
             try
             {
-                System.IO.File.WriteAllText(path, json);
+                File.WriteAllText(path, json);
                 return true;
             }
             catch (IOException)
