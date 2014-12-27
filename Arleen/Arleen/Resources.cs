@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -11,13 +12,6 @@ namespace Arleen
     /// </summary>
     public static class Resources
     {
-        private static readonly ResourceLoader _loader;
-
-        static Resources()
-        {
-            _loader = new ResourceLoader(".json", new[] { "Resources" }, "default.json");
-        }
-
         /// <summary>
         /// Retrieve the configuration for the calling assembly.
         /// </summary>
@@ -27,7 +21,17 @@ namespace Arleen
         public static T LoadConfig<T>()
         {
             var assembly = Assembly.GetCallingAssembly();
-            using (var reader = new StreamReader(_loader.Read(assembly), Encoding.UTF8))
+            Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    "Requested to read configuration for {0}",
+                    assembly.GetName().Name
+                );
+            // Will try to read:
+            // - ~\Config\AssemblyName.json
+            // - %AppData%\InternalName\Config\AssemblyName.json
+            // - Assembly!Namespace.Config.default.json
+            using (var reader = new StreamReader(ResourceLoader.Read(assembly, ".json", new[] { "Config" }, "default.json"), Encoding.UTF8))
             {
                 var str = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<T>(str);
@@ -44,10 +48,19 @@ namespace Arleen
         public static bool SaveConfig<T>(T target)
         {
             var assembly = Assembly.GetCallingAssembly();
+            Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    "Requested to write configuration for {0}",
+                    assembly.GetName().Name
+                );
             var str = JsonConvert.SerializeObject(target);
+            // Will try to write:
+            // - ~\Config\AssemblyName.json
+            // - %AppData%\InternalName\Config\AssemblyName.json
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
             {
-                return _loader.Write(assembly, stream);
+                return ResourceLoader.Write(assembly, "Config", ".json", stream);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -8,56 +9,44 @@ namespace Arleen
     /// <summary>
     /// Use ResourceLoader to read and write resources.
     /// </summary>
-    internal class ResourceLoader
+    internal static class ResourceLoader
     {
-        private readonly string _extension;
-        private readonly string[] _prefixes;
-        private readonly string _resourceName;
-
-        /// <summary>
-        /// Creates a new instance of ResourceLoader.
-        /// </summary>
-        /// <param name="extension">The extension for the resources.</param>
-        /// <param name="prefixes">The name of the prefixes for the resources.</param>
-        /// <param name="resourceName">The name of the internal resource used as default.</param>
-        internal ResourceLoader(string extension, string[] prefixes, string resourceName)
-        {
-            _extension = extension;
-            _prefixes = prefixes;
-            _resourceName = resourceName;
-        }
-
         /// <summary>
         /// Reads a resource as an stream.
         /// </summary>
         /// <param name="assembly">The assembly the resource is associated with.</param>
+        /// <param name="extension">The extension of the resource to load.</param>
+        /// <param name="prefixes">A list of valid prefixes for the resource to load.</param>
+        /// <param name="resourceName">The name of the resource to load.</param>
         /// <returns>A readable stream for the resource.</returns>
-        public Stream Read(Assembly assembly)
+        public static Stream Read(Assembly assembly, string extension, string[] prefixes, string resourceName)
         {
             Stream stream;
 
-            foreach (var configurationStorageFolder in GetConfigurationStorageFolders())
+            foreach (var configurationStorageFolder in GetConfigurationStorageFolders(prefixes))
             {
-                if (TryReadStream(configurationStorageFolder, assembly, out stream))
+                if (TryReadStream(configurationStorageFolder, extension, assembly, out stream))
                 {
                     return stream;
                 }
             }
 
-            return TryReadDefaultStream(assembly, out stream) ? stream : null;
+            return TryReadDefaultStream(assembly, prefixes, resourceName, out stream) ? stream : null;
         }
 
         /// <summary>
         /// Writes a resource stream.
         /// </summary>
         /// <param name="assembly">The assembly the resource is associated with.</param>
+        /// <param name="prefix">The prefix where to store the resource.</param>
+        /// <param name="resourceName">The name of the resource to write.</param>
         /// <param name="stream">A readable stream with the resource to be written.</param>
         /// <returns>true if the resource was written, false otherwise.</returns>
-        public bool Write(Assembly assembly, Stream stream)
+        public static bool Write(Assembly assembly, string prefix, string resourceName, Stream stream)
         {
-            foreach (var configurationStorageFolder in GetConfigurationStorageFolders())
+            foreach (var configurationStorageFolder in GetConfigurationStorageFolders(new[] { prefix }))
             {
-                if (TryWriteStream(configurationStorageFolder, assembly, stream))
+                if (TryWriteStream(configurationStorageFolder, resourceName, assembly, stream))
                 {
                     return true;
                 }
@@ -76,13 +65,7 @@ namespace Arleen
             }
         }
 
-        private static bool TryProcessResource(Assembly assembly, string resource, out Stream stream)
-        {
-            stream = assembly.GetManifestResourceStream(resource);
-            return stream != null;
-        }
-
-        private IEnumerable<string> GetConfigurationStorageFolders()
+        private static IEnumerable<string> GetConfigurationStorageFolders(string[] prefixes)
         {
             var first = Program.Folder;
             var second = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
@@ -90,27 +73,33 @@ namespace Arleen
                          + Program.InternalName;
             if (first != second)
             {
-                foreach (var prefix in _prefixes)
+                foreach (var prefix in prefixes)
                 {
                     yield return first + Path.DirectorySeparatorChar + prefix;
                 }
             }
-            foreach (var prefix in _prefixes)
+            foreach (var prefix in prefixes)
             {
                 yield return second + Path.DirectorySeparatorChar + prefix;
             }
         }
 
-        private bool TryReadDefaultStream(Assembly assembly, out Stream stream)
+        private static bool TryProcessResource(Assembly assembly, string resource, out Stream stream)
+        {
+            stream = assembly.GetManifestResourceStream(resource);
+            return stream != null;
+        }
+
+        private static bool TryReadDefaultStream(Assembly assembly, IEnumerable<string> prefixes, string resourceName, out Stream stream)
         {
             var resources = assembly.GetManifestResourceNames();
             var selectedResources = new List<string>();
 
-            foreach (var prefix in _prefixes)
+            foreach (var prefix in prefixes)
             {
                 foreach (var resource in resources)
                 {
-                    if (resource.EndsWith(prefix + "." + _resourceName))
+                    if (resource.EndsWith(prefix + "." + resourceName))
                     {
                         selectedResources.Add(resource);
                     }
@@ -133,11 +122,17 @@ namespace Arleen
             return false;
         }
 
-        private bool TryReadStream(string basepath, Assembly assembly, out Stream stream)
+        private static bool TryReadStream(string basepath, string extension, Assembly assembly, out Stream stream)
         {
-            var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + _extension;
+            var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + extension;
             try
             {
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    " - Attempting to read from {0}",
+                    path
+                );
                 stream = File.OpenRead(path);
                 return true;
             }
@@ -148,11 +143,17 @@ namespace Arleen
             }
         }
 
-        private bool TryWriteStream(string basepath, Assembly assembly, Stream stream)
+        private static bool TryWriteStream(string basepath, string resourceName, Assembly assembly, Stream stream)
         {
-            var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + _extension;
+            var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + resourceName;
             try
             {
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    " - Attempting to write to {0}",
+                    path
+                );
                 using (var file = File.OpenWrite(path))
                 {
                     CopyStream(stream, file);
