@@ -208,6 +208,10 @@ namespace Arleen
                     window.Run(Configuration.MaxUpdateRate, Configuration.MaxFrameRate);
                 }
 
+                // Save configuration
+
+                Resources.SaveConfig(Configuration);
+
                 // Exit
                 _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
 
