@@ -12,6 +12,10 @@ namespace Arleen
     /// </summary>
     public static class Config
     {
+        private const string STR_Extension = ".json";
+        private const string STR_Folder = "configuration";
+        private const string STR_ResourceName = "default.json";
+
         /// <summary>
         /// Retrieve the configuration for the calling assembly.
         /// </summary>
@@ -39,48 +43,44 @@ namespace Arleen
             return SetJson(assembly, json);
         }
 
+        private static IEnumerable<string> GetConfigurationStorageFolders()
+        {
+            var first = Program.Folder;
+            yield return first;
+            var second = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                         + Path.DirectorySeparatorChar
+                         + Program.InternalName;
+            if (first != second)
+            {
+                yield return second;
+            }
+        }
+
         private static string GetJson(Assembly assembly)
         {
-            var folder = Program.Folder;
             string json;
-            if (TryReadJson(folder, assembly, out json))
+
+            foreach (var configurationStorageFolder in GetConfigurationStorageFolders())
             {
-                return json;
-            }
-            var applicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                                + Path.DirectorySeparatorChar
-                                + Program.InternalName;
-            if (applicationDataFolder != folder)
-            {
-                if (TryReadJson(applicationDataFolder, assembly, out json))
+                if (TryReadJson(configurationStorageFolder, assembly, out json))
                 {
                     return json;
                 }
             }
-            if (TryReadDefaultJson(assembly, out json))
-            {
-                return json;
-            }
-            return "null";
+
+            return TryReadDefaultJson(assembly, out json) ? json : "null";
         }
 
         private static bool SetJson(Assembly assembly, string json)
         {
-            var folder = Program.Folder;
-            if (TryWriteJson(folder, assembly, json))
+            foreach (var configurationStorageFolder in GetConfigurationStorageFolders())
             {
-                return true;
-            }
-            var applicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                                + Path.DirectorySeparatorChar
-                                + Program.InternalName;
-            if (applicationDataFolder != folder)
-            {
-                if (TryWriteJson(applicationDataFolder, assembly, json))
+                if (TryWriteJson(configurationStorageFolder, assembly, json))
                 {
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -101,8 +101,6 @@ namespace Arleen
 
         private static bool TryReadDefaultJson(Assembly assembly, out string json)
         {
-            const string STR_ResourceName = "default.json";
-
             var resources = assembly.GetManifestResourceNames();
             var selectedResources = new List<string>();
 
@@ -130,7 +128,7 @@ namespace Arleen
 
         private static bool TryReadJson(string basepath, Assembly assembly, out string json)
         {
-            var path = basepath + "configuration" + Path.DirectorySeparatorChar + assembly.GetName().Name + ".json";
+            var path = basepath + STR_Folder + Path.DirectorySeparatorChar + assembly.GetName().Name + STR_Extension;
             try
             {
                 json = File.ReadAllText(path);
@@ -145,7 +143,7 @@ namespace Arleen
 
         private static bool TryWriteJson(string basepath, Assembly assembly, string json)
         {
-            var path = basepath + "configuration" + Path.DirectorySeparatorChar + assembly.GetName().Name + ".json";
+            var path = basepath + STR_Folder + Path.DirectorySeparatorChar + assembly.GetName().Name + STR_Extension;
             try
             {
                 File.WriteAllText(path, json);
