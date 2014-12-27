@@ -111,6 +111,12 @@ namespace Arleen
                 {
                     if (TryProcessResource(assembly, resource, out stream))
                     {
+                        Logbook.Instance.Trace
+                        (
+                            TraceEventType.Information,
+                            " - Loaded internal resource {0}",
+                            resource
+                        );
                         return true;
                     }
                 }
@@ -134,11 +140,17 @@ namespace Arleen
                     path
                 );
                 stream = File.OpenRead(path);
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    " - Succeed to read from {0}",
+                    path
+                );
                 return true;
             }
             catch (IOException exception)
             {
-                Logbook.Instance.ReportException(exception);
+                Logbook.Instance.ReportException(exception, "trying to read resource", false);
                 stream = null;
                 return false;
             }
@@ -155,15 +167,22 @@ namespace Arleen
                     " - Attempting to write to {0}",
                     path
                 );
+                Directory.CreateDirectory(basepath);
                 using (var file = File.OpenWrite(path))
                 {
                     CopyStream(stream, file);
                 }
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    " - Succeed to write to {0}",
+                    path
+                );
                 return true;
             }
             catch (IOException exception)
             {
-                Logbook.Instance.ReportException(exception);
+                Logbook.Instance.ReportException(exception, "trying to write resource", false);
                 return false;
             }
         }

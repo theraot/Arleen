@@ -57,31 +57,64 @@ namespace Arleen
         /// </summary>
         /// <param name="exception">The exception to report.</param>
         /// <param name="situation">A description of the situation when the exception happened. (Describe what was being attempted)</param>
-        public void ReportException(Exception exception, string situation)
+        /// <param name="severe">true to indicated this exception will reduce functionality or require extra steps for fixing, false to indicate the program is designed to recover from this.</param>
+        /// <remarks>If severe is set to false, the stack trace will not be included.</remarks>
+        public void ReportException(Exception exception, string situation, bool severe)
         {
-            Trace
+            if (severe)
+            {
+                Trace
+                    (
+                        TraceEventType.Error,
+                        "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Stack trace == \n\n{3}\n",
+                        exception.GetType().Name,
+                        situation,
+                        exception.Message,
+                        exception.StackTrace
+                    );
+            }
+            else
+            {
+                Trace
                 (
                     TraceEventType.Error,
-                    "Exception ocurred while {0}. \n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
-                    situation,
+                    "\n\n{0}: {1}\nOcurred while {2}.\n",
+                    exception.GetType().Name,
                     exception.Message,
-                    exception.StackTrace
+                    situation
                 );
+            }
         }
 
         /// <summary>
         /// Reports the occurrence of an exception.
         /// </summary>
         /// <param name="exception">The exception to report.</param>
-        public void ReportException(Exception exception)
+        /// <param name="severe">true to indicated this exception will reduce functionality or require extra steps for fixing, false to indicate the program is designed to recover from this.</param>
+        /// <remarks>If severe is set to false, the stack trace will not be included.</remarks>
+        public void ReportException(Exception exception, bool severe)
         {
-            Trace
-                (
-                    TraceEventType.Error,
-                    "Exception ocurred. \n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
-                    exception.Message,
-                    exception.StackTrace
-                );
+            if (severe)
+            {
+                Trace
+                    (
+                        TraceEventType.Error,
+                        "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Stacktrace == \n\n{2}\n",
+                        exception.GetType().Name,
+                        exception.Message,
+                        exception.StackTrace
+                    );
+            }
+            else
+            {
+                Trace
+                    (
+                        TraceEventType.Error,
+                        "\n\n{0}: {1}\n",
+                        exception.GetType().Name,
+                        exception.Message
+                    );
+            }
         }
 
         /// <summary>

@@ -72,7 +72,7 @@ namespace Arleen
             var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                 + System.IO.Path.DirectorySeparatorChar
                 + InternalName;
-            System.IO.Directory.CreateDirectory(folder);
+            Directory.CreateDirectory(folder);
             return folder;
         }
 
@@ -132,7 +132,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                _logBook.ReportException(exception, "trying to create the log file.");
+                _logBook.ReportException(exception, "trying to create the log file.", true);
                 try
                 {
                     Console.WriteLine("Unable to create log file.");
@@ -155,7 +155,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                _logBook.ReportException(exception, "trying to access the Console.");
+                _logBook.ReportException(exception, "trying to access the Console.", false);
             }
 
             if (_debugMode)
@@ -194,39 +194,60 @@ namespace Arleen
         private static void Main()
         {
             // Initialize
-            Initialize();
+            try
+            {
+                Initialize();
+            }
+            catch (Exception exception)
+            {
+                if (_logBook != null)
+                {
+                    _logBook.ReportException(exception, "doing initialization", true);
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             // Salute
             _logBook.Trace(TraceEventType.Information, "Hello, my name is {0}.", DisplayName);
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            try
+            if (Configuration == null)
             {
-                using (var window = new Game.Window())
-                {
-                    window.Run(Configuration.MaxUpdateRate, Configuration.MaxFrameRate);
-                }
-
-                // Save configuration
-
-                Resources.SaveConfig(Configuration);
-
-                // Exit
-                _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
-
-                if (_debugMode)
-                {
-                    Console.WriteLine("[Press a key to exit]");
-                    Console.ReadKey();
-                }
+                _logBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
             }
-            catch (Exception exception)
+            else
             {
-                // Pokémon
-                // Gotta catch'em all!
-                _logBook.ReportException(exception);
-                Panic();
+                try
+                {
+                    using (var window = new Game.Window())
+                    {
+                        window.Run(Configuration.MaxUpdateRate, Configuration.MaxFrameRate);
+                    }
+
+                    // Save configuration
+
+                    Resources.SaveConfig(Configuration);
+
+                    // Exit
+                    _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
+
+                    if (_debugMode)
+                    {
+                        Console.WriteLine("[Press a key to exit]");
+                        Console.ReadKey();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    // Pokémon
+                    // Gotta catch'em all!
+                    _logBook.ReportException(exception, true);
+                    Panic();
+                }
             }
         }
 
