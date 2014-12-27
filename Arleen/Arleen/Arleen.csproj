@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Game\Window.cs" />
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="Logbook.cs">

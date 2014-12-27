@@ -167,7 +167,7 @@ namespace Arleen
             // Reading main configuration
             // *********************************
 
-            Configuration = Config.Load<Configuration>();
+            Configuration = Resources.LoadConfig<Configuration>();
             if (Configuration == null)
             {
                 return;

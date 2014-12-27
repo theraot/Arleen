@@ -7,15 +7,15 @@ using System.Text;
 namespace Arleen
 {
     /// <summary>
-    /// Façade to save and load configuration.
+    /// Façade to save and load resources.
     /// </summary>
-    public static class Config
+    public static class Resources
     {
         private static readonly ResourceLoader _loader;
 
-        static Config()
+        static Resources()
         {
-            _loader = new ResourceLoader(".json", new[] { "Config" }, "default.json");
+            _loader = new ResourceLoader(".json", new[] { "Resources" }, "default.json");
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Arleen
         /// <typeparam name="T">The type of the object to be populated with the configuration.</typeparam>
         /// <returns>A new instance of T</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T Load<T>()
+        public static T LoadConfig<T>()
         {
             var assembly = Assembly.GetCallingAssembly();
             using (var reader = new StreamReader(_loader.Read(assembly), Encoding.UTF8))
@@ -41,7 +41,7 @@ namespace Arleen
         /// <param name="target">The object containing the configuration to be stored.</param>
         /// <returns>true if the configuration was stored, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static bool Save<T>(T target)
+        public static bool SaveConfig<T>(T target)
         {
             var assembly = Assembly.GetCallingAssembly();
             var str = JsonConvert.SerializeObject(target);
