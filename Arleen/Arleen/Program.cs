@@ -249,7 +249,7 @@ namespace Arleen
             _logBook.Trace
                 (
                     TraceEventType.Error,
-                    "It has been a privilege, yet sometimes thing don't work as expected...\n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
+                    "Exception ocurred. \n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
                     exception.Message,
                     exception.StackTrace
                 );
@@ -260,7 +260,7 @@ namespace Arleen
             _logBook.Trace
                 (
                     TraceEventType.Error,
-                    "While {0}\n...something happened...\n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
+                    "Exception ocurred while {0}. \n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
                     situation,
                     exception.Message,
                     exception.StackTrace
