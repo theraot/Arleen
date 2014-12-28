@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StringFormat;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -18,6 +19,8 @@ namespace Arleen
         /// </summary>
         /// <remarks>By default this is equal to InternalName</remarks>
         public static string DisplayName { get; private set; }
+
+        public static string CurrentLanguage { get; private set; }
 
         /// <summary>
         /// Gets the path to the folder from where Arleen is loaded
@@ -164,6 +167,15 @@ namespace Arleen
             }
 
             // *********************************
+            // Detecting Language
+            // *********************************
+
+            // We get the culture name via TextInfo because it always includes the region.
+            // If we get the name of the culture directly it will only have the region if it is not the default one.
+
+            CurrentLanguage = CultureInfo.CurrentCulture.TextInfo.CultureName;
+
+            // *********************************
             // Reading main configuration
             // *********************************
 
@@ -179,15 +191,18 @@ namespace Arleen
                     _logBook.ChangeLevel(SourceLevels.All);
                     _logBook.Trace(TraceEventType.Information, "[Forced debug mode]");
                 }
-                if (string.IsNullOrEmpty(Configuration.DisplayName))
-                {
-                    Configuration.DisplayName = DisplayName;
-                }
-                else
-                {
-                    DisplayName = Configuration.DisplayName;
-                }
-                _debugMode = true;
+            }
+            if (string.IsNullOrEmpty(Configuration.DisplayName))
+            {
+                Configuration.DisplayName = DisplayName;
+            }
+            else
+            {
+                DisplayName = Configuration.DisplayName;
+            }
+            if (!string.IsNullOrEmpty(Configuration.Language))
+            {
+                CurrentLanguage = Configuration.Language;
             }
         }
 
@@ -211,7 +226,8 @@ namespace Arleen
             }
 
             // Salute
-            _logBook.Trace(TraceEventType.Information, "Hello, my name is {0}.", DisplayName);
+            var _ = Resources.GetTexts();
+            _logBook.Trace(TraceEventType.Information, TokenStringFormat.Format(_["Hello, my name is {name}."], new { name = DisplayName }));
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
@@ -230,7 +246,10 @@ namespace Arleen
 
                     // Save configuration
 
-                    Resources.SaveConfig(Configuration);
+                    if (!Resources.SaveConfig(Configuration))
+                    {
+                        _logBook.Trace(TraceEventType.Error, "Failed to save configuration.");
+                    }
 
                     // Exit
                     _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);

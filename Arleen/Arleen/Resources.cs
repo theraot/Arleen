@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -12,6 +13,64 @@ namespace Arleen
     /// </summary>
     public static class Resources
     {
+        /// <summary>
+        /// Retrieve a LocalizedTexts with the localized texts for the current assembly.
+        /// </summary>
+        /// <returns>a new LocalizedTexts object for the calling assembly</returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static LocalizedTexts GetTexts()
+        {
+            var assembly = Assembly.GetCallingAssembly();
+            Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    "Requested to read localized texts for {0}",
+                    assembly.GetName().Name
+                );
+            // Will try to read:
+            // - ~\Lang\langcode\AssemblyName.json
+            // - %AppData%\InternalName\Lang\langcode\AssemblyName.json
+            // - Assembly!Namespace.Lang.langcode.json
+
+            var language = Program.CurrentLanguage.Split('-');
+
+            var prefixes = new List<string>();
+
+            var composite = string.Empty;
+
+            foreach (var sublanguage in language)
+            {
+                if (composite != string.Empty)
+                {
+                    composite += "-";
+                }
+                composite += sublanguage.Trim();
+                prefixes.Add("Lang." + composite);
+            }
+
+            prefixes.Reverse();
+
+            var stream = ResourceLoader.Read(assembly, ".json", prefixes.ToArray(), "json");
+            if (stream == null)
+            {
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    "No localized texts for {0}",
+                    assembly.GetName().Name
+                );
+                return new LocalizedTexts(new Dictionary<string, string>());
+            }
+            else
+            {
+                using (var reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    var str = reader.ReadToEnd();
+                    return new LocalizedTexts(JsonConvert.DeserializeObject<Dictionary<string, string>>(str));
+                }
+            }
+        }
+
         /// <summary>
         /// Retrieve the configuration for the calling assembly.
         /// </summary>

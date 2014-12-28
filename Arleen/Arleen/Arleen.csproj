@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="LocalizedTexts.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Game\Window.cs" />
     <Compile Include="ResourceLoader.cs" />
@@ -65,6 +66,7 @@
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="Config\default.json" />
+    <EmbeddedResource Include="Lang\es.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

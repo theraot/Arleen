@@ -67,20 +67,20 @@ namespace Arleen
 
         private static IEnumerable<string> GetConfigurationStorageFolders(string[] prefixes)
         {
-            var first = Program.Folder;
-            var second = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+            var folders = new List<string> { Program.Folder };
+            var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                          + Path.DirectorySeparatorChar
                          + Program.InternalName;
-            if (first != second)
+            if (optional != Program.Folder)
+            {
+                folders.Add(optional);
+            }
+            foreach (var folder in folders)
             {
                 foreach (var prefix in prefixes)
                 {
-                    yield return first + Path.DirectorySeparatorChar + prefix;
+                    yield return folder + Path.DirectorySeparatorChar + prefix.Replace('.', Path.DirectorySeparatorChar);
                 }
-            }
-            foreach (var prefix in prefixes)
-            {
-                yield return second + Path.DirectorySeparatorChar + prefix;
             }
         }
 
