@@ -1,5 +1,4 @@
-﻿using StringFormat;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -227,7 +226,7 @@ namespace Arleen
 
             // Salute
             var _ = Resources.GetTexts();
-            _logBook.Trace(TraceEventType.Information, TokenStringFormat.Format(_["Hello, my name is {name}."], new { name = DisplayName }));
+            _logBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
