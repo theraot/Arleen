@@ -48,6 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Rendering\Camera.cs" />
+    <Compile Include="Rendering\Location.cs" />
+    <Compile Include="Rendering\RenderSource.cs" />
+    <Compile Include="Rendering\ViewingVolume.cs" />
+    <Compile Include="Rendering\ViewingVolume.Perspective.cs" />
     <Compile Include="LocalizedTexts.cs" />
     <Compile Include="netfx\System\StringFormatWith.cs" />
     <Compile Include="Resources.cs" />
@@ -66,6 +71,9 @@
     <EmbeddedResource Include="Config\default.json" />
     <EmbeddedResource Include="Lang\es.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Textures\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
