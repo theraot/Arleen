@@ -225,7 +225,7 @@ namespace Arleen
             }
 
             // Salute
-            var _ = Resources.GetTexts();
+            var _ = Resources.LoadTexts();
             _logBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
