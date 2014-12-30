@@ -32,7 +32,7 @@ namespace Arleen.Rendering
             }
         }
 
-        public void Render(Camera camera, Rectangle clipArea, double time)
+        public void Render(Rectangle clipArea, double time)
         {
             if (_enabled)
             {
@@ -41,7 +41,7 @@ namespace Arleen.Rendering
                     OnInitilaize();
                     _initialized = true;
                 }
-                OnRender(camera, clipArea, time);
+                OnRender(clipArea, time);
             }
         }
 
@@ -50,6 +50,6 @@ namespace Arleen.Rendering
             //Empty
         }
 
-        protected abstract void OnRender(Camera camera, Rectangle clipArea, double time);
+        protected abstract void OnRender(Rectangle clipArea, double time);
     }
 }

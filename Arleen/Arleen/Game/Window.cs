@@ -1,11 +1,14 @@
 ﻿using Arleen.Rendering;
 using OpenTK;
 using System;
+using System.Drawing;
 
 namespace Arleen.Game
 {
     public class Window : GameWindow
     {
+        private const float FLT_FarPlane = 1000.0f;
+        private const float FLT_NearPlane = 0.01f;
         private readonly Renderer _renderer;
 
         public Window()
@@ -35,7 +38,23 @@ namespace Arleen.Game
         {
             VSync = configuration.VSync ? VSyncMode.On : VSyncMode.Off;
             Title = Program.DisplayName;
-            _renderer = new Renderer();
+            _renderer = new Renderer(new Rectangle(0, 0, Width, Height));
+            _renderer.RenderTargets.Add
+                (
+                    new RenderTarget
+                        (
+                            new RectangleF(0, 0, 1.0f, 1.0f),
+                            new Camera
+                        (
+                            new ViewingVolume.Perspective
+                            {
+                                FieldOfView = 45,
+                                FarPlane = FLT_FarPlane,
+                                NearPlane = FLT_NearPlane
+                            }
+                        )
+                    )
+                );
         }
 
         protected override void OnLoad(EventArgs e)

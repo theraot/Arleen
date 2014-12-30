@@ -8,31 +8,30 @@ namespace Arleen.Rendering
 {
     public class Renderer
     {
-        private const float FLT_FarPlane = 1000.0f;
-        private const float FLT_NearPlane = 0.01f;
-        private readonly Camera _camera;
-        private readonly LinkedList<RenderSource> _renderSources;
-        private Rectangle _clipArea;
+        private readonly List<RenderSource> _renderSources;
+        private readonly List<RenderTarget> _renderTargets;
+        private Rectangle _realClipArea;
 
-        public Renderer()
+        public Renderer(Rectangle clipArea)
         {
-            _renderSources = new LinkedList<RenderSource>();
-            _camera = new Camera
-                (
-                    new ViewingVolume.Perspective
-                    {
-                        FieldOfView = 45,
-                        FarPlane = FLT_FarPlane,
-                        NearPlane = FLT_NearPlane
-                    }
-                );
+            _realClipArea = clipArea;
+            _renderSources = new List<RenderSource>();
+            _renderTargets = new List<RenderTarget>();
         }
 
-        public LinkedList<RenderSource> RenderSources
+        public IList<RenderSource> RenderSources
         {
             get
             {
                 return _renderSources;
+            }
+        }
+
+        public IList<RenderTarget> RenderTargets
+        {
+            get
+            {
+                return _renderTargets;
             }
         }
 
@@ -48,9 +47,9 @@ namespace Arleen.Rendering
             GL.ClearColor(Color.BlanchedAlmond);
             GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
 
-            foreach (var item in _renderSources)
+            foreach (var item in _renderTargets)
             {
-                item.Render(_camera, _clipArea, e.Time);
+                item.Render(_renderSources, _realClipArea, e.Time);
             }
         }
 
@@ -79,10 +78,8 @@ namespace Arleen.Rendering
         private void window_Resize(object sender, EventArgs e)
         {
             var window = (Window)sender;
-            GL.Viewport(0, 0, window.Width, window.Height);
-            _camera.ViewingVolume.Update(window.Width, window.Height);
-            _clipArea.Width = window.Width;
-            _clipArea.Height = window.Height;
+            _realClipArea.Width = window.Width;
+            _realClipArea.Height = window.Height;
         }
     }
 }
