@@ -41,26 +41,32 @@ namespace Arleen.Game
         {
             VSync = configuration.VSync ? VSyncMode.On : VSyncMode.Off;
             Title = Program.DisplayName;
+            var _camera = new Camera
+                (
+                    new ViewingVolume.Perspective
+                    {
+                        FieldOfView = 45,
+                        FarPlane = FLT_FarPlane,
+                        NearPlane = FLT_NearPlane,
+                        AspectRatio = 1
+                    }
+                );
             _renderer = new Renderer(new Rectangle(0, 0, Width, Height));
+            /*_renderer.RenderSources.Add
+                (
+                    new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0)
+                );*/
             _renderer.RenderSources.Add
                 (
-                    new BackgroundColorRenderSource(Color.White, 0)
+                    new SkyboxRenderer()
                 );
             _renderer.RenderTargets.Add
                 (
                     new RenderTarget
                         (
                             new RectangleF(0, 0, 1.0f, 1.0f),
-                            new Camera
-                        (
-                            new ViewingVolume.Perspective
-                            {
-                                FieldOfView = 45,
-                                FarPlane = FLT_FarPlane,
-                                NearPlane = FLT_NearPlane
-                            }
+                            _camera
                         )
-                    )
                 );
             _time.Start();
         }

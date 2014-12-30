@@ -79,7 +79,6 @@ namespace Arleen.Rendering
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.Blend); // need for fonts
             GL.Enable(EnableCap.ScissorTest);
             GL.Enable(EnableCap.Blend);
 
@@ -92,9 +91,9 @@ namespace Arleen.Rendering
             GL.CullFace(CullFaceMode.Back);
 
             // ---
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            // ---
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
         }
 
         private void Render()
