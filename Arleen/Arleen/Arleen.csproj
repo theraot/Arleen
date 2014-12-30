@@ -50,6 +50,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Rendering\Location.cs" />
+    <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\RenderSource.cs" />
     <Compile Include="Rendering\ViewingVolume.cs" />
     <Compile Include="Rendering\ViewingVolume.Perspective.cs" />
