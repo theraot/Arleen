@@ -12,6 +12,7 @@ namespace Arleen.Rendering
         private const float FLT_NearPlane = 0.01f;
         private readonly Camera _camera;
         private readonly LinkedList<RenderSource> _renderSources;
+        private Rectangle _clipArea;
 
         public Renderer()
         {
@@ -49,7 +50,7 @@ namespace Arleen.Rendering
 
             foreach (var item in _renderSources)
             {
-                item.Render(_camera, e.Time);
+                item.Render(_camera, _clipArea, e.Time);
             }
         }
 
@@ -80,6 +81,8 @@ namespace Arleen.Rendering
             var window = (Window)sender;
             GL.Viewport(0, 0, window.Width, window.Height);
             _camera.ViewingVolume.Update(window.Width, window.Height);
+            _clipArea.Width = window.Width;
+            _clipArea.Height = window.Height;
         }
     }
 }
