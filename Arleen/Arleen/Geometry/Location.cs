@@ -1,63 +1,9 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
-namespace Arleen.Rendering
+namespace Arleen.Geometry
 {
     public class Location
     {
-        //private double _elevation;
-        //private double _pan; // azimuth
-        //private double _tilt;
-
-        /*public double Elevation
-        {
-            get
-            {
-                return _elevation;
-            }
-            set
-            {
-                if (Math.Abs(_elevation - value) > 0.0f)
-                {
-                    _elevation = value;
-                    _invalidated = true;
-                }
-            }
-        }*/
-
-        /*public double Pan
-        {
-            get
-            {
-                return _pan;
-            }
-            set
-            {
-                if (Math.Abs(_pan - value) > 0.0f)
-                {
-                    _pan = value;
-                    _invalidated = true;
-                }
-            }
-        }
-        */
-
-        /*public double Tilt
-        {
-            get
-            {
-                return _tilt;
-            }
-            set
-            {
-                if (Math.Abs(_tilt - value) > 0.0f)
-                {
-                    _tilt = value;
-                    _invalidated = true;
-                }
-            }
-        }*/
-
         private bool _invalidated;
         private OpenTK.Matrix4d _matrix = OpenTK.Matrix4d.Identity;
         private OpenTK.Matrix4d _matrixOrientation = OpenTK.Matrix4d.Identity;
@@ -132,11 +78,6 @@ namespace Arleen.Rendering
                     _invalidated = true;
                 }
             }
-        }
-
-        public static void PlaceDefaultLocation()
-        {
-            GL.LoadIdentity();
         }
 
         public Vector3d Apply(Vector3d target, PlaceMode mode)
@@ -216,34 +157,6 @@ namespace Arleen.Rendering
             }
         }
 
-        public void Place(PlaceMode mode)
-        {
-            if (_invalidated)
-            {
-                UpdateModelMatrices();
-            }
-            switch (mode)
-            {
-                case PlaceMode.Full:
-                    {
-                        GL.LoadMatrix(ref _matrix);
-                    }
-                    break;
-
-                case PlaceMode.PositionOnly:
-                    {
-                        GL.LoadMatrix(ref _matrixPosition);
-                    }
-                    break;
-
-                case PlaceMode.OrientationOnly:
-                    {
-                        GL.LoadMatrix(ref _matrixOrientation);
-                    }
-                    break;
-            }
-        }
-
         public override string ToString()
         {
             if (_invalidated)
@@ -293,10 +206,6 @@ namespace Arleen.Rendering
         {
             _matrixPosition = OpenTK.Matrix4d.CreateTranslation(_position);
             _matrixOrientation = OpenTK.Matrix4d.Rotate(_orientation);
-            /*_matrixOrientation =
-                OpenTK.Matrix4d.CreateRotationY(MathHelper.DegreesToRadians(_pan)) *
-                OpenTK.Matrix4d.CreateRotationX(MathHelper.DegreesToRadians(-_elevation)) *
-                OpenTK.Matrix4d.CreateRotationY(MathHelper.DegreesToRadians(_tilt));*/
             _matrix = _matrixPosition * _matrixOrientation;
             _invalidated = false;
         }

@@ -1,50 +1,38 @@
-﻿namespace Arleen.Rendering
+﻿using Arleen.Geometry;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
+
+namespace Arleen.Rendering
 {
     public sealed class Camera
     {
-        private Location _location;
-        private ViewingVolume _volume;
-
         public Camera(ViewingVolume volume)
         {
-            _volume = volume;
-            _location = new Location();
+            ViewingVolume = volume;
+            Location = new Location();
         }
 
         public Camera(ViewingVolume volume, Location location)
         {
-            _volume = volume;
-            _location = location;
+            ViewingVolume = volume;
+            Location = location;
         }
 
-        public Location Location
-        {
-            get
-            {
-                return _location;
-            }
-            set
-            {
-                _location = value;
-            }
-        }
+        public Location Location { get; set; }
 
-        public ViewingVolume ViewingVolume
+        public ViewingVolume ViewingVolume { get; set; }
+
+        public static void PlaceDefaultLocation()
         {
-            get
-            {
-                return _volume;
-            }
-            set
-            {
-                _volume = value;
-            }
+            GL.LoadIdentity();
         }
 
         public void Place(Location.PlaceMode mode)
         {
-            _volume.Place();
-            _location.Place(mode);
+            ViewingVolume.Place();
+            Matrix4d matrix = Matrix4d.Identity;
+            Location.Apply(matrix, mode);
+            GL.LoadMatrix(ref matrix);
         }
     }
 }

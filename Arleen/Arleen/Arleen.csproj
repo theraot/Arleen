@@ -48,8 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Geometry\QuaternionHelper.cs" />
+    <Compile Include="Geometry\Vector3dHelper.cs" />
+    <Compile Include="Geometry\Vector3Helper.cs" />
     <Compile Include="Rendering\Camera.cs" />
-    <Compile Include="Rendering\Location.cs" />
+    <Compile Include="Geometry\Location.cs" />
+    <Compile Include="Geometry\QuaterniondHelper.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\RenderSource.cs" />
     <Compile Include="Rendering\ViewingVolume.cs" />
