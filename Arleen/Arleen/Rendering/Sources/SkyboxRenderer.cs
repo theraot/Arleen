@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Sources
 {
-    public class SkyboxRenderer : RenderSource
+    public sealed class SkyboxRenderer : RenderSource, IDisposable
     {
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
@@ -17,11 +17,15 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
+        private Action<Camera> _render;
+        private Texture _texture;
         private int dataBuffer = -1;
         private int indexBuffer = -1;
-        private Action<Camera> _render;
 
-        private Texture _texture;
+        public void Dispose()
+        {
+            _texture.Dispose();
+        }
 
         protected override void OnInitilaize()
         {
