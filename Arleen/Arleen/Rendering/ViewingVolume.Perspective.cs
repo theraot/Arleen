@@ -61,7 +61,7 @@ namespace Arleen.Rendering
             }
 
             /// <summary>
-            /// Updates the viewing volume to adjust to a rezise of the viewport.
+            /// Updates the viewing volume to adjust to a resize of the viewport.
             /// </summary>
             /// <param name="width">The new width of the viewport.</param>
             /// <param name="height">The new height of the viewport.</param>
