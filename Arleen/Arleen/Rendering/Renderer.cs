@@ -11,6 +11,7 @@ namespace Arleen.Rendering
     {
         private readonly List<RenderSource> _renderSources;
         private readonly List<RenderTarget> _renderTargets;
+        private FpsCounter _fpsCounter;
         private double _last_time;
         private Rectangle _realClipArea;
         private Window _window;
@@ -68,6 +69,8 @@ namespace Arleen.Rendering
                 Name = "Renderer Thread"
             };
             _thread.Start();
+
+            _fpsCounter = new FpsCounter();
         }
 
         private void InitializeOpenGl()
@@ -99,9 +102,11 @@ namespace Arleen.Rendering
             var elapsed = _last_time - totalTime;
             _last_time = _window.TotalTime;
 
+            _fpsCounter.OnRender(elapsed);
+
             foreach (var item in _renderTargets)
             {
-                item.Render(_renderSources, _realClipArea, elapsed);
+                item.Render(_renderSources, _realClipArea, elapsed, _fpsCounter.Fps);
             }
         }
 

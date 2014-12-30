@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace Arleen.Rendering
 {
     public abstract class RenderSource
@@ -32,7 +30,7 @@ namespace Arleen.Rendering
             }
         }
 
-        public void Render(Rectangle clipArea, double time)
+        public void Render(RenderInfo renderInfo)
         {
             if (_enabled)
             {
@@ -41,7 +39,7 @@ namespace Arleen.Rendering
                     OnInitilaize();
                     _initialized = true;
                 }
-                OnRender(clipArea, time);
+                OnRender(renderInfo);
             }
         }
 
@@ -50,6 +48,6 @@ namespace Arleen.Rendering
             //Empty
         }
 
-        protected abstract void OnRender(Rectangle clipArea, double time);
+        protected abstract void OnRender(RenderInfo renderInfo);
     }
 }

@@ -54,7 +54,9 @@
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Geometry\Location.cs" />
     <Compile Include="Geometry\QuaterniondHelper.cs" />
+    <Compile Include="Rendering\FpsCounter.cs" />
     <Compile Include="Rendering\Renderer.cs" />
+    <Compile Include="Rendering\RenderInfo.cs" />
     <Compile Include="Rendering\RenderSource.cs" />
     <Compile Include="Rendering\RenderTarget.cs" />
     <Compile Include="Rendering\Sources\BackgroundColorRenderSource.cs" />

@@ -20,7 +20,7 @@ namespace Arleen.Rendering.Sources
             GL.ClearDepth(_depth);
         }
 
-        protected override void OnRender(Rectangle clipArea, double time)
+        protected override void OnRender(RenderInfo renderInfo)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }

@@ -45,7 +45,7 @@ namespace Arleen.Rendering
             }
         }
 
-        public void Render(IEnumerable<RenderSource> sources, Rectangle realClipArea, double time)
+        public void Render(IEnumerable<RenderSource> sources, Rectangle realClipArea, double elapsedMilliseconds, int fps)
         {
             if (_enabled)
             {
@@ -60,9 +60,15 @@ namespace Arleen.Rendering
                 GL.Viewport(realClipArea);
                 GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
                 Camera.ViewingVolume.Place();
+
+                var renderInfo = new RenderInfo();
+                renderInfo.ClipArea = targetClipArea;
+                renderInfo.ElapsedMilliseconds = elapsedMilliseconds;
+                renderInfo.Fps = fps;
+
                 foreach (var item in sources)
                 {
-                    item.Render(targetClipArea, time);
+                    item.Render(renderInfo);
                 }
             }
         }
