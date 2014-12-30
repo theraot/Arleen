@@ -4,12 +4,19 @@ using System;
 
 namespace Arleen.Rendering
 {
+    /// <summary>
+    /// Represents a viewing volume.
+    /// </summary>
+    /// <remarks>The viewing volume can be understood as the space of things that may be visible to the camera.</remarks>
     public abstract partial class ViewingVolume
     {
         private double _farPlane;
         private double _nearPlane;
-        private OpenTK.Matrix4d _perspectiveMatrix = OpenTK.Matrix4d.Identity;
+        private OpenTK.Matrix4d _projectionMatrix = OpenTK.Matrix4d.Identity;
 
+        /// <summary>
+        /// Gets or sets the distance to the far plane of the viewing volume.
+        /// </summary>
         public double FarPlane
         {
             get
@@ -27,6 +34,9 @@ namespace Arleen.Rendering
             }
         }
 
+        /// <summary>
+        /// Gets or sets the distance to the near plane of the viewing volume.
+        /// </summary>
         public double NearPlane
         {
             get
@@ -44,36 +54,51 @@ namespace Arleen.Rendering
             }
         }
 
-        public OpenTK.Matrix4d PerspectiveMatrix
+        /// <summary>
+        /// Retunrs the last placed projection matrix for the current viewing volume.
+        /// </summary>
+        public OpenTK.Matrix4d ProjectionMatrix
         {
             get
             {
-                return _perspectiveMatrix;
+                return _projectionMatrix;
             }
         }
 
-        protected bool InvalidProjectionMatrix { get; set; }
+        private bool InvalidProjectionMatrix { get; set; }
 
+        /// <summary>
+        /// Sets the current viewing volume to the current graphic context.
+        /// </summary>
         public void Place()
         {
             UpdateProjectionMatrices();
             GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref _perspectiveMatrix);
+            GL.LoadMatrix(ref _projectionMatrix);
             GL.MatrixMode(MatrixMode.Modelview);
         }
 
+        /// <summary>
+        /// Updates the viewing volume to adjust to a rezise of the viewport.
+        /// </summary>
+        /// <param name="width">The new width of the viewport.</param>
+        /// <param name="height">The new height of the viewport.</param>
         public virtual void Update(int width, int height)
         {
             //Empty
         }
 
-        protected abstract Matrix4d OnUpdateProjectionMatrices();
+        /// <summary>
+        /// Calculates the projection matrix for the current viewing volume.
+        /// </summary>
+        /// <returns>A projection matrix for the current viewing volume.</returns>
+        protected abstract Matrix4d CalculateProjectionMatrix();
 
         private void UpdateProjectionMatrices()
         {
             if (InvalidProjectionMatrix)
             {
-                _perspectiveMatrix = OnUpdateProjectionMatrices();
+                _projectionMatrix = CalculateProjectionMatrix();
             }
             InvalidProjectionMatrix = false;
         }
