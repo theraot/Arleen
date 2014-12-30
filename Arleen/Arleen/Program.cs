@@ -165,6 +165,8 @@ namespace Arleen
                 _logBook.Trace(TraceEventType.Information, "[Running debug build]");
             }
 
+            _logBook.Trace(TraceEventType.Information, "Internal name: {0}", assembly.FullName);
+
             // *********************************
             // Detecting Language
             // *********************************
