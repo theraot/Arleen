@@ -61,10 +61,13 @@ namespace Arleen.Rendering
                 GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
                 Camera.ViewingVolume.Place();
 
-                var renderInfo = new RenderInfo();
-                renderInfo.ClipArea = targetClipArea;
-                renderInfo.ElapsedMilliseconds = elapsedMilliseconds;
-                renderInfo.Fps = fps;
+                var renderInfo = new RenderInfo
+                {
+                    Camera = Camera,
+                    ClipArea = targetClipArea,
+                    ElapsedMilliseconds = elapsedMilliseconds,
+                    Fps = fps
+                };
 
                 foreach (var item in sources)
                 {

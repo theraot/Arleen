@@ -43,16 +43,17 @@ namespace Arleen.Rendering
         public void Initialize(Window window)
         {
             _window = window;
+            _last_time = _window.TotalTime;
 
             _window.Resize += window_Resize;
-            _last_time = _window.TotalTime;
+
             _window.Context.MakeCurrent(null);
 
             _thread = new Thread
                 (
                     () =>
                     {
-                        _window.MakeCurrent();
+                        _window.Context.MakeCurrent(_window.WindowInfo);
                         InitializeOpenGl();
                         while (true)
                         {
@@ -80,8 +81,13 @@ namespace Arleen.Rendering
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend); // need for fonts
             GL.Enable(EnableCap.ScissorTest);
+            GL.Enable(EnableCap.Blend);
 
-            //---
+            // ---
+
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+            // ---
 
             GL.CullFace(CullFaceMode.Back);
 
@@ -89,11 +95,6 @@ namespace Arleen.Rendering
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             // ---
-
-            GL.EnableClientState(ArrayCap.NormalArray);
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
-            GL.EnableClientState(ArrayCap.ColorArray);
         }
 
         private void Render()

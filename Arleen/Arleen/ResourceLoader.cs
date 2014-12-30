@@ -70,7 +70,8 @@ namespace Arleen
             var folders = new List<string> { Program.Folder };
             var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                          + Path.DirectorySeparatorChar
-                         + Program.InternalName;
+                         + Program.InternalName
+                         + Path.DirectorySeparatorChar;
             if (optional != Program.Folder)
             {
                 folders.Add(optional);
@@ -79,7 +80,7 @@ namespace Arleen
             {
                 foreach (var prefix in prefixes)
                 {
-                    yield return folder + Path.DirectorySeparatorChar + prefix.Replace('.', Path.DirectorySeparatorChar);
+                    yield return folder + prefix.Replace('.', Path.DirectorySeparatorChar);
                 }
             }
         }

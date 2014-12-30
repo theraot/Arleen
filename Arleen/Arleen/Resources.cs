@@ -23,7 +23,7 @@ namespace Arleen
         public static Bitmap LoadBitmap(string resourceName)
         {
             var assembly = Assembly.GetCallingAssembly();
-            var stream = ResourceLoader.Read(assembly, resourceName, new[] { string.Empty }, resourceName);
+            var stream = ResourceLoader.Read(assembly, Path.DirectorySeparatorChar + resourceName, new[] { "Images" }, resourceName);
             return new Bitmap(stream);
         }
 
