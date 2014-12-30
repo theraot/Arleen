@@ -11,15 +11,16 @@ namespace Arleen
     public static class Program
     {
         private static bool _debugMode;
+        private static LocalizedTexts _localizedTexts;
         private static Logbook _logBook;
+
+        public static string CurrentLanguage { get; private set; }
 
         /// <summary>
         /// Returns the display name for the Program.
         /// </summary>
         /// <remarks>By default this is equal to InternalName</remarks>
         public static string DisplayName { get; private set; }
-
-        public static string CurrentLanguage { get; private set; }
 
         /// <summary>
         /// Gets the path to the folder from where Arleen is loaded
@@ -36,6 +37,14 @@ namespace Arleen
         /// Gets the loaded configuration for the program.
         /// </summary>
         internal static Configuration Configuration { get; private set; }
+
+        private static LocalizedTexts _
+        {
+            get
+            {
+                return _localizedTexts;
+            }
+        }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
@@ -205,6 +214,12 @@ namespace Arleen
             {
                 CurrentLanguage = Configuration.Language;
             }
+
+            // *********************************
+            // Load loacalized text
+            // *********************************
+
+            _localizedTexts = Resources.LoadTexts();
         }
 
         private static void Main()
@@ -227,7 +242,6 @@ namespace Arleen
             }
 
             // Salute
-            var _ = Resources.LoadTexts();
             _logBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
