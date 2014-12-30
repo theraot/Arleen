@@ -51,8 +51,8 @@ namespace Arleen.Rendering
             {
                 var targetClipArea = new Rectangle
                 (
-                    (int)(_virtualClipArea.X * realClipArea.Width + realClipArea.X),
-                    (int)(_virtualClipArea.Y * realClipArea.Height + realClipArea.Y),
+                    (int)((_virtualClipArea.X * realClipArea.Width) + realClipArea.X),
+                    (int)((_virtualClipArea.Y * realClipArea.Height) + realClipArea.Y),
                     (int)(_virtualClipArea.Width * realClipArea.Width),
                     (int)(_virtualClipArea.Height * realClipArea.Height)
                 );

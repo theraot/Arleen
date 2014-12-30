@@ -45,7 +45,7 @@ namespace Arleen.Rendering
             _window = window;
             _last_time = _window.TotalTime;
 
-            _window.Resize += window_Resize;
+            _window.Resize += Window_Resize;
 
             _window.Context.MakeCurrent(null);
 
@@ -110,7 +110,7 @@ namespace Arleen.Rendering
             }
         }
 
-        private void window_Resize(object sender, EventArgs e)
+        private void Window_Resize(object sender, EventArgs e)
         {
             _realClipArea.Width = _window.Width;
             _realClipArea.Height = _window.Height;

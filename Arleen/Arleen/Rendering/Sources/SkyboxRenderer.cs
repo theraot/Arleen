@@ -63,8 +63,8 @@ namespace Arleen.Rendering.Sources
             var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
             var down = new RectangleF(FLT_width1, FLT_height0, FLT_width1, FLT_height1);
 
-            const float a = -FLT_Length;
-            const float b = FLT_Length;
+            const float A = -FLT_Length;
+            const float B = FLT_Length;
 
             //    3-------6
             //   /|      /|
@@ -97,13 +97,13 @@ namespace Arleen.Rendering.Sources
             //  |
             //  _!_
             //
-            //    aab-----bab
+            //    AAB-----BAB
             //   /|      /|
-            //  aaa-----baa
+            //  AAA-----BAA
             //  | |     | |
-            //  | abb---|-bbb
+            //  | ABB---|-BBB
             //  |/      |/
-            //  aba-----bba
+            //  ABA-----BBA
             //
             //  _!_
             //  |
@@ -115,32 +115,32 @@ namespace Arleen.Rendering.Sources
             {
                 //VEXTEX
                 //0
-                a, a, a,
-                a, b, a,
+                A, A, A,
+                A, B, A,
                 //2
-                a, b, b,
-                a, a, b,
+                A, B, B,
+                A, A, B,
                 //4
-                b, a, a,
-                b, b, a,
+                B, A, A,
+                B, B, A,
                 //6
-                b, a, b,
-                b, b, b,
+                B, A, B,
+                B, B, B,
                 //8
-                a, a, b,
-                a, b, b,
+                A, A, B,
+                A, B, B,
                 //10
-                a, a, a,
-                a, a, b,
+                A, A, A,
+                A, A, B,
                 //12
-                b, a, b,
-                b, a, a,
+                B, A, B,
+                B, A, A,
                 //14
-                a, b, a,
-                b, b, a,
+                A, B, A,
+                B, B, A,
                 //16
-                b, b, b,
-                a, b, b,
+                B, B, B,
+                A, B, B,
 
                 //TEXTURES
                 //0
