@@ -57,6 +57,7 @@
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\RenderSource.cs" />
     <Compile Include="Rendering\RenderTarget.cs" />
+    <Compile Include="Rendering\Sources\BackgroundColorRenderSource.cs" />
     <Compile Include="Rendering\ViewingVolume.cs" />
     <Compile Include="Rendering\ViewingVolume.Perspective.cs" />
     <Compile Include="LocalizedTexts.cs" />

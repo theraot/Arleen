@@ -1,4 +1,5 @@
 ﻿using Arleen.Rendering;
+using Arleen.Rendering.Sources;
 using OpenTK;
 using System;
 using System.Drawing;
@@ -39,6 +40,10 @@ namespace Arleen.Game
             VSync = configuration.VSync ? VSyncMode.On : VSyncMode.Off;
             Title = Program.DisplayName;
             _renderer = new Renderer(new Rectangle(0, 0, Width, Height));
+            _renderer.RenderSources.Add
+                (
+                    new BackgroundColorRenderSource(Color.White, 0)
+                );
             _renderer.RenderTargets.Add
                 (
                     new RenderTarget

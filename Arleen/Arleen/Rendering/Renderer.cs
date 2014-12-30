@@ -44,9 +44,6 @@ namespace Arleen.Rendering
 
         private void window_RenderFrame(object sender, OpenTK.FrameEventArgs e)
         {
-            GL.ClearColor(Color.BlanchedAlmond);
-            GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
-
             foreach (var item in _renderTargets)
             {
                 item.Render(_renderSources, _realClipArea, e.Time);
@@ -59,6 +56,7 @@ namespace Arleen.Rendering
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend); // need for fonts
+            GL.Enable(EnableCap.ScissorTest);
 
             //---
 
