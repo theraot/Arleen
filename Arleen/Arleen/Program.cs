@@ -242,7 +242,7 @@ namespace Arleen
                 {
                     using (var window = new Game.Window())
                     {
-                        window.Run(Configuration.MaxUpdateRate, Configuration.MaxFrameRate);
+                        window.Run();
                     }
 
                     // Save configuration

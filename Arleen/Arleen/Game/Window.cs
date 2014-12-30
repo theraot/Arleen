@@ -2,15 +2,17 @@
 using Arleen.Rendering.Sources;
 using OpenTK;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Arleen.Game
 {
-    public class Window : GameWindow
+    public sealed class Window : GameWindow
     {
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
         private readonly Renderer _renderer;
+        private readonly Stopwatch _time = new Stopwatch();
 
         public Window()
             : this(Program.Configuration)
@@ -60,6 +62,15 @@ namespace Arleen.Game
                         )
                     )
                 );
+            _time.Start();
+        }
+
+        public double TotalTime
+        {
+            get
+            {
+                return _time.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -78,12 +89,6 @@ namespace Arleen.Game
             // ---
             // TODO: Load world
             // ---
-        }
-
-        protected override void OnRenderFrame(FrameEventArgs e)
-        {
-            base.OnRenderFrame(e);
-            SwapBuffers();
         }
     }
 }

@@ -20,16 +20,6 @@
         public bool ForceDebugMode { get; set; }
 
         /// <summary>
-        /// Sets or gets the maximum frame rate.
-        /// </summary>
-        public double MaxFrameRate { get; set; }
-
-        /// <summary>
-        /// Sets or gets the maximum update rate.
-        /// </summary>
-        public double MaxUpdateRate { get; set; }
-
-        /// <summary>
         /// Sets or gets the default resolution.
         /// </summary>
         public System.Drawing.Size Resolution { get; set; }

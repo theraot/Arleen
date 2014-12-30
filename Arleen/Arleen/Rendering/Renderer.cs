@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 
 namespace Arleen.Rendering
 {
@@ -10,7 +11,10 @@ namespace Arleen.Rendering
     {
         private readonly List<RenderSource> _renderSources;
         private readonly List<RenderTarget> _renderTargets;
+        private double _last_time;
         private Rectangle _realClipArea;
+        private Window _window;
+        private Thread _thread;
 
         public Renderer(Rectangle clipArea)
         {
@@ -37,17 +41,33 @@ namespace Arleen.Rendering
 
         public void Initialize(Window window)
         {
-            InitializeOpenGl();
-            window.Resize += window_Resize;
-            window.RenderFrame += window_RenderFrame;
-        }
+            _window = window;
 
-        private void window_RenderFrame(object sender, OpenTK.FrameEventArgs e)
-        {
-            foreach (var item in _renderTargets)
+            _window.Resize += window_Resize;
+            _last_time = _window.TotalTime;
+            _window.Context.MakeCurrent(null);
+
+            _thread = new Thread
+                (
+                    () =>
+                    {
+                        _window.MakeCurrent();
+                        InitializeOpenGl();
+                        while (true)
+                        {
+                            Render();
+                            if (_window.IsExiting)
+                            {
+                                break;
+                            }
+                            _window.SwapBuffers();
+                        }
+                    }
+                )
             {
-                item.Render(_renderSources, _realClipArea, e.Time);
-            }
+                Name = "Renderer Thread"
+            };
+            _thread.Start();
         }
 
         private void InitializeOpenGl()
@@ -73,11 +93,22 @@ namespace Arleen.Rendering
             GL.EnableClientState(ArrayCap.ColorArray);
         }
 
+        private void Render()
+        {
+            var totalTime = _window.TotalTime;
+            var elapsed = _last_time - totalTime;
+            _last_time = _window.TotalTime;
+
+            foreach (var item in _renderTargets)
+            {
+                item.Render(_renderSources, _realClipArea, elapsed);
+            }
+        }
+
         private void window_Resize(object sender, EventArgs e)
         {
-            var window = (Window)sender;
-            _realClipArea.Width = window.Width;
-            _realClipArea.Height = window.Height;
+            _realClipArea.Width = _window.Width;
+            _realClipArea.Height = _window.Height;
         }
     }
 }
