@@ -61,6 +61,7 @@
     <Compile Include="Rendering\ViewingVolume.Perspective.cs" />
     <Compile Include="LocalizedTexts.cs" />
     <Compile Include="netfx\System\StringFormatWith.cs" />
+    <Compile Include="Rendering\ViewingVolumeHelper.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Game\Window.cs" />
     <Compile Include="ResourceLoader.cs" />
