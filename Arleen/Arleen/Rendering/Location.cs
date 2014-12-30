@@ -6,13 +6,13 @@ namespace Arleen.Rendering
 {
     public class Location
     {
-        private OpenTK.Matrix4d _computedMatrix = OpenTK.Matrix4d.Identity;
         private double _elevation;
-        private bool _invalidModelMatrix;
-        private OpenTK.Matrix4d _orientationMatrix = OpenTK.Matrix4d.Identity;
+        private bool _invalidated;
+        private OpenTK.Matrix4d _matrix = OpenTK.Matrix4d.Identity;
+        private OpenTK.Matrix4d _matrixOrientation = OpenTK.Matrix4d.Identity;
+        private OpenTK.Matrix4d _matrixPosition = OpenTK.Matrix4d.Identity;
         private double _pan; // azimuth
         private Vector3d _position;
-        private OpenTK.Matrix4d _positionMatrix = OpenTK.Matrix4d.Identity;
         private double _tilt;
 
         public enum PlaceMode
@@ -20,14 +20,6 @@ namespace Arleen.Rendering
             Full = 0,
             PositionOnly = 1,
             OrientationOnly = 2
-        }
-
-        public OpenTK.Matrix4d ComputedMatrix
-        {
-            get
-            {
-                return _computedMatrix;
-            }
         }
 
         public double Elevation
@@ -41,16 +33,32 @@ namespace Arleen.Rendering
                 if (Math.Abs(_elevation - value) > 0.0f)
                 {
                     _elevation = value;
-                    _invalidModelMatrix = true;
+                    _invalidated = true;
                 }
             }
         }
 
-        public OpenTK.Matrix4d OrientationMatrix
+        public OpenTK.Matrix4d Matrix
         {
             get
             {
-                return _orientationMatrix;
+                return _matrix;
+            }
+        }
+
+        public OpenTK.Matrix4d MatrixOrientation
+        {
+            get
+            {
+                return _matrixOrientation;
+            }
+        }
+
+        public OpenTK.Matrix4d MatrixPosition
+        {
+            get
+            {
+                return _matrixPosition;
             }
         }
 
@@ -65,7 +73,7 @@ namespace Arleen.Rendering
                 if (Math.Abs(_pan - value) > 0.0f)
                 {
                     _pan = value;
-                    _invalidModelMatrix = true;
+                    _invalidated = true;
                 }
             }
         }
@@ -81,16 +89,8 @@ namespace Arleen.Rendering
                 if (_position != value)
                 {
                     _position = value;
-                    _invalidModelMatrix = true;
+                    _invalidated = true;
                 }
-            }
-        }
-
-        public OpenTK.Matrix4d PositionMatrix
-        {
-            get
-            {
-                return _positionMatrix;
             }
         }
 
@@ -105,7 +105,7 @@ namespace Arleen.Rendering
                 if (Math.Abs(_tilt - value) > 0.0f)
                 {
                     _tilt = value;
-                    _invalidModelMatrix = true;
+                    _invalidated = true;
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace Arleen.Rendering
 
         public void Place(PlaceMode mode)
         {
-            if (_invalidModelMatrix)
+            if (_invalidated)
             {
                 UpdateModelMatrices();
             }
@@ -125,19 +125,19 @@ namespace Arleen.Rendering
             {
                 case PlaceMode.Full:
                     {
-                        GL.LoadMatrix(ref _computedMatrix);
+                        GL.LoadMatrix(ref _matrix);
                     }
                     break;
 
                 case PlaceMode.PositionOnly:
                     {
-                        GL.LoadMatrix(ref _positionMatrix);
+                        GL.LoadMatrix(ref _matrixPosition);
                     }
                     break;
 
                 case PlaceMode.OrientationOnly:
                     {
-                        GL.LoadMatrix(ref _orientationMatrix);
+                        GL.LoadMatrix(ref _matrixOrientation);
                     }
                     break;
             }
@@ -151,13 +151,13 @@ namespace Arleen.Rendering
         private void UpdateModelMatrices()
         {
             //Use quaternions?
-            _positionMatrix = OpenTK.Matrix4d.CreateTranslation(_position);
-            _orientationMatrix =
+            _matrixPosition = OpenTK.Matrix4d.CreateTranslation(_position);
+            _matrixOrientation =
                 OpenTK.Matrix4d.CreateRotationY(MathHelper.DegreesToRadians(_pan)) *
                 OpenTK.Matrix4d.CreateRotationX(MathHelper.DegreesToRadians(-_elevation)) *
                 OpenTK.Matrix4d.CreateRotationY(MathHelper.DegreesToRadians(_tilt));
-            _computedMatrix = _positionMatrix * _orientationMatrix;
-            _invalidModelMatrix = false;
+            _matrix = _matrixPosition * _matrixOrientation;
+            _invalidated = false;
         }
     }
 }
