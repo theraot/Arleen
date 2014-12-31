@@ -25,6 +25,8 @@ namespace Arleen.Rendering.Sources
         public void Dispose()
         {
             _texture.Dispose();
+            GL.DeleteBuffer(dataBuffer);
+            GL.DeleteBuffer(indexBuffer);
         }
 
         protected override void OnInitilaize()
