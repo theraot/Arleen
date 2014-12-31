@@ -60,6 +60,7 @@
     <Compile Include="Rendering\RenderSource.cs" />
     <Compile Include="Rendering\RenderTarget.cs" />
     <Compile Include="Rendering\Sources\BackgroundColorRenderSource.cs" />
+    <Compile Include="Rendering\Sources\CustomRenderer.cs" />
     <Compile Include="Rendering\Sources\SkyboxRenderer.cs" />
     <Compile Include="Rendering\Texture.cs" />
     <Compile Include="Rendering\ViewingVolume.cs" />
@@ -86,7 +87,6 @@
     <EmbeddedResource Include="Lang\es.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\Images\skybox.png" />
   </ItemGroup>
