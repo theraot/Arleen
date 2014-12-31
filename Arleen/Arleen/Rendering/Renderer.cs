@@ -71,6 +71,7 @@ namespace Arleen.Rendering
                             }
                             _window.SwapBuffers();
                         }
+                        Release();
                     }
                 )
             {
@@ -121,6 +122,20 @@ namespace Arleen.Rendering
         {
             _realClipArea.Width = _window.Width;
             _realClipArea.Height = _window.Height;
+        }
+
+        private void Release()
+        {
+            var sources = _renderSources;
+            foreach (var source in sources)
+            {
+                if (source is IDisposable)
+                {
+                    (source as IDisposable).Dispose();
+                }
+            }
+            _renderSources.Clear();
+            _renderTargets.Clear();
         }
     }
 }
