@@ -35,12 +35,10 @@ namespace Arleen.Rendering.Sources
                     }
                 );
             _initialize =
-                (
-                    () =>
-                    {
-                        //Empty
-                    }
-                );
+                () =>
+                {
+                    //Empty
+                };
         }
 
         protected override void OnInitilaize()

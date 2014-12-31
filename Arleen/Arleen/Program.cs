@@ -38,6 +38,9 @@ namespace Arleen
         /// </summary>
         internal static Configuration Configuration { get; private set; }
 
+        /// <summary>
+        /// Gets the localized texts for the assembly.
+        /// </summary>
         internal static LocalizedTexts _
         {
             get
