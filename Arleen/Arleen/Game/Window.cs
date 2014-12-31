@@ -49,7 +49,7 @@ namespace Arleen.Game
                         AspectRatio = 1
                     }
                 );
-            _renderer = new Renderer(new Rectangle(0, 0, Width, Height));
+            _renderer = new Renderer();
             _renderer.RenderSources.Add
                 (
                     new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0)

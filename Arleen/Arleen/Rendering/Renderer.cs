@@ -17,9 +17,8 @@ namespace Arleen.Rendering
         private Window _window;
         private Thread _thread;
 
-        public Renderer(Rectangle clipArea)
+        public Renderer()
         {
-            _realClipArea = clipArea;
             _renderSources = new List<RenderSource>();
             _renderTargets = new List<RenderTarget>();
         }
