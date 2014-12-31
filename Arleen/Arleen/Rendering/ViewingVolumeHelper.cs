@@ -30,7 +30,7 @@ namespace Arleen.Rendering
         public static void PlaceOthogonalProjection(float width, float height, float nearPlane, float farPlane)
         {
             GL.MatrixMode(MatrixMode.Projection);
-            var proj = Matrix4.CreateOrthographicOffCenter(0, width, height, 0, nearPlane, farPlane);
+            var proj = Matrix4.CreateOrthographicOffCenter(0, width, 0, height, nearPlane, farPlane);
             GL.LoadMatrix(ref proj);
             GL.MatrixMode(MatrixMode.Modelview);
         }
