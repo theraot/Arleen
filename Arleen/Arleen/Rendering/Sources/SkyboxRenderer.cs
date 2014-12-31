@@ -17,10 +17,16 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
+        private Bitmap _bitmap;
         private Action<Camera> _render;
         private Texture _texture;
         private int dataBuffer = -1;
         private int indexBuffer = -1;
+
+        public SkyboxRenderer(Bitmap bitmap)
+        {
+            _bitmap = bitmap;
+        }
 
         public void Dispose()
         {
@@ -50,8 +56,8 @@ namespace Arleen.Rendering.Sources
                 };
             }
             Build();
-            var bitmap = Resources.LoadBitmap("skybox.png");
-            _texture = new Texture(bitmap);
+            _texture = new Texture(_bitmap);
+            _bitmap = null;
         }
 
         protected override void OnRender(RenderInfo info)

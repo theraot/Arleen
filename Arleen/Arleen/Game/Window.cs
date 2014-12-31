@@ -58,7 +58,7 @@ namespace Arleen.Game
                 );*/
             _renderer.RenderSources.Add
                 (
-                    new SkyboxRenderer()
+                    new SkyboxRenderer(Resources.LoadBitmap("skybox.png"))
                 );
             _renderer.RenderTargets.Add
                 (
