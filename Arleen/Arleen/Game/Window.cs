@@ -26,11 +26,7 @@ namespace Arleen.Game
         // TODO: world
         // ===
         // ---
-        // TODO: Localization
-        // ---
         // TODO: Input
-        // ---
-        // TODO: Resource loading
         // ---
         // TODO: User Interface
         // ---
@@ -113,14 +109,9 @@ namespace Arleen.Game
             // ---
             // TODO: Bind input
             // ---
-            // ---
-            // TODO: Load localization
-            // ---
 
             _renderer.Initialize(this);
 
-            // ---
-            // TODO: Load resources
             // ---
             // TODO: Load world
             // ---
