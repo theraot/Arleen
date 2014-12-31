@@ -1,6 +1,8 @@
 ﻿using Arleen.Rendering;
 using Arleen.Rendering.Sources;
+using Arleen.Rendering.Utility;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -52,14 +54,41 @@ namespace Arleen.Game
                     }
                 );
             _renderer = new Renderer(new Rectangle(0, 0, Width, Height));
-            /*_renderer.RenderSources.Add
+            _renderer.RenderSources.Add
                 (
                     new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0)
-                );*/
+                );
             _renderer.RenderSources.Add
                 (
                     new SkyboxRenderer(Resources.LoadBitmap("skybox.png"))
                 );
+            _renderer.RenderSources.Add
+            (
+                new CustomRenderer
+                    (
+                        info =>
+                        {
+                            GL.Enable(EnableCap.Blend);
+                            GL.BlendEquation(BlendEquationMode.FuncAdd);
+                            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                            GL.Disable(EnableCap.DepthTest);
+                            ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height, FLT_NearPlane, FLT_FarPlane);
+                            Rendering.Utility.TextDrawer.Draw
+                                (
+                                    Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) + "\n" +
+                                    "FPS:" + info.Fps,
+                                    new Font("Verdana", 12, FontStyle.Regular),
+                                    true,
+                                    Color.White,
+                                    info.ClipArea,
+                                    TextAlign.Left,
+                                    TextAlign.Top
+                                );
+                            GL.LoadIdentity();
+                            GL.Enable(EnableCap.DepthTest);
+                        }
+                    )
+            );
             _renderer.RenderTargets.Add
                 (
                     new RenderTarget

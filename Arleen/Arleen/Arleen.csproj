@@ -63,6 +63,15 @@
     <Compile Include="Rendering\Sources\CustomRenderer.cs" />
     <Compile Include="Rendering\Sources\SkyboxRenderer.cs" />
     <Compile Include="Rendering\Texture.cs" />
+    <Compile Include="Rendering\Utility\TextAlign.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Utility\TextDrawer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Utility\TextWrap.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rendering\ViewingVolume.cs" />
     <Compile Include="Rendering\ViewingVolume.Perspective.cs" />
     <Compile Include="LocalizedTexts.cs" />

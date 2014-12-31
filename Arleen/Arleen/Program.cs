@@ -38,7 +38,7 @@ namespace Arleen
         /// </summary>
         internal static Configuration Configuration { get; private set; }
 
-        private static LocalizedTexts _
+        internal static LocalizedTexts _
         {
             get
             {
