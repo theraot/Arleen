@@ -58,7 +58,14 @@ namespace Arleen.Rendering
                         while (true)
                         {
                             Render();
-                            if (_window.IsExiting)
+                            try
+                            {
+                                if (_window.IsExiting)
+                                {
+                                    break;
+                                }
+                            }
+                            catch (ObjectDisposedException)
                             {
                                 break;
                             }
@@ -99,10 +106,10 @@ namespace Arleen.Rendering
         private void Render()
         {
             var totalTime = _window.TotalTime;
-            var elapsed = _last_time - totalTime;
+            var elapsed = totalTime - _last_time;
             _last_time = _window.TotalTime;
 
-            _fpsCounter.OnRender(elapsed);
+            _fpsCounter.OnRender(elapsed / 1000.0);
 
             foreach (var item in _renderTargets)
             {
