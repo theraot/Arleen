@@ -51,7 +51,6 @@ namespace Arleen.Rendering.Sources
             }
             Build();
             var bitmap = Resources.LoadBitmap("skybox.png");
-            bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
             _texture = new Texture(bitmap);
         }
 
@@ -150,32 +149,32 @@ namespace Arleen.Rendering.Sources
 
                 //TEXTURES
                 //0
-                left.Right, left.Top,
                 left.Right, left.Bottom,
+                left.Right, left.Top,
                 //2
-                left.Left, left.Bottom,
                 left.Left, left.Top,
+                left.Left, left.Bottom,
                 //4
-                front.Right, front.Top,
                 front.Right, front.Bottom,
+                front.Right, front.Top,
                 //6
-                right.Right, right.Top,
                 right.Right, right.Bottom,
+                right.Right, right.Top,
                 //8
-                back.Right, back.Top,
                 back.Right, back.Bottom,
+                back.Right, back.Top,
                 //10
-                down.Left, down.Bottom,
                 down.Left, down.Top,
+                down.Left, down.Bottom,
                 //12
-                down.Right, down.Top,
                 down.Right, down.Bottom,
+                down.Right, down.Top,
                 //14
-                up.Left, up.Top,
-                up.Right, up.Top,
-                //16
+                up.Left, up.Bottom,
                 up.Right, up.Bottom,
-                up.Left, up.Bottom
+                //16
+                up.Right, up.Top,
+                up.Left, up.Top
             };
 
             var _indexes = new byte[]
