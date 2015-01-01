@@ -90,6 +90,25 @@ namespace Arleen
             return folder;
         }
 
+        private static void Initialize()
+        {
+            try
+            {
+                InitializeExtracted();
+            }
+            catch (Exception exception)
+            {
+                if (_logBook != null)
+                {
+                    _logBook.ReportException(exception, "doing initialization", true);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
         private static void InitializeExtracted()
         {
             // *********************************
@@ -227,22 +246,7 @@ namespace Arleen
 
         private static void Main()
         {
-            // InitializeExtracted
-            try
-            {
-                InitializeExtracted();
-            }
-            catch (Exception exception)
-            {
-                if (_logBook != null)
-                {
-                    _logBook.ReportException(exception, "doing initialization", true);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            Initialize();
 
             // Salute
             _logBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
