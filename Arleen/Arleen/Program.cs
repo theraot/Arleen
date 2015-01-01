@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Arleen.Game;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -282,9 +283,18 @@ namespace Arleen
         {
             try
             {
-                using (var window = new Game.DefaultRealm())
+                Realm realm = null;
+                try
                 {
-                    window.Run();
+                    realm = new Game.DefaultRealm();
+                    realm.Run();
+                }
+                finally
+                {
+                    if (realm != null)
+                    {
+                        realm.Dispose();
+                    }
                 }
             }
             catch (Exception exception)
