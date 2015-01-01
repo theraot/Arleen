@@ -259,20 +259,7 @@ namespace Arleen
                 return;
             }
 
-            try
-            {
-                using (var window = new Game.DefaultRealm())
-                {
-                    window.Run();
-                }
-            }
-            catch (Exception exception)
-            {
-                // Pokémon
-                // Gotta catch'em all!
-                _logBook.ReportException(exception, true);
-                Panic();
-            }
+            Run();
 
             Terminate();
         }
@@ -288,6 +275,24 @@ namespace Arleen
             {
                 Console.WriteLine("[Press a key to exit]");
                 Console.ReadKey();
+            }
+        }
+
+        private static void Run()
+        {
+            try
+            {
+                using (var window = new Game.DefaultRealm())
+                {
+                    window.Run();
+                }
+            }
+            catch (Exception exception)
+            {
+                // Pokémon
+                // Gotta catch'em all!
+                _logBook.ReportException(exception, true);
+                Panic();
             }
         }
 
