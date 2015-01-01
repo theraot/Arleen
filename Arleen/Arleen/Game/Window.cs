@@ -13,7 +13,7 @@ namespace Arleen.Game
     {
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
-        private readonly Renderer _renderer;
+        private Renderer _renderer;
         private readonly Stopwatch _time = new Stopwatch();
 
         public Window()
@@ -38,15 +38,21 @@ namespace Arleen.Game
             : base(configuration.Resolution.Width, configuration.Resolution.Height)
         {
             Title = Program.DisplayName;
+            _time.Start();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             var _camera = new Camera
                 (
-                    new ViewingVolume.Perspective
-                    {
-                        FieldOfView = 45,
-                        FarPlane = FLT_FarPlane,
-                        NearPlane = FLT_NearPlane,
-                        AspectRatio = 1
-                    }
+                new ViewingVolume.Perspective
+                {
+                    FieldOfView = 45,
+                    FarPlane = FLT_FarPlane,
+                    NearPlane = FLT_NearPlane,
+                    AspectRatio = 1
+                }
                 );
             _renderer = new Renderer();
             _renderer.RenderSources.Add
@@ -58,16 +64,17 @@ namespace Arleen.Game
                     new SkyboxRenderer(Resources.LoadBitmap("skybox.png"))
                 );
             _renderer.RenderSources.Add
-            (
-                new CustomRenderer
-                    (
+                (
+                    new CustomRenderer
+                        (
                         info =>
                         {
                             GL.Enable(EnableCap.Blend);
                             GL.BlendEquation(BlendEquationMode.FuncAdd);
                             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                             GL.Disable(EnableCap.DepthTest);
-                            ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height, FLT_NearPlane, FLT_FarPlane);
+                            ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height,
+                                FLT_NearPlane, FLT_FarPlane);
                             Rendering.Utility.TextDrawer.Draw
                                 (
                                     Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) + "\n" +
@@ -82,17 +89,16 @@ namespace Arleen.Game
                             GL.LoadIdentity();
                             GL.Enable(EnableCap.DepthTest);
                         }
-                    )
-            );
+                        )
+                );
             _renderer.RenderTargets.Add
                 (
                     new RenderTarget
                         (
-                            new RectangleF(0, 0, 1.0f, 1.0f),
-                            _camera
+                        new RectangleF(0, 0, 1.0f, 1.0f),
+                        _camera
                         )
                 );
-            _time.Start();
         }
 
         public double TotalTime
