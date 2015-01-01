@@ -14,6 +14,21 @@ namespace Arleen
         private static bool _debugMode;
         private static LocalizedTexts _localizedTexts;
         private static Logbook _logBook;
+        private static Realm _currentRealm;
+
+        /// <summary>
+        /// Changes the current Realm.
+        /// </summary>
+        /// <param name="realm">The new realm.</param>
+        public static void ChangeRealm(Realm realm)
+        {
+            _currentRealm.Dispose();
+            _currentRealm = realm;
+            if (_currentRealm != null)
+            {
+                _currentRealm.Run();
+            }
+        }
 
         public static string CurrentLanguage { get; private set; }
 
@@ -283,17 +298,16 @@ namespace Arleen
         {
             try
             {
-                Realm realm = null;
                 try
                 {
-                    realm = new Game.DefaultRealm();
-                    realm.Run();
+                    _currentRealm = new Game.DefaultRealm();
+                    _currentRealm.Run();
                 }
                 finally
                 {
-                    if (realm != null)
+                    if (_currentRealm != null)
                     {
-                        realm.Dispose();
+                        _currentRealm.Dispose();
                     }
                 }
             }
