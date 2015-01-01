@@ -68,7 +68,14 @@ namespace Arleen.Rendering
                             {
                                 break;
                             }
-                            _realm.SwapBuffers();
+                            try
+                            {
+                                _realm.SwapBuffers();
+                            }
+                            catch (NullReferenceException)
+                            {
+                                break;
+                            }
                         }
                         Release();
                     }
