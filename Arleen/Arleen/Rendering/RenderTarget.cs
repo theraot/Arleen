@@ -73,13 +73,7 @@ namespace Arleen.Rendering
         {
             if (_enabled)
             {
-                var targetClipArea = new Rectangle
-                (
-                    (int)((_virtualClipArea.X * realClipArea.Width) + realClipArea.X),
-                    (int)((_virtualClipArea.Y * realClipArea.Height) + realClipArea.Y),
-                    (int)(_virtualClipArea.Width * realClipArea.Width),
-                    (int)(_virtualClipArea.Height * realClipArea.Height)
-                );
+                var targetClipArea = ComputeClipArea(realClipArea, _virtualClipArea);
                 _camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
                 GL.Viewport(realClipArea);
                 GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
@@ -98,6 +92,18 @@ namespace Arleen.Rendering
                     item.Render(renderInfo);
                 }
             }
+        }
+
+        private static Rectangle ComputeClipArea(Rectangle realClipArea, RectangleF virtualClipArea)
+        {
+            var targetClipArea = new Rectangle
+                (
+                (int)((virtualClipArea.X * realClipArea.Width) + realClipArea.X),
+                (int)((virtualClipArea.Y * realClipArea.Height) + realClipArea.Y),
+                (int)(virtualClipArea.Width * realClipArea.Width),
+                (int)(virtualClipArea.Height * realClipArea.Height)
+                );
+            return targetClipArea;
         }
     }
 }
