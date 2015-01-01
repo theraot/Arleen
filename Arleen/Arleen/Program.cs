@@ -256,40 +256,25 @@ namespace Arleen
             if (Configuration == null)
             {
                 _logBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
+                return;
             }
-            else
+
+            try
             {
-                try
+                using (var window = new Game.DefaultRealm())
                 {
-                    using (var window = new Game.DefaultRealm())
-                    {
-                        window.Run();
-                    }
-
-                    // Save configuration
-
-                    if (!Resources.SaveConfig(Configuration))
-                    {
-                        _logBook.Trace(TraceEventType.Error, "Failed to save configuration.");
-                    }
-
-                    // Exit
-                    _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
-
-                    if (_debugMode)
-                    {
-                        Console.WriteLine("[Press a key to exit]");
-                        Console.ReadKey();
-                    }
-                }
-                catch (Exception exception)
-                {
-                    // Pokémon
-                    // Gotta catch'em all!
-                    _logBook.ReportException(exception, true);
-                    Panic();
+                    window.Run();
                 }
             }
+            catch (Exception exception)
+            {
+                // Pokémon
+                // Gotta catch'em all!
+                _logBook.ReportException(exception, true);
+                Panic();
+            }
+
+            Terminate();
         }
 
         private static void Panic()
@@ -310,6 +295,35 @@ namespace Arleen
         private static void SetDebugMode()
         {
             _debugMode = true;
+        }
+
+        private static void Terminate()
+        {
+            try
+            {
+                // Save configuration
+
+                if (!Resources.SaveConfig(Configuration))
+                {
+                    _logBook.Trace(TraceEventType.Error, "Failed to save configuration.");
+                }
+
+                // Exit
+                _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
+
+                if (_debugMode)
+                {
+                    Console.WriteLine("[Press a key to exit]");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception exception)
+            {
+                // Pokémon
+                // Gotta catch'em all!
+                _logBook.ReportException(exception, true);
+                Panic();
+            }
         }
     }
 }
