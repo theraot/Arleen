@@ -37,7 +37,6 @@ namespace Arleen.Game
         private Window(Configuration configuration)
             : base(configuration.Resolution.Width, configuration.Resolution.Height)
         {
-            VSync = configuration.VSync ? VSyncMode.On : VSyncMode.Off;
             Title = Program.DisplayName;
             var _camera = new Camera
                 (

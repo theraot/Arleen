@@ -25,11 +25,6 @@
         public System.Drawing.Size Resolution { get; set; }
 
         /// <summary>
-        /// Sets or gets whatever to use vertical synchronization.
-        /// </summary>
-        public bool VSync { get; set; }
-
-        /// <summary>
         /// Sets or gets the language string to be used when loading localized resources.
         /// </summary>
         /// <remarks>The language string is dash separated list of language / script / region requirements.
