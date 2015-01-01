@@ -34,11 +34,6 @@ namespace Arleen
         public static string InternalName { get; private set; }
 
         /// <summary>
-        /// Gets the loaded configuration for the program.
-        /// </summary>
-        internal static Configuration Configuration { get; private set; }
-
-        /// <summary>
         /// Gets the localized texts for the assembly.
         /// </summary>
         internal static LocalizedTexts _
@@ -48,6 +43,11 @@ namespace Arleen
                 return _localizedTexts;
             }
         }
+
+        /// <summary>
+        /// Gets the loaded configuration for the program.
+        /// </summary>
+        internal static Configuration Configuration { get; private set; }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
@@ -90,7 +90,7 @@ namespace Arleen
             return folder;
         }
 
-        private static void Initialize()
+        private static void InitializeExtracted()
         {
             // *********************************
             // Getting folder and display name
@@ -227,10 +227,10 @@ namespace Arleen
 
         private static void Main()
         {
-            // Initialize
+            // InitializeExtracted
             try
             {
-                Initialize();
+                InitializeExtracted();
             }
             catch (Exception exception)
             {
