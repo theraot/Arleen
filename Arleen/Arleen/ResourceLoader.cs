@@ -169,7 +169,7 @@ namespace Arleen
                     path
                 );
                 Directory.CreateDirectory(basepath);
-                using (var file = File.OpenWrite(path))
+                using (var file = File.Open(path, FileMode.Create))
                 {
                     CopyStream(stream, file);
                 }
