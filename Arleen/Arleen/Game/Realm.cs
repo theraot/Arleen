@@ -9,14 +9,14 @@ using System.Drawing;
 
 namespace Arleen.Game
 {
-    public sealed class Window : GameWindow
+    public sealed class Realm : GameWindow
     {
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
         private Renderer _renderer;
         private readonly Stopwatch _time = new Stopwatch();
 
-        public Window()
+        public Realm()
             : this(Program.Configuration)
         {
             // Empty
@@ -34,7 +34,7 @@ namespace Arleen.Game
         // ---
         // TODO: Physics
         // ---
-        private Window(Configuration configuration)
+        private Realm(Configuration configuration)
             : base(configuration.Resolution.Width, configuration.Resolution.Height)
         {
             Title = Program.DisplayName;

@@ -14,7 +14,7 @@ namespace Arleen.Rendering
         private FpsCounter _fpsCounter;
         private double _last_time;
         private Rectangle _realClipArea;
-        private Window _window;
+        private Realm _realm;
         private Thread _thread;
 
         public Renderer()
@@ -39,27 +39,27 @@ namespace Arleen.Rendering
             }
         }
 
-        public void Initialize(Window window)
+        public void Initialize(Realm realm)
         {
-            _window = window;
-            _last_time = _window.TotalTime;
+            _realm = realm;
+            _last_time = _realm.TotalTime;
 
-            _window.Resize += Window_Resize;
+            _realm.Resize += RealmResize;
 
-            _window.Context.MakeCurrent(null);
+            _realm.Context.MakeCurrent(null);
 
             _thread = new Thread
                 (
                     () =>
                     {
-                        _window.Context.MakeCurrent(_window.WindowInfo);
+                        _realm.Context.MakeCurrent(_realm.WindowInfo);
                         InitializeOpenGl();
                         while (true)
                         {
                             Render();
                             try
                             {
-                                if (_window.IsExiting)
+                                if (_realm.IsExiting)
                                 {
                                     break;
                                 }
@@ -68,7 +68,7 @@ namespace Arleen.Rendering
                             {
                                 break;
                             }
-                            _window.SwapBuffers();
+                            _realm.SwapBuffers();
                         }
                         Release();
                     }
@@ -105,9 +105,9 @@ namespace Arleen.Rendering
 
         private void Render()
         {
-            var totalTime = _window.TotalTime;
+            var totalTime = _realm.TotalTime;
             var elapsed = totalTime - _last_time;
-            _last_time = _window.TotalTime;
+            _last_time = _realm.TotalTime;
 
             _fpsCounter.OnRender(elapsed / 1000.0);
 
@@ -117,10 +117,10 @@ namespace Arleen.Rendering
             }
         }
 
-        private void Window_Resize(object sender, EventArgs e)
+        private void RealmResize(object sender, EventArgs e)
         {
-            _realClipArea.Width = _window.Width;
-            _realClipArea.Height = _window.Height;
+            _realClipArea.Width = _realm.Width;
+            _realClipArea.Height = _realm.Height;
         }
 
         private void Release()
