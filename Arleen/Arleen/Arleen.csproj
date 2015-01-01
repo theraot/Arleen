@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Game\DefaultRealm.cs" />
     <Compile Include="Geometry\QuaternionHelper.cs" />
     <Compile Include="Geometry\Vector3dHelper.cs" />
     <Compile Include="Geometry\Vector3Helper.cs" />

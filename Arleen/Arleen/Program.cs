@@ -257,7 +257,7 @@ namespace Arleen
             {
                 try
                 {
-                    using (var window = new Game.Realm())
+                    using (var window = new Game.DefaultRealm())
                     {
                         window.Run();
                     }
