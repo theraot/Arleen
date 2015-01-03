@@ -205,7 +205,7 @@ namespace Arleen.Rendering.Sources
         private void Draw(Camera camera)
         {
             Matrix4d matrix = Matrix4d.Identity;
-            camera.Location.Apply(matrix, Location.PlaceMode.OrientationOnly);
+            matrix = camera.Location.Apply(matrix, Location.PlaceMode.OrientationOnly);
             GL.LoadMatrix(ref matrix);
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);

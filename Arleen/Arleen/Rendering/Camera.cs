@@ -31,7 +31,7 @@ namespace Arleen.Rendering
         {
             ViewingVolume.Place();
             Matrix4d matrix = Matrix4d.Identity;
-            Location.Apply(matrix, mode);
+            matrix = Location.Apply(matrix, mode);
             GL.LoadMatrix(ref matrix);
         }
     }
