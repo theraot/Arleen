@@ -1,6 +1,8 @@
-﻿using Arleen.Rendering;
+﻿using Arleen.Geometry;
+using Arleen.Rendering;
 using Arleen.Rendering.Sources;
 using Arleen.Rendering.Utility;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -12,10 +14,11 @@ namespace Arleen.Game
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
         private Renderer _renderer;
+        private Camera _camera;
 
         protected override void OnLoad(EventArgs e)
         {
-            var _camera = new Camera
+            _camera = new Camera
                 (
                 new ViewingVolume.Perspective
                 {
@@ -44,12 +47,19 @@ namespace Arleen.Game
                             GL.BlendEquation(BlendEquationMode.FuncAdd);
                             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                             GL.Disable(EnableCap.DepthTest);
-                            ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height,
-                                FLT_NearPlane, FLT_FarPlane);
+                            GL.LoadIdentity();
+                            ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height, FLT_NearPlane, FLT_FarPlane);
+
+                            double pitch, elevation, roll;
+                            QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out pitch, out elevation, out roll);
+
                             Rendering.Utility.TextDrawer.Draw
                                 (
                                     Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) + "\n" +
-                                    "FPS:" + info.Fps,
+                                    "FPS: " + info.Fps + "\n" +
+                                    "Bearing: " + (MathHelper.RadiansToDegrees(pitch) % 360).ToString("0.000") + "\n" +
+                                    "Elevation: " + (MathHelper.RadiansToDegrees(elevation) % 360).ToString("0.000") + "\n" +
+                                    "Roll: " + (MathHelper.RadiansToDegrees(roll) % 360).ToString("0.000") + "\n",
                                     new Font("Verdana", 12, FontStyle.Regular),
                                     true,
                                     Color.White,
@@ -57,7 +67,6 @@ namespace Arleen.Game
                                     TextAlign.Left,
                                     TextAlign.Top
                                 );
-                            GL.LoadIdentity();
                             GL.Enable(EnableCap.DepthTest);
                         }
                         )
@@ -71,6 +80,11 @@ namespace Arleen.Game
                         )
                 );
             _renderer.Initialize(this);
+        }
+
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            _camera.Location.Orientation *= QuaterniondHelper.CreateFromEulerAngles(bearing: 0.0000004, elevation: 0.0000002, roll: 0.0000001);
         }
     }
 }
