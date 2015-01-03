@@ -68,11 +68,11 @@ namespace Arleen.Rendering.Sources
         private void Build()
         {
             var back = new RectangleF(FLT_width3, FLT_height1, FLT_width1, FLT_height1);
-            var up = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
+            var up = new RectangleF(FLT_width1, FLT_height0, FLT_width1, FLT_height1);
             var front = new RectangleF(FLT_width1, FLT_height1, FLT_width1, FLT_height1);
             var left = new RectangleF(FLT_width0, FLT_height1, FLT_width1, FLT_height1);
             var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
-            var down = new RectangleF(FLT_width1, FLT_height0, FLT_width1, FLT_height1);
+            var down = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
 
             const float A = -FLT_Length;
             const float B = FLT_Length;
