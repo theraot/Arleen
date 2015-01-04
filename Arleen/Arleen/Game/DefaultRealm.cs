@@ -57,6 +57,9 @@ namespace Arleen.Game
                                 (
                                     Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) + "\n" +
                                     "FPS: " + info.Fps + "\n" +
+                                    "x:" + _camera.Location.Position.X + "\n" +
+                                    "y:" + _camera.Location.Position.Y + "\n" +
+                                    "z:" + _camera.Location.Position.Z + "\n" +
                                     "Bearing: " + (MathHelper.RadiansToDegrees(pitch) % 360).ToString("0.000") + "\n" +
                                     "Elevation: " + (MathHelper.RadiansToDegrees(elevation) % 360).ToString("0.000") + "\n" +
                                     "Roll: " + (MathHelper.RadiansToDegrees(roll) % 360).ToString("0.000") + "\n",
