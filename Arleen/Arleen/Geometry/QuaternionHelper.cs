@@ -24,15 +24,15 @@ namespace Arleen.Geometry
                 );
         }
 
-        public static void ToEulerAngles(Quaternion quaterniond, out float bearing, out float elevation, out float roll)
+        public static void ToEulerAngles(Quaterniond quaternion, out float bearing, out float elevation, out float roll)
         {
-            var sqw = quaterniond.W * quaterniond.W;
-            var sqy = quaterniond.Y * quaterniond.Y;
-            var sqz = quaterniond.Z * quaterniond.Z;
+            var sqx = quaternion.X * quaternion.X;
+            var sqy = quaternion.Y * quaternion.Y;
+            var sqz = quaternion.Z * quaternion.Z;
 
-            elevation = (float)Math.PI + (float)Math.Atan2(2.0f * quaterniond.X * quaterniond.W + 2.0f * quaterniond.Y * quaterniond.Z, 1 - 2.0f * (sqz + sqw));
-            bearing = -(float)Math.Asin(2.0f * (quaterniond.X * quaterniond.Z - quaterniond.W * quaterniond.Y));
-            roll = (float)Math.Atan2(2.0f * quaterniond.X * quaterniond.Y + 2.0f * quaterniond.Z * quaterniond.W, 1 - 2.0f * (sqy + sqz));
+            elevation = -(float)Math.Asin(2 * quaternion.Z * quaternion.Y + 2 * quaternion.X * quaternion.W);
+            bearing = (float)Math.Atan2(2 * quaternion.Y * quaternion.W - 2 * quaternion.Z * quaternion.X, 1 - 2 * sqy - 2 * sqx);
+            roll = (float)Math.Atan2(2 * quaternion.Z * quaternion.W - 2 * quaternion.Y * quaternion.X, 1 - 2 * sqz - 2 * sqx);
         }
     }
 }

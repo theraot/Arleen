@@ -50,8 +50,8 @@ namespace Arleen.Game
                             GL.LoadIdentity();
                             ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height, FLT_NearPlane, FLT_FarPlane);
 
-                            double pitch, elevation, roll;
-                            QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out pitch, out elevation, out roll);
+                            double bearing, elevation, roll;
+                            QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
 
                             Rendering.Utility.TextDrawer.Draw
                                 (
@@ -60,7 +60,7 @@ namespace Arleen.Game
                                     "x:" + _camera.Location.Position.X + "\n" +
                                     "y:" + _camera.Location.Position.Y + "\n" +
                                     "z:" + _camera.Location.Position.Z + "\n" +
-                                    "Bearing: " + (MathHelper.RadiansToDegrees(pitch) % 360).ToString("0.000") + "\n" +
+                                    "Bearing: " + (MathHelper.RadiansToDegrees(bearing) % 360).ToString("0.000") + "\n" +
                                     "Elevation: " + (MathHelper.RadiansToDegrees(elevation) % 360).ToString("0.000") + "\n" +
                                     "Roll: " + (MathHelper.RadiansToDegrees(roll) % 360).ToString("0.000") + "\n",
                                     new Font("Verdana", 12, FontStyle.Regular),
