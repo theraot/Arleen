@@ -89,7 +89,18 @@ namespace Arleen.Game
             var elapsed = totalTime - _last_time;
             _last_time = TotalTime;
 
-            _camera.Location.Orientation *= QuaterniondHelper.CreateFromEulerAngles(bearing: 0.004 * elapsed, elevation: 0.002 * elapsed, roll: 0.001 * elapsed);
+            var rotationPerSecond = QuaterniondHelper.CreateFromEulerAngles(bearing: 0.004, elevation: 0.002, roll: 0.001);
+
+            Vector3d axis;
+            double angle;
+
+            rotationPerSecond.ToAxisAngle(out axis, out angle);
+
+            var full_loop = 2 * Math.PI / angle;
+
+            var dt = totalTime % full_loop;
+
+            _camera.Location.Orientation = Quaterniond.Identity * Quaterniond.FromAxisAngle(axis, angle * dt);
             //---
             double bearing, elevation, roll;
             QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
