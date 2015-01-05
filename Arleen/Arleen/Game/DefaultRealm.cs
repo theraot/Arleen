@@ -45,7 +45,15 @@ namespace Arleen.Game
                 );
             _renderer.RenderSources.Add
                 (
-                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(0, 0, -10), Orientation = QuaterniondHelper.CreateFromEulerAngles(10, 10, 10) })
+                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(0, 0, -5) })
+                );
+            _renderer.RenderSources.Add
+                (
+                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(1.5, 0, -5) }, 2.0f)
+                );
+            _renderer.RenderSources.Add
+                (
+                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(-2.5, 0, -5) }, 4.0f)
                 );
             _renderer.RenderTargets.Add
                 (

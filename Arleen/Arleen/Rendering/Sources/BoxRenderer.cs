@@ -11,23 +11,32 @@ namespace Arleen.Rendering.Sources
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
         private const float FLT_height2 = FLT_height1 * 2;
-        private const float FLT_Length = 2.0f;
+        private const float FLT_Length = 0.5f;
         private const float FLT_width0 = 0.0f;
         private const float FLT_width1 = 1.0f / 4.0f;
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
         private readonly Location _location;
+        private readonly float _size;
         private Bitmap _bitmap;
         private Action<Camera> _render;
         private Texture _texture;
         private int dataBuffer = -1;
         private int indexBuffer = -1;
 
+        public BoxRenderer(Bitmap bitmap, Location location, float size)
+        {
+            _bitmap = bitmap;
+            _location = location;
+            _size = size;
+        }
+
         public BoxRenderer(Bitmap bitmap, Location location)
         {
             _bitmap = bitmap;
             _location = location;
+            _size = 1.0f;
         }
 
         public void Dispose()
@@ -41,19 +50,15 @@ namespace Arleen.Rendering.Sources
         {
             if (GL.IsEnabled(EnableCap.DepthTest))
             {
-                _render = camera =>
-                {
-                    GL.Disable(EnableCap.DepthTest);
-                    Draw(camera);
-                    GL.Enable(EnableCap.DepthTest);
-                    GL.Clear(ClearBufferMask.DepthBufferBit);
-                };
+                _render = Draw;
             }
             else
             {
                 _render = camera =>
                 {
+                    GL.Enable(EnableCap.DepthTest);
                     GL.Clear(ClearBufferMask.DepthBufferBit);
+                    GL.Disable(EnableCap.DepthTest);
                     Draw(camera);
                 };
             }
@@ -76,8 +81,8 @@ namespace Arleen.Rendering.Sources
             var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
             var down = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
 
-            const float A = -FLT_Length;
-            const float B = FLT_Length;
+            float A = -FLT_Length * _size;
+            float B = FLT_Length * _size;
 
             //    3-------6
             //   /|      /|
