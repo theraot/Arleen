@@ -1,9 +1,7 @@
 ﻿using Arleen.Geometry;
 using Arleen.Rendering;
 using Arleen.Rendering.Sources;
-using Arleen.Rendering.Utility;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
 
@@ -15,6 +13,7 @@ namespace Arleen.Game
         private const float FLT_NearPlane = 0.01f;
         private Renderer _renderer;
         private Camera _camera;
+        private TextRenderer _textRenderer;
 
         protected override void OnLoad(EventArgs e)
         {
@@ -37,42 +36,10 @@ namespace Arleen.Game
                 (
                     new SkyboxRenderer(Resources.LoadBitmap("skybox.png"))
                 );
+
             _renderer.RenderSources.Add
                 (
-                    new CustomRenderer
-                        (
-                        info =>
-                        {
-                            GL.Enable(EnableCap.Blend);
-                            GL.BlendEquation(BlendEquationMode.FuncAdd);
-                            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-                            GL.Disable(EnableCap.DepthTest);
-                            GL.LoadIdentity();
-                            ViewingVolumeHelper.PlaceOthogonalProjection(info.ClipArea.Width, info.ClipArea.Height, FLT_NearPlane, FLT_FarPlane);
-
-                            double bearing, elevation, roll;
-                            QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
-
-                            Rendering.Utility.TextDrawer.Draw
-                                (
-                                    Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) + "\n" +
-                                    "FPS: " + info.Fps + "\n" +
-                                    "x:" + _camera.Location.Position.X + "\n" +
-                                    "y:" + _camera.Location.Position.Y + "\n" +
-                                    "z:" + _camera.Location.Position.Z + "\n" +
-                                    "Bearing: " + (MathHelper.RadiansToDegrees(bearing) % 360).ToString("0.000") + "\n" +
-                                    "Elevation: " + (MathHelper.RadiansToDegrees(elevation) % 360).ToString("0.000") + "\n" +
-                                    "Roll: " + (MathHelper.RadiansToDegrees(roll) % 360).ToString("0.000") + "\n",
-                                    new Font("Verdana", 12, FontStyle.Regular),
-                                    true,
-                                    Color.White,
-                                    info.ClipArea,
-                                    TextAlign.Left,
-                                    TextAlign.Top
-                                );
-                            GL.Enable(EnableCap.DepthTest);
-                        }
-                        )
+                    _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
                 );
             _renderer.RenderTargets.Add
                 (
@@ -88,6 +55,19 @@ namespace Arleen.Game
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             _camera.Location.Orientation *= QuaterniondHelper.CreateFromEulerAngles(bearing: 0.0000004, elevation: 0.0000002, roll: 0.0000001);
+            //---
+            double bearing, elevation, roll;
+            QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
+
+            _textRenderer.Text = Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) +
+                                 "\n" +
+                                 "FPS: " + _renderer.Fps + "\n" +
+                                 "x:" + _camera.Location.Position.X + "\n" +
+                                 "y:" + _camera.Location.Position.Y + "\n" +
+                                 "z:" + _camera.Location.Position.Z + "\n" +
+                                 "Bearing: " + (MathHelper.RadiansToDegrees(bearing) % 360).ToString("0.000") + "\n" +
+                                 "Elevation: " + (MathHelper.RadiansToDegrees(elevation) % 360).ToString("0.000") + "\n" +
+                                 "Roll: " + (MathHelper.RadiansToDegrees(roll) % 360).ToString("0.000") + "\n";
         }
     }
 }

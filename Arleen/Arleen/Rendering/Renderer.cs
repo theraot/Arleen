@@ -23,6 +23,14 @@ namespace Arleen.Rendering
             _renderTargets = new List<RenderTarget>();
         }
 
+        public int Fps
+        {
+            get
+            {
+                return _fpsCounter.Fps;
+            }
+        }
+
         public IList<RenderSource> RenderSources
         {
             get
@@ -110,20 +118,6 @@ namespace Arleen.Rendering
             GL.EnableClientState(ArrayCap.TextureCoordArray);
         }
 
-        private void Render()
-        {
-            var totalTime = _realm.TotalTime;
-            var elapsed = totalTime - _last_time;
-            _last_time = _realm.TotalTime;
-
-            _fpsCounter.OnRender(elapsed / 1000.0);
-
-            foreach (var item in _renderTargets)
-            {
-                item.Render(_renderSources, _realClipArea, elapsed, _fpsCounter.Fps);
-            }
-        }
-
         private void RealmResize(object sender, EventArgs e)
         {
             _realClipArea.Width = _realm.Width;
@@ -142,6 +136,20 @@ namespace Arleen.Rendering
             }
             _renderSources.Clear();
             _renderTargets.Clear();
+        }
+
+        private void Render()
+        {
+            var totalTime = _realm.TotalTime;
+            var elapsed = totalTime - _last_time;
+            _last_time = _realm.TotalTime;
+
+            _fpsCounter.OnRender(elapsed / 1000.0);
+
+            foreach (var item in _renderTargets)
+            {
+                item.Render(_renderSources, _realClipArea, elapsed, _fpsCounter.Fps);
+            }
         }
     }
 }

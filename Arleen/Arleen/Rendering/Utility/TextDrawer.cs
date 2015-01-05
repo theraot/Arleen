@@ -17,17 +17,19 @@ namespace Arleen.Rendering.Utility
 
         public TextDrawer(string text, Font font, bool antialias)
         {
+            _text = text;
             _font = font;
             _antialias = antialias;
-            _text = text;
+
+            _maxSize = null;
             _wrap = TextWrap.Truncate;
         }
 
         public TextDrawer(string text, Font font, bool antialias, TextWrap wrap, Size maxSize)
         {
+            _text = text;
             _font = font;
             _antialias = antialias;
-            _text = text;
 
             _maxSize = maxSize;
             _wrap = wrap;
@@ -35,15 +37,19 @@ namespace Arleen.Rendering.Utility
 
         public TextDrawer(string text, Font font)
         {
-            _font = font;
             _text = text;
+            _font = font;
+            _antialias = false;
+
+            _maxSize = null;
             _wrap = TextWrap.Truncate;
         }
 
         public TextDrawer(string text, Font font, TextWrap wrap, Size maxSize)
         {
-            _font = font;
             _text = text;
+            _font = font;
+            _antialias = false;
 
             _maxSize = maxSize;
             _wrap = wrap;
