@@ -43,6 +43,10 @@ namespace Arleen.Game
                 (
                     _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
                 );
+            _renderer.RenderSources.Add
+                (
+                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(0, 0, -10), Orientation = QuaterniondHelper.CreateFromEulerAngles(10, 10, 10) })
+                );
             _renderer.RenderTargets.Add
                 (
                     new RenderTarget
