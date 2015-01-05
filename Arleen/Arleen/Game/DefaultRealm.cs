@@ -21,13 +21,13 @@ namespace Arleen.Game
             _last_time = TotalTime;
             _camera = new Camera
                 (
-                new ViewingVolume.Perspective
-                {
-                    FieldOfView = 45,
-                    FarPlane = FLT_FarPlane,
-                    NearPlane = FLT_NearPlane,
-                    AspectRatio = 1
-                }
+                    new ViewingVolume.Perspective
+                    {
+                        FieldOfView = 45,
+                        FarPlane = FLT_FarPlane,
+                        NearPlane = FLT_NearPlane,
+                        AspectRatio = 1
+                    }
                 );
             _renderer = new Renderer();
             _renderer.RenderSources.Add
@@ -47,8 +47,25 @@ namespace Arleen.Game
                 (
                     new RenderTarget
                         (
-                        new RectangleF(0, 0, 1.0f, 1.0f),
-                        _camera
+                            new RectangleF(0, 0, 1.0f, 0.5f),
+                            _camera
+                        )
+                );
+            _renderer.RenderTargets.Add
+                (
+                    new RenderTarget
+                        (
+                            new RectangleF(0, 0.5f, 1.0f, 0.5f),
+                            new Camera
+                            (
+                                new ViewingVolume.Perspective
+                                {
+                                    FieldOfView = 45,
+                                    FarPlane = FLT_FarPlane,
+                                    NearPlane = FLT_NearPlane,
+                                    AspectRatio = 1
+                                }
+                            )
                         )
                 );
             _renderer.Initialize(this);
