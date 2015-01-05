@@ -14,9 +14,11 @@ namespace Arleen.Game
         private Renderer _renderer;
         private Camera _camera;
         private TextRenderer _textRenderer;
+        private double _last_time;
 
         protected override void OnLoad(EventArgs e)
         {
+            _last_time = TotalTime;
             _camera = new Camera
                 (
                 new ViewingVolume.Perspective
@@ -54,7 +56,11 @@ namespace Arleen.Game
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            _camera.Location.Orientation *= QuaterniondHelper.CreateFromEulerAngles(bearing: 0.0000004, elevation: 0.0000002, roll: 0.0000001);
+            var totalTime = TotalTime;
+            var elapsed = totalTime - _last_time;
+            _last_time = TotalTime;
+
+            _camera.Location.Orientation *= QuaterniondHelper.CreateFromEulerAngles(bearing: 0.004 * elapsed, elevation: 0.002 * elapsed, roll: 0.001 * elapsed);
             //---
             double bearing, elevation, roll;
             QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
