@@ -162,9 +162,11 @@ namespace Arleen.Rendering.Utility
 
         public void Draw(Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
+            var size = GetSize();
+
             double x = area.Location.X;
             double y = area.Location.Y;
-            var size = GetSize();
+
             switch (horizontalTextAlign)
             {
                 case TextAlign.Center:
@@ -178,7 +180,7 @@ namespace Arleen.Rendering.Utility
             switch (verticalTextAlign)
             {
                 case TextAlign.Center:
-                    y += (area.Size.Height - size.Height) / 2.0;
+                    y += (area.Size.Height - area.Location.Y) / 2.0;
                     break;
 
                 case TextAlign.Top:

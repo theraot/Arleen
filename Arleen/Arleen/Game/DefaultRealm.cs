@@ -38,11 +38,6 @@ namespace Arleen.Game
                 (
                     new SkyboxRenderer(Resources.LoadBitmap("skybox.png"))
                 );
-
-            _renderer.RenderSources.Add
-                (
-                    _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
-                );
             _renderer.RenderSources.Add
                 (
                     new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(0, 0, -5) })
@@ -54,6 +49,10 @@ namespace Arleen.Game
             _renderer.RenderSources.Add
                 (
                     new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(-2.5, 0, -5) }, 4.0f)
+                );
+            _renderer.RenderSources.Add
+                (
+                    _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
                 );
             _renderer.RenderTargets.Add
                 (
@@ -68,16 +67,7 @@ namespace Arleen.Game
                     new RenderTarget
                         (
                             new RectangleF(0, 0.5f, 1.0f, 0.5f),
-                            new Camera
-                            (
-                                new ViewingVolume.Perspective
-                                {
-                                    FieldOfView = 45,
-                                    FarPlane = FLT_FarPlane,
-                                    NearPlane = FLT_NearPlane,
-                                    AspectRatio = 1
-                                }
-                            )
+                            _camera
                         )
                 );
             _renderer.Initialize(this);
@@ -105,15 +95,14 @@ namespace Arleen.Game
             double bearing, elevation, roll;
             QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
 
-            _textRenderer.Text = Program._["Hello, my name is {name}."].FormatWith(new { name = Program.DisplayName }) +
-                                 "\n" +
-                                 "FPS: " + _renderer.Fps + "\n" +
+            _textRenderer.Text = "FPS: " + _renderer.Fps + "\n" +
                                  "x:" + _camera.Location.Position.X + "\n" +
                                  "y:" + _camera.Location.Position.Y + "\n" +
                                  "z:" + _camera.Location.Position.Z + "\n" +
-                                 "Bearing: " + (MathHelper.RadiansToDegrees(bearing) % 360).ToString("0.000") + "\n" +
-                                 "Elevation: " + (MathHelper.RadiansToDegrees(elevation) % 360).ToString("0.000") + "\n" +
-                                 "Roll: " + (MathHelper.RadiansToDegrees(roll) % 360).ToString("0.000") + "\n";
+                                 "Bearing: " + MathHelper.RadiansToDegrees(bearing).ToString("0.000") + "\n" +
+                                 "Elevation: " + MathHelper.RadiansToDegrees(elevation).ToString("0.000") + "\n" +
+                                 "Roll: " +
+                                 MathHelper.RadiansToDegrees(roll).ToString("0.000") + "\n";
         }
     }
 }

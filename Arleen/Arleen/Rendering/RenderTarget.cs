@@ -75,14 +75,14 @@ namespace Arleen.Rendering
             {
                 var targetClipArea = ComputeClipArea(realClipArea, _virtualClipArea);
                 _camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
-                GL.Viewport(realClipArea);
+                GL.Viewport(targetClipArea);
                 GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
                 Camera.ViewingVolume.Place();
 
                 var renderInfo = new RenderInfo
                 {
                     Camera = Camera,
-                    ClipArea = targetClipArea,
+                    TargetSize = targetClipArea.Size,
                     ElapsedMilliseconds = elapsedMilliseconds,
                     Fps = fps
                 };
@@ -98,10 +98,10 @@ namespace Arleen.Rendering
         {
             var targetClipArea = new Rectangle
                 (
-                (int)((virtualClipArea.X * realClipArea.Width) + realClipArea.X),
-                (int)((virtualClipArea.Y * realClipArea.Height) + realClipArea.Y),
-                (int)(virtualClipArea.Width * realClipArea.Width),
-                (int)(virtualClipArea.Height * realClipArea.Height)
+                    (int)((virtualClipArea.X * realClipArea.Width) + realClipArea.X),
+                    (int)((virtualClipArea.Y * realClipArea.Height) + realClipArea.Y),
+                    (int)(virtualClipArea.Width * realClipArea.Width),
+                    (int)(virtualClipArea.Height * realClipArea.Height)
                 );
             return targetClipArea;
         }
