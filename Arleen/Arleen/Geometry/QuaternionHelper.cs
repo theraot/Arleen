@@ -24,6 +24,16 @@ namespace Arleen.Geometry
                 );
         }
 
+        public static Quaterniond Extrapolate(Quaterniond origin, Quaterniond rotation, double factor)
+        {
+            Vector3d axis;
+            double angle;
+            rotation.ToAxisAngle(out axis, out angle);
+            var full_loop = 2 * Math.PI / angle;
+            var dt = factor % full_loop;
+            return origin * Quaterniond.FromAxisAngle(axis, angle * dt);
+        }
+
         public static void ToEulerAngles(Quaterniond quaternion, out float bearing, out float elevation, out float roll)
         {
             var sqx = quaternion.X * quaternion.X;

@@ -199,8 +199,8 @@ namespace Arleen.Rendering.Sources
             var drawer = CreateDrawer();
             GL.Disable(EnableCap.DepthTest);
             GL.LoadIdentity();
-            ViewingVolumeHelper.PlaceOthogonalProjection(renderInfo.ClipArea.Width, renderInfo.ClipArea.Height, 0, 1);
-            drawer.Draw(Color, renderInfo.ClipArea, HorizontalTextAlign, VerticalTextAlign);
+            ViewingVolumeHelper.PlaceOthogonalProjection(renderInfo.TargetSize.Width, renderInfo.TargetSize.Height, 0, 1);
+            drawer.Draw(Color, new Rectangle(0, 0, renderInfo.TargetSize.Width, renderInfo.TargetSize.Height), HorizontalTextAlign, VerticalTextAlign);
             GL.Enable(EnableCap.DepthTest);
         }
 

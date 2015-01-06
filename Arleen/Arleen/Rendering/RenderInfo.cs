@@ -13,9 +13,9 @@ namespace Arleen.Rendering
         public Camera Camera { get; set; }
 
         /// <summary>
-        /// The rectangle to which to render, in pixel = 1.
+        /// The size of the are to which to render, in pixel = 1.
         /// </summary>
-        public Rectangle ClipArea { get; set; }
+        public Size TargetSize { get; set; }
 
         /// <summary>
         /// The time since the last Renderer iteration.
