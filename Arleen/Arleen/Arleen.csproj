@@ -60,6 +60,7 @@
     <Compile Include="Rendering\RenderInfo.cs" />
     <Compile Include="Rendering\RenderSource.cs" />
     <Compile Include="Rendering\RenderTarget.cs" />
+    <Compile Include="Rendering\Sources\AggregateRenderSource.cs" />
     <Compile Include="Rendering\Sources\BackgroundColorRenderSource.cs" />
     <Compile Include="Rendering\Sources\CustomRenderer.cs" />
     <Compile Include="Rendering\Sources\BoxRenderer.cs" />

@@ -12,13 +12,11 @@ namespace Arleen.Game
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
         private Camera _camera;
-        private double _last_time;
         private Renderer _renderer;
         private TextRenderer _textRenderer;
 
         protected override void OnLoad(EventArgs e)
         {
-            _last_time = TotalTime;
             _camera = new Camera
                 (
                     new ViewingVolume.Perspective
@@ -30,36 +28,26 @@ namespace Arleen.Game
                     }
                 );
             _renderer = new Renderer();
-            _renderer.RenderSources.Add
+            var brickwall = Resources.LoadBitmap("brickwall.png");
+            var sources = new AggregateRenderSource
                 (
-                    new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0)
-                );
-            _renderer.RenderSources.Add
-                (
-                    new SkyboxRenderer(Resources.LoadBitmap("skybox.png"))
-                );
-            _renderer.RenderSources.Add
-                (
-                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(0, 0, -5) })
-                );
-            _renderer.RenderSources.Add
-                (
-                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(1.5, 0, -5) }, 2.0f)
-                );
-            _renderer.RenderSources.Add
-                (
-                    new BoxRenderer(Resources.LoadBitmap("brickwall.png"), new Location { Position = new Vector3d(-2.5, 0, -5) }, 4.0f)
-                );
-            _renderer.RenderSources.Add
-                (
-                    _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
+                    new RenderSource[]
+                    {
+                        new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
+                        new SkyboxRenderer(Resources.LoadBitmap("skybox.png")),
+                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
+                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, 2.0f),
+                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, 4.0f),
+                        _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
+                    }
                 );
             _renderer.RenderTargets.Add
                 (
                     new RenderTarget
                         (
                             new RectangleF(0, 0, 1.0f, 0.5f),
-                            _camera
+                            _camera,
+                            sources
                         )
                 );
             _renderer.RenderTargets.Add
@@ -67,7 +55,8 @@ namespace Arleen.Game
                     new RenderTarget
                         (
                             new RectangleF(0, 0.5f, 1.0f, 0.5f),
-                            _camera
+                            _camera,
+                            sources
                         )
                 );
             _renderer.Initialize(this);

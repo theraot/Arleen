@@ -9,7 +9,6 @@ namespace Arleen.Rendering
 {
     public class Renderer
     {
-        private readonly List<RenderSource> _renderSources;
         private readonly List<RenderTarget> _renderTargets;
         private FpsCounter _fpsCounter;
         private double _last_time;
@@ -19,7 +18,6 @@ namespace Arleen.Rendering
 
         public Renderer()
         {
-            _renderSources = new List<RenderSource>();
             _renderTargets = new List<RenderTarget>();
         }
 
@@ -28,14 +26,6 @@ namespace Arleen.Rendering
             get
             {
                 return _fpsCounter.Fps;
-            }
-        }
-
-        public IList<RenderSource> RenderSources
-        {
-            get
-            {
-                return _renderSources;
             }
         }
 
@@ -126,15 +116,6 @@ namespace Arleen.Rendering
 
         private void Release()
         {
-            var sources = _renderSources;
-            foreach (var source in sources)
-            {
-                if (source is IDisposable)
-                {
-                    (source as IDisposable).Dispose();
-                }
-            }
-            _renderSources.Clear();
             _renderTargets.Clear();
         }
 
@@ -148,7 +129,7 @@ namespace Arleen.Rendering
 
             foreach (var item in _renderTargets)
             {
-                item.Render(_renderSources, _realClipArea, elapsed, _fpsCounter.Fps);
+                item.Render(_realClipArea, elapsed, _fpsCounter.Fps);
             }
         }
     }

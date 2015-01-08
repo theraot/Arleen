@@ -1,5 +1,4 @@
 using OpenTK.Graphics.OpenGL;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace Arleen.Rendering
@@ -10,6 +9,7 @@ namespace Arleen.Rendering
     public class RenderTarget
     {
         private readonly Camera _camera;
+        private readonly RenderSource _renderSource;
         private readonly RectangleF _virtualClipArea;
         private bool _enabled;
 
@@ -18,10 +18,12 @@ namespace Arleen.Rendering
         /// </summary>
         /// <param name="virtualClipArea">The rectangle in which to render, in screen = 1.</param>
         /// <param name="camera">The camera associated with this target.</param>
-        public RenderTarget(RectangleF virtualClipArea, Camera camera)
+        /// <param name="renderSource">The render source that will be rendered to this target.</param>
+        public RenderTarget(RectangleF virtualClipArea, Camera camera, RenderSource renderSource)
         {
             _virtualClipArea = virtualClipArea;
             _camera = camera;
+            _renderSource = renderSource;
             _enabled = true;
         }
 
@@ -65,11 +67,10 @@ namespace Arleen.Rendering
         /// <summary>
         /// Requests the output of the given list of RenderSource.
         /// </summary>
-        /// <param name="sources">The list of RenderSource to get output from.</param>
         /// <param name="realClipArea">The rectangle in which to render, in pixel = 1.</param>
         /// <param name="elapsedMilliseconds">The time since the last iteration of the Renderer.</param>
         /// <param name="fps">The number of frames that were rendered in the past second.</param>
-        public void Render(IEnumerable<RenderSource> sources, Rectangle realClipArea, double elapsedMilliseconds, int fps)
+        public void Render(Rectangle realClipArea, double elapsedMilliseconds, int fps)
         {
             if (_enabled)
             {
@@ -87,10 +88,7 @@ namespace Arleen.Rendering
                     Fps = fps
                 };
 
-                foreach (var item in sources)
-                {
-                    item.Render(renderInfo);
-                }
+                _renderSource.Render(renderInfo);
             }
         }
 
