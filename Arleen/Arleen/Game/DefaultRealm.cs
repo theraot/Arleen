@@ -11,22 +11,26 @@ namespace Arleen.Game
     {
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
-        private Camera _camera;
         private Renderer _renderer;
-        private TextRenderer _textRenderer;
+        private Camera _camera1;
+        private Camera _camera2;
+        private TextRenderer _textRenderer1;
+        private TextRenderer _textRenderer2;
 
         protected override void OnLoad(EventArgs e)
         {
-            _camera = new Camera
-                (
-                    new ViewingVolume.Perspective
-                    {
-                        FieldOfView = 45,
-                        FarPlane = FLT_FarPlane,
-                        NearPlane = FLT_NearPlane,
-                        AspectRatio = 1
-                    }
-                );
+            var viewingVolume = new ViewingVolume.Perspective
+            {
+                FieldOfView = 45,
+                FarPlane = FLT_FarPlane,
+                NearPlane = FLT_NearPlane,
+                AspectRatio = 1
+            };
+            _camera1 = new Camera(viewingVolume);
+            _camera2 = new Camera(viewingVolume);
+            _textRenderer1 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
+            _textRenderer2 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
+            //---
             _renderer = new Renderer();
             var brickwall = Resources.LoadBitmap("brickwall.png");
             var sources = new AggregateRenderSource
@@ -37,8 +41,7 @@ namespace Arleen.Game
                         new SkyboxRenderer(Resources.LoadBitmap("skybox.png")),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, 2.0f),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, 4.0f),
-                        _textRenderer = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true)
+                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, 4.0f)
                     }
                 );
             _renderer.RenderTargets.Add
@@ -46,8 +49,15 @@ namespace Arleen.Game
                     new RenderTarget
                         (
                             new RectangleF(0, 0, 1.0f, 0.5f),
-                            _camera,
-                            sources
+                            _camera1,
+                            new AggregateRenderSource
+                            (
+                                new RenderSource[]
+                                {
+                                    sources,
+                                    _textRenderer1
+                                }
+                            )
                         )
                 );
             _renderer.RenderTargets.Add
@@ -55,8 +65,15 @@ namespace Arleen.Game
                     new RenderTarget
                         (
                             new RectangleF(0, 0.5f, 1.0f, 0.5f),
-                            _camera,
-                            sources
+                            _camera2,
+                            new AggregateRenderSource
+                            (
+                                new RenderSource[]
+                                {
+                                    sources,
+                                    _textRenderer1
+                                }
+                            )
                         )
                 );
             _renderer.Initialize(this);
@@ -64,20 +81,35 @@ namespace Arleen.Game
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            var rotationPerSecond = QuaterniondHelper.CreateFromEulerAngles(bearing: 0.004, elevation: 0.002, roll: 0.001);
-            _camera.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
+            UpdateCamera
+                (
+                    _camera1,
+                    QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
+                    _textRenderer1
+                );
+            UpdateCamera
+                (
+                    _camera2,
+                    QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
+                    _textRenderer2
+                );
+        }
+
+        private void UpdateCamera(Camera camera, Quaterniond rotationPerSecond, TextRenderer textRenderer)
+        {
+            camera.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
             //---
             double bearing, elevation, roll;
-            QuaterniondHelper.ToEulerAngles(_camera.Location.Orientation, out bearing, out elevation, out roll);
+            QuaterniondHelper.ToEulerAngles(camera.Location.Orientation, out bearing, out elevation, out roll);
             var cameraInfo = "FPS: " + _renderer.Fps + "\n" +
-                             "x:" + _camera.Location.Position.X + "\n" +
-                             "y:" + _camera.Location.Position.Y + "\n" +
-                             "z:" + _camera.Location.Position.Z + "\n" +
+                             "x:" + camera.Location.Position.X + "\n" +
+                             "y:" + camera.Location.Position.Y + "\n" +
+                             "z:" + camera.Location.Position.Z + "\n" +
                              "Bearing: " + MathHelper.RadiansToDegrees(bearing).ToString("0.000") + "\n" +
                              "Elevation: " + MathHelper.RadiansToDegrees(elevation).ToString("0.000") + "\n" +
                              "Roll: " +
                              MathHelper.RadiansToDegrees(roll).ToString("0.000") + "\n";
-            _textRenderer.Text = cameraInfo;
+            textRenderer.Text = cameraInfo;
         }
     }
 }
