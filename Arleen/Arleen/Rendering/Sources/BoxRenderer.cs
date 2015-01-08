@@ -81,8 +81,8 @@ namespace Arleen.Rendering.Sources
             var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
             var down = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
 
-            float A = -FLT_Length * _size;
-            float B = FLT_Length * _size;
+            float a = -FLT_Length * _size;
+            float b = FLT_Length * _size;
 
             //    3-------6
             //   /|      /|
@@ -133,32 +133,32 @@ namespace Arleen.Rendering.Sources
             {
                 //VEXTEX
                 //0
-                A, A, A,
-                A, B, A,
+                a, a, a,
+                a, b, a,
                 //2
-                A, B, B,
-                A, A, B,
+                a, b, b,
+                a, a, b,
                 //4
-                B, A, A,
-                B, B, A,
+                b, a, a,
+                b, b, a,
                 //6
-                B, A, B,
-                B, B, B,
+                b, a, b,
+                b, b, b,
                 //8
-                A, A, B,
-                A, B, B,
+                a, a, b,
+                a, b, b,
                 //10
-                A, A, A,
-                A, A, B,
+                a, a, a,
+                a, a, b,
                 //12
-                B, A, B,
-                B, A, A,
+                b, a, b,
+                b, a, a,
                 //14
-                A, B, A,
-                B, B, A,
+                a, b, a,
+                b, b, a,
                 //16
-                B, B, B,
-                A, B, B,
+                b, b, b,
+                a, b, b,
 
                 //TEXTURES
                 //0

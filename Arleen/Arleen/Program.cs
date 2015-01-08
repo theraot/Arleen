@@ -11,24 +11,10 @@ namespace Arleen
     /// </summary>
     public static class Program
     {
+        private static Realm _currentRealm;
         private static bool _debugMode;
         private static LocalizedTexts _localizedTexts;
         private static Logbook _logBook;
-        private static Realm _currentRealm;
-
-        /// <summary>
-        /// Changes the current Realm.
-        /// </summary>
-        /// <param name="realm">The new realm.</param>
-        public static void ChangeRealm(Realm realm)
-        {
-            _currentRealm.Dispose();
-            _currentRealm = realm;
-            if (_currentRealm != null)
-            {
-                _currentRealm.Run();
-            }
-        }
 
         public static string CurrentLanguage { get; private set; }
 
@@ -64,6 +50,20 @@ namespace Arleen
         /// Gets the loaded configuration for the program.
         /// </summary>
         internal static Configuration Configuration { get; private set; }
+
+        /// <summary>
+        /// Changes the current Realm.
+        /// </summary>
+        /// <param name="realm">The new realm.</param>
+        public static void ChangeRealm(Realm realm)
+        {
+            _currentRealm.Dispose();
+            _currentRealm = realm;
+            if (_currentRealm != null)
+            {
+                _currentRealm.Run();
+            }
+        }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {

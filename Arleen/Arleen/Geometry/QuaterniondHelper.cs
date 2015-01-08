@@ -40,9 +40,9 @@ namespace Arleen.Geometry
             var sqy = quaterniond.Y * quaterniond.Y;
             var sqz = quaterniond.Z * quaterniond.Z;
 
-            elevation = -Math.Asin(2 * quaterniond.Z * quaterniond.Y + 2 * quaterniond.X * quaterniond.W);
-            bearing = Math.Atan2(2 * quaterniond.Y * quaterniond.W - 2 * quaterniond.Z * quaterniond.X, 1 - 2 * sqy - 2 * sqx);
-            roll = Math.Atan2(2 * quaterniond.Z * quaterniond.W - 2 * quaterniond.Y * quaterniond.X, 1 - 2 * sqz - 2 * sqx);
+            elevation = -Math.Asin((2 * quaterniond.Z * quaterniond.Y) + (2 * quaterniond.X * quaterniond.W));
+            bearing = Math.Atan2((2 * quaterniond.Y * quaterniond.W) - (2 * quaterniond.Z * quaterniond.X), 1 - (2 * sqy) - (2 * sqx));
+            roll = Math.Atan2((2 * quaterniond.Z * quaterniond.W) - (2 * quaterniond.Y * quaterniond.X), 1 - (2 * sqz) - (2 * sqx));
         }
     }
 }
