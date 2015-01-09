@@ -17,25 +17,25 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width3 = FLT_width1 * 3;
 
         private readonly Location _location;
-        private readonly float _size;
+        private readonly Transformation _transformation;
         private Bitmap _bitmap;
         private Action<Camera> _render;
         private Texture _texture;
         private int dataBuffer = -1;
         private int indexBuffer = -1;
 
-        public BoxRenderer(Bitmap bitmap, Location location, float size)
+        public BoxRenderer(Bitmap bitmap, Location location, Transformation transformation)
         {
             _bitmap = bitmap;
             _location = location;
-            _size = size;
+            _transformation = transformation;
         }
 
         public BoxRenderer(Bitmap bitmap, Location location)
         {
             _bitmap = bitmap;
             _location = location;
-            _size = 1.0f;
+            _transformation = Transformation.Identity;
         }
 
         public void Dispose()
@@ -80,8 +80,8 @@ namespace Arleen.Rendering.Sources
             var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
             var down = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
 
-            float a = -FLT_Length * _size;
-            float b = FLT_Length * _size;
+            const float A = -FLT_Length;
+            const float B = FLT_Length;
 
             //    3-------6
             //   /|      /|
@@ -132,32 +132,32 @@ namespace Arleen.Rendering.Sources
             {
                 //VEXTEX
                 //0
-                a, a, a,
-                a, b, a,
+                A, A, A,
+                A, B, A,
                 //2
-                a, b, b,
-                a, a, b,
+                A, B, B,
+                A, A, B,
                 //4
-                b, a, a,
-                b, b, a,
+                B, A, A,
+                B, B, A,
                 //6
-                b, a, b,
-                b, b, b,
+                B, A, B,
+                B, B, B,
                 //8
-                a, a, b,
-                a, b, b,
+                A, A, B,
+                A, B, B,
                 //10
-                a, a, a,
-                a, a, b,
+                A, A, A,
+                A, A, B,
                 //12
-                b, a, b,
-                b, a, a,
+                B, A, B,
+                B, A, A,
                 //14
-                a, b, a,
-                b, b, a,
+                A, B, A,
+                B, B, A,
                 //16
-                b, b, b,
-                a, b, b,
+                B, B, B,
+                A, B, B,
 
                 //TEXTURES
                 //0
@@ -212,6 +212,7 @@ namespace Arleen.Rendering.Sources
         {
             camera.Place(Location.PlaceMode.Full);
             _location.Apply(Location.PlaceMode.Full);
+            _transformation.Apply();
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));
