@@ -1,11 +1,16 @@
 ﻿using OpenTK;
-using System;
 
 namespace Arleen.Geometry
 {
-    public sealed class Transformation : ICloneable
+    public struct Transformation
     {
-        private OpenTK.Matrix4d _matrix = OpenTK.Matrix4d.Identity;
+        public static Transformation Identity = new Transformation(OpenTK.Matrix4d.Identity);
+        private readonly Matrix4d _matrix;
+
+        public Transformation(Matrix4d matrix)
+        {
+            _matrix = matrix;
+        }
 
         public OpenTK.Matrix4d Matrix
         {
@@ -15,49 +20,39 @@ namespace Arleen.Geometry
             }
         }
 
-        object ICloneable.Clone()
+        public Transformation Invert()
         {
-            return Clone();
+            return new Transformation(Matrix4d.Invert(_matrix));
         }
 
-        public void Invert()
+        public Transformation Rotate(Quaterniond quaternion)
         {
-            _matrix = Matrix4d.Invert(_matrix);
+            return new Transformation(_matrix * Matrix4d.Rotate(quaternion));
         }
 
-        public void Rotate(Quaterniond quaternion)
+        public Transformation Scale(double scale)
         {
-            _matrix *= Matrix4d.Rotate(quaternion);
+            return new Transformation(_matrix * Matrix4d.Scale(scale));
         }
 
-        public void Scale(double scale)
+        public Transformation Scale(Vector3d scale)
         {
-            _matrix *= Matrix4d.Scale(scale);
+            return new Transformation(_matrix * Matrix4d.Scale(scale));
         }
 
-        public void Scale(Vector3d scale)
+        public Transformation Scale(double x, double y, double z)
         {
-            _matrix *= Matrix4d.Scale(scale);
+            return new Transformation(_matrix * Matrix4d.Scale(x, y, z));
         }
 
-        public void Scale(double x, double y, double z)
+        public Transformation Translate(Vector3d vector)
         {
-            _matrix *= Matrix4d.Scale(x, y, z);
+            return new Transformation(_matrix * Matrix4d.CreateTranslation(vector));
         }
 
-        public void Translate(Vector3d vector)
+        public Transformation Translate(double x, double y, double z)
         {
-            _matrix *= Matrix4d.CreateTranslation(vector);
-        }
-
-        public void Translate(double x, double y, double z)
-        {
-            _matrix = Matrix4d.CreateTranslation(x, y, z);
-        }
-
-        private Transformation Clone()
-        {
-            return new Transformation { _matrix = _matrix };
+            return new Transformation(_matrix * Matrix4d.CreateTranslation(x, y, z));
         }
     }
 }
