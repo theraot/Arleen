@@ -1,7 +1,7 @@
 using OpenTK;
 using System;
 
-namespace Arleen.Rendering
+namespace Arleen.Geometry
 {
     /// <summary>
     /// Represents a viewing volume.

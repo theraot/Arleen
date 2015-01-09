@@ -77,8 +77,8 @@
     <Compile Include="Rendering\Utility\TextWrap.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Rendering\ViewingVolume.cs" />
-    <Compile Include="Rendering\ViewingVolume.Perspective.cs" />
+    <Compile Include="Geometry\ViewingVolume.cs" />
+    <Compile Include="Geometry\ViewingVolume.Perspective.cs" />
     <Compile Include="LocalizedTexts.cs" />
     <Compile Include="netfx\System\StringFormatWith.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
