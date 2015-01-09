@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Arleen.Rendering.Sources
 {
-    public class AggregateRenderSource : RenderSource
+    public sealed class AggregateRenderSource : RenderSource, IDisposable
     {
         private readonly IList<RenderSource> _renderSources;
 
@@ -45,7 +45,7 @@ namespace Arleen.Rendering.Sources
             }
         }
 
-        private void Release()
+        public void Dispose()
         {
             var sources = _renderSources;
             foreach (var source in sources)
