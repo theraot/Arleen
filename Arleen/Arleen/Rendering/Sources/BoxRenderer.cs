@@ -176,7 +176,7 @@ namespace Arleen.Rendering.Sources
                 17, 16, 15, 14
             };
 
-            _model = new Model(_data, _indexes);
+            _model = new Model(Model.VextexInfo.Position | Model.VextexInfo.Texture, _data, BeginMode.Quads, _indexes);
         }
 
         private void Draw(Camera camera)
