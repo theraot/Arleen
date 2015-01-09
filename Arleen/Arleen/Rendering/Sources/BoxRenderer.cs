@@ -130,63 +130,34 @@ namespace Arleen.Rendering.Sources
 
             var _data = new[]
             {
-                //VEXTEX
+                //VEXTEX    //TEXTURES
                 //0
-                A, A, A,
-                A, B, A,
+                A, A, A,    left.Right, left.Bottom,
+                A, B, A,    left.Right, left.Top,
                 //2
-                A, B, B,
-                A, A, B,
+                A, B, B,    left.Left, left.Top,
+                A, A, B,    left.Left, left.Bottom,
                 //4
-                B, A, A,
-                B, B, A,
+                B, A, A,    front.Right, front.Bottom,
+                B, B, A,    front.Right, front.Top,
                 //6
-                B, A, B,
-                B, B, B,
+                B, A, B,    right.Right, right.Bottom,
+                B, B, B,    right.Right, right.Top,
                 //8
-                A, A, B,
-                A, B, B,
+                A, A, B,    back.Right, back.Bottom,
+                A, B, B,    back.Right, back.Top,
                 //10
-                A, A, A,
-                A, A, B,
+                A, A, A,    down.Left, down.Top,
+                A, A, B,    down.Left, down.Bottom,
                 //12
-                B, A, B,
-                B, A, A,
+                B, A, B,    down.Right, down.Bottom,
+                B, A, A,    down.Right, down.Top,
                 //14
-                A, B, A,
-                B, B, A,
+                A, B, A,    up.Left, up.Bottom,
+                B, B, A,    up.Right, up.Bottom,
                 //16
-                B, B, B,
-                A, B, B,
-
-                //TEXTURES
-                //0
-                left.Right, left.Bottom,
-                left.Right, left.Top,
-                //2
-                left.Left, left.Top,
-                left.Left, left.Bottom,
-                //4
-                front.Right, front.Bottom,
-                front.Right, front.Top,
-                //6
-                right.Right, right.Bottom,
-                right.Right, right.Top,
-                //8
-                back.Right, back.Bottom,
-                back.Right, back.Top,
-                //10
-                down.Left, down.Top,
-                down.Left, down.Bottom,
-                //12
-                down.Right, down.Bottom,
-                down.Right, down.Top,
-                //14
-                up.Left, up.Bottom,
-                up.Right, up.Bottom,
-                //16
-                up.Right, up.Top,
-                up.Left, up.Top
+                B, B, B,    up.Right, up.Top,
+                A, B, B,    up.Left, up.Top
             };
 
             var _indexes = new byte[]
@@ -215,8 +186,8 @@ namespace Arleen.Rendering.Sources
             _transformation.Apply();
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
-            GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, new IntPtr(sizeof(float) * 3 * 18));
+            GL.VertexPointer(3, VertexPointerType.Float, sizeof(float) * 5, new IntPtr(0));
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, sizeof(float) * 5, new IntPtr(sizeof(float) * 3));
             GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
             GL.DrawElements(BeginMode.Quads, 24, DrawElementsType.UnsignedByte, new IntPtr(0));
         }
