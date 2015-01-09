@@ -1,8 +1,7 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using System;
 
-namespace Arleen.Rendering
+namespace Arleen.Geometry
 {
     public class Transformation : ICloneable
     {
@@ -19,11 +18,6 @@ namespace Arleen.Rendering
         public void Invert()
         {
             _matrix = Matrix4d.Invert(_matrix);
-        }
-
-        public void Place()
-        {
-            GL.LoadMatrix(ref _matrix);
         }
 
         public void Rotate(Quaterniond quaternion)
