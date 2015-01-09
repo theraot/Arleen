@@ -14,6 +14,7 @@ namespace Arleen.Rendering
         /// <param name="viewingVolume">The viewing volume to set.</param>
         public static void Place(this ViewingVolume viewingVolume)
         {
+            viewingVolume.UpdateProjectionMatrices();
             GL.MatrixMode(MatrixMode.Projection);
             var viewingVolumePerspectiveMatrix = viewingVolume.ProjectionMatrix;
             GL.LoadMatrix(ref viewingVolumePerspectiveMatrix);

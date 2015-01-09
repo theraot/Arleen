@@ -1,5 +1,4 @@
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using System;
 
 namespace Arleen.Rendering
@@ -68,17 +67,6 @@ namespace Arleen.Rendering
         private bool InvalidProjectionMatrix { get; set; }
 
         /// <summary>
-        /// Sets the current viewing volume to the current graphic context.
-        /// </summary>
-        public void Place()
-        {
-            UpdateProjectionMatrices();
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref _projectionMatrix);
-            GL.MatrixMode(MatrixMode.Modelview);
-        }
-
-        /// <summary>
         /// Updates the viewing volume to adjust to a resize of the viewport.
         /// </summary>
         /// <param name="width">The new width of the viewport.</param>
@@ -94,7 +82,7 @@ namespace Arleen.Rendering
         /// <returns>A projection matrix for the current viewing volume.</returns>
         protected abstract Matrix4d CalculateProjectionMatrix();
 
-        private void UpdateProjectionMatrices()
+        internal void UpdateProjectionMatrices()
         {
             if (InvalidProjectionMatrix)
             {
