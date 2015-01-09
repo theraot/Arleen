@@ -18,11 +18,10 @@ namespace Arleen.Rendering.Sources
 
         private readonly Location _location;
         private readonly Transformation _transformation;
+        private Model _model;
         private Bitmap _bitmap;
         private Action<Camera> _render;
         private Texture _texture;
-        private int dataBuffer = -1;
-        private int indexBuffer = -1;
 
         public BoxRenderer(Bitmap bitmap, Location location, Transformation transformation)
         {
@@ -40,9 +39,16 @@ namespace Arleen.Rendering.Sources
 
         public void Dispose()
         {
-            _texture.Dispose();
-            GL.DeleteBuffer(dataBuffer);
-            GL.DeleteBuffer(indexBuffer);
+            if (_texture != null)
+            {
+                _texture.Dispose();
+                _texture = null;
+            }
+            if (_model != null)
+            {
+                _model.Dispose();
+                _model = null;
+            }
         }
 
         protected override void OnInitilaize()
@@ -170,13 +176,7 @@ namespace Arleen.Rendering.Sources
                 17, 16, 15, 14
             };
 
-            GL.Arb.GenBuffers(1, out dataBuffer);
-            GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
-            GL.Arb.BufferData(BufferTargetArb.ArrayBuffer, (IntPtr)(_data.Length * sizeof(float)), _data, BufferUsageArb.StaticDraw);
-
-            GL.Arb.GenBuffers(1, out indexBuffer);
-            GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
-            GL.Arb.BufferData(BufferTargetArb.ElementArrayBuffer, (IntPtr)(_indexes.Length * sizeof(byte)), _indexes, BufferUsageArb.StaticDraw);
+            _model = new Model(_data, _indexes);
         }
 
         private void Draw(Camera camera)
@@ -185,11 +185,7 @@ namespace Arleen.Rendering.Sources
             _location.Apply(Location.PlaceMode.Full);
             _transformation.Apply();
             _texture.Bind();
-            GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
-            GL.VertexPointer(3, VertexPointerType.Float, sizeof(float) * 5, new IntPtr(0));
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, sizeof(float) * 5, new IntPtr(sizeof(float) * 3));
-            GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
-            GL.DrawElements(BeginMode.Quads, 24, DrawElementsType.UnsignedByte, new IntPtr(0));
+            _model.Render();
         }
     }
 }
