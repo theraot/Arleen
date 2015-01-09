@@ -7,6 +7,9 @@ using System.Threading;
 
 namespace Arleen.Rendering
 {
+    /// <summary>
+    /// Manages the rendering process.
+    /// </summary>
     public class Renderer
     {
         private readonly List<RenderTarget> _renderTargets;
@@ -16,11 +19,17 @@ namespace Arleen.Rendering
         private Realm _realm;
         private Thread _thread;
 
+        /// <summary>
+        /// Creates a new instance of Renderer.
+        /// </summary>
         public Renderer()
         {
             _renderTargets = new List<RenderTarget>();
         }
 
+        /// <summary>
+        /// The last recorded number of frames per second.
+        /// </summary>
         public int Fps
         {
             get
@@ -29,6 +38,9 @@ namespace Arleen.Rendering
             }
         }
 
+        /// <summary>
+        /// The list of targets rendered by this instance.
+        /// </summary>
         public IList<RenderTarget> RenderTargets
         {
             get
@@ -37,6 +49,10 @@ namespace Arleen.Rendering
             }
         }
 
+        /// <summary>
+        /// Starts the render process
+        /// </summary>
+        /// <param name="realm">The realm to which this renderer belongs.</param>
         public void Initialize(Realm realm)
         {
             _realm = realm;
