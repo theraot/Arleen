@@ -67,7 +67,8 @@
     <Compile Include="Rendering\Sources\SkyboxRenderer.cs" />
     <Compile Include="Rendering\Sources\TextRenderer.cs" />
     <Compile Include="Rendering\Texture.cs" />
-    <Compile Include="Rendering\Transformation.cs" />
+    <Compile Include="Geometry\Transformation.cs" />
+    <Compile Include="Rendering\TransformationHelper.cs" />
     <Compile Include="Rendering\Utility\TextAlign.cs">
       <SubType>Code</SubType>
     </Compile>

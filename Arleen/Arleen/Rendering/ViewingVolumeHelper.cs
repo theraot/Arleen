@@ -17,8 +17,8 @@ namespace Arleen.Rendering
         {
             viewingVolume.UpdateProjectionMatrices();
             GL.MatrixMode(MatrixMode.Projection);
-            var viewingVolumePerspectiveMatrix = viewingVolume.ProjectionMatrix;
-            GL.LoadMatrix(ref viewingVolumePerspectiveMatrix);
+            var matrix = viewingVolume.ProjectionMatrix;
+            GL.LoadMatrix(ref matrix);
             GL.MatrixMode(MatrixMode.Modelview);
         }
 

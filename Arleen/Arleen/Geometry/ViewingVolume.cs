@@ -76,12 +76,6 @@ namespace Arleen.Geometry
             //Empty
         }
 
-        /// <summary>
-        /// Calculates the projection matrix for the current viewing volume.
-        /// </summary>
-        /// <returns>A projection matrix for the current viewing volume.</returns>
-        protected abstract Matrix4d CalculateProjectionMatrix();
-
         internal void UpdateProjectionMatrices()
         {
             if (InvalidProjectionMatrix)
@@ -90,5 +84,11 @@ namespace Arleen.Geometry
             }
             InvalidProjectionMatrix = false;
         }
+
+        /// <summary>
+        /// Calculates the projection matrix for the current viewing volume.
+        /// </summary>
+        /// <returns>A projection matrix for the current viewing volume.</returns>
+        protected abstract Matrix4d CalculateProjectionMatrix();
     }
 }
