@@ -30,9 +30,7 @@ namespace Arleen.Rendering
         public void Place(Location.PlaceMode mode)
         {
             ViewingVolume.Place();
-            Matrix4d matrix = Matrix4d.Identity;
-            matrix = Location.Apply(matrix, mode);
-            GL.LoadMatrix(ref matrix);
+            Location.Place(mode);
         }
     }
 }

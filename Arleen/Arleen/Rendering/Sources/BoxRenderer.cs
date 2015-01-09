@@ -1,5 +1,4 @@
 using Arleen.Geometry;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -211,11 +210,8 @@ namespace Arleen.Rendering.Sources
 
         private void Draw(Camera camera)
         {
-            Matrix4d matrix = Matrix4d.Identity;
-            matrix = _location.Apply(matrix, Location.PlaceMode.Full);
-            matrix = camera.Location.Apply(matrix, Location.PlaceMode.Full);
-            GL.LoadMatrix(ref matrix);
-            camera.ViewingVolume.Place();
+            camera.Place(Location.PlaceMode.Full);
+            _location.Apply(Location.PlaceMode.Full);
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));

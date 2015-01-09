@@ -157,6 +157,15 @@ namespace Arleen.Geometry
             }
         }
 
+        public Matrix4d GetMatrix(PlaceMode mode)
+        {
+            if (_invalidated)
+            {
+                UpdateModelMatrices();
+            }
+            return GetMatrixExtracted(mode);
+        }
+
         public override string ToString()
         {
             if (_invalidated)
@@ -199,6 +208,24 @@ namespace Arleen.Geometry
 
                 default:
                     return target;
+            }
+        }
+
+        private Matrix4d GetMatrixExtracted(PlaceMode mode)
+        {
+            switch (mode)
+            {
+                case PlaceMode.Full:
+                    return _matrix;
+
+                case PlaceMode.PositionOnly:
+                    return _matrixPosition;
+
+                case PlaceMode.OrientationOnly:
+                    return _matrixOrientation;
+
+                default:
+                    return Matrix4d.Identity;
             }
         }
 
