@@ -1,10 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
-using BeginMode = OpenTK.Graphics.OpenGL.BeginMode;
-using BufferTarget = OpenTK.Graphics.OpenGL.BufferTarget;
-using DrawElementsType = OpenTK.Graphics.OpenGL.DrawElementsType;
-using GL = OpenTK.Graphics.OpenGL.GL;
-using StringName = OpenTK.Graphics.OpenGL.StringName;
 
 namespace Arleen.Rendering
 {
@@ -27,9 +22,8 @@ namespace Arleen.Rendering
         private readonly int? _offsetNormal;
         private readonly int? _offsetTexture;
 
-        private readonly int _stride;
-
         private readonly Action _render;
+        private readonly int _stride;
 
         static Model()
         {
