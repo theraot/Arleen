@@ -57,6 +57,7 @@
     <Compile Include="Geometry\QuaterniondHelper.cs" />
     <Compile Include="Rendering\FpsCounter.cs" />
     <Compile Include="Rendering\LocationHelper.cs" />
+    <Compile Include="Rendering\Mesh.cs" />
     <Compile Include="Rendering\Model.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\RenderInfo.cs" />

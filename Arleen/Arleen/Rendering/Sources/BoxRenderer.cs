@@ -18,8 +18,8 @@ namespace Arleen.Rendering.Sources
 
         private readonly Location _location;
         private readonly Transformation _transformation;
-        private Model _model;
         private Bitmap _bitmap;
+        private Mesh _mesh;
         private Action<Camera> _render;
         private Texture _texture;
 
@@ -44,10 +44,10 @@ namespace Arleen.Rendering.Sources
                 _texture.Dispose();
                 _texture = null;
             }
-            if (_model != null)
+            if (_mesh != null)
             {
-                _model.Dispose();
-                _model = null;
+                _mesh.Dispose();
+                _mesh = null;
             }
         }
 
@@ -176,7 +176,7 @@ namespace Arleen.Rendering.Sources
                 17, 16, 15, 14
             };
 
-            _model = new Model(Model.VextexInfo.Position | Model.VextexInfo.Texture, _data, BeginMode.Quads, _indexes);
+            _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, _data, BeginMode.Quads, _indexes);
         }
 
         private void Draw(Camera camera)
@@ -185,7 +185,7 @@ namespace Arleen.Rendering.Sources
             _location.Apply(Location.Mode.All);
             _transformation.Apply();
             _texture.Bind();
-            _model.Render();
+            _mesh.Render();
         }
     }
 }
