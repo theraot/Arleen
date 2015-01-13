@@ -57,7 +57,7 @@ namespace Arleen.Geometry
             /// <returns>A string representing the viewing volume.</returns>
             public override string ToString()
             {
-                return string.Format("Camera: fieldOfView {0}, aspectRatio {1}, zNear {2}, zFar {3}, {4}", _fieldOfView, _aspectRatio, NearPlane, FarPlane, base.ToString());
+                return string.Format("Perspective: fieldOfView {0}, aspectRatio {1}, zNear {2}, zFar {3}, {4}", _fieldOfView, _aspectRatio, NearPlane, FarPlane, base.ToString());
             }
 
             /// <summary>
