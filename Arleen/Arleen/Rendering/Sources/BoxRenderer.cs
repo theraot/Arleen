@@ -181,8 +181,8 @@ namespace Arleen.Rendering.Sources
 
         private void Draw(Camera camera)
         {
-            camera.Place(Location.PlaceMode.Full);
-            _location.Apply(Location.PlaceMode.Full);
+            camera.Place(Location.Mode.All);
+            _location.Apply(Location.Mode.All);
             _transformation.Apply();
             _texture.Bind();
             _model.Render();

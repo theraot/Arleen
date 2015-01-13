@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using System;
 
 namespace Arleen.Geometry
 {
@@ -16,11 +17,13 @@ namespace Arleen.Geometry
             _orientation = Quaterniond.Identity;
         }
 
-        public enum PlaceMode
+        [Flags]
+        public enum Mode
         {
-            Full = 0,
+            None = 0,
             PositionOnly = 1,
-            OrientationOnly = 2
+            OrientationOnly = 2,
+            All = 3
         }
 
         public OpenTK.Matrix4d Matrix
@@ -80,7 +83,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public Vector3d Apply(Vector3d target, PlaceMode mode)
+        public Vector3d Apply(Vector3d target, Mode mode)
         {
             if (_invalidated)
             {
@@ -90,7 +93,7 @@ namespace Arleen.Geometry
             return ApplyExtracted(target, mode);
         }
 
-        public Matrix4d Apply(Matrix4d target, PlaceMode mode)
+        public Matrix4d Apply(Matrix4d target, Mode mode)
         {
             if (_invalidated)
             {
@@ -99,7 +102,7 @@ namespace Arleen.Geometry
             return ApplyExtracted(target, mode);
         }
 
-        public Vector3d Apply(Vector3d target, PlaceMode mode, bool reverse)
+        public Vector3d Apply(Vector3d target, Mode mode, bool reverse)
         {
             if (_invalidated)
             {
@@ -109,13 +112,13 @@ namespace Arleen.Geometry
             {
                 switch (mode)
                 {
-                    case PlaceMode.Full:
+                    case Mode.All:
                         return Vector3d.Transform(target, Matrix4d.Transpose(_matrix));
 
-                    case PlaceMode.PositionOnly:
+                    case Mode.PositionOnly:
                         return Vector3d.Transform(target, Matrix4d.Transpose(_matrixPosition));
 
-                    case PlaceMode.OrientationOnly:
+                    case Mode.OrientationOnly:
                         return Vector3d.Transform(target, Matrix4d.Transpose(_matrixOrientation));
 
                     default:
@@ -128,7 +131,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public Matrix4d Apply(Matrix4d target, PlaceMode mode, bool reverse)
+        public Matrix4d Apply(Matrix4d target, Mode mode, bool reverse)
         {
             if (_invalidated)
             {
@@ -138,13 +141,13 @@ namespace Arleen.Geometry
             {
                 switch (mode)
                 {
-                    case PlaceMode.Full:
+                    case Mode.All:
                         return target * Matrix4d.Transpose(_matrix);
 
-                    case PlaceMode.PositionOnly:
+                    case Mode.PositionOnly:
                         return target * Matrix4d.Transpose(_matrixPosition);
 
-                    case PlaceMode.OrientationOnly:
+                    case Mode.OrientationOnly:
                         return target * Matrix4d.Transpose(_matrixOrientation);
 
                     default:
@@ -157,7 +160,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public Matrix4d GetMatrix(PlaceMode mode)
+        public Matrix4d GetMatrix(Mode mode)
         {
             if (_invalidated)
             {
@@ -175,17 +178,17 @@ namespace Arleen.Geometry
             return string.Format("Location: {0} - {1}", _position, _orientation);
         }
 
-        private Vector3d ApplyExtracted(Vector3d target, PlaceMode mode)
+        private Vector3d ApplyExtracted(Vector3d target, Mode mode)
         {
             switch (mode)
             {
-                case PlaceMode.Full:
+                case Mode.All:
                     return Vector3d.Transform(target, _matrix);
 
-                case PlaceMode.PositionOnly:
+                case Mode.PositionOnly:
                     return Vector3d.Transform(target, _matrixPosition);
 
-                case PlaceMode.OrientationOnly:
+                case Mode.OrientationOnly:
                     return Vector3d.Transform(target, _matrixOrientation);
 
                 default:
@@ -193,17 +196,17 @@ namespace Arleen.Geometry
             }
         }
 
-        private Matrix4d ApplyExtracted(Matrix4d target, PlaceMode mode)
+        private Matrix4d ApplyExtracted(Matrix4d target, Mode mode)
         {
             switch (mode)
             {
-                case PlaceMode.Full:
+                case Mode.All:
                     return target * _matrix;
 
-                case PlaceMode.PositionOnly:
+                case Mode.PositionOnly:
                     return target * _matrixPosition;
 
-                case PlaceMode.OrientationOnly:
+                case Mode.OrientationOnly:
                     return target * _matrixOrientation;
 
                 default:
@@ -211,17 +214,17 @@ namespace Arleen.Geometry
             }
         }
 
-        private Matrix4d GetMatrixExtracted(PlaceMode mode)
+        private Matrix4d GetMatrixExtracted(Mode mode)
         {
             switch (mode)
             {
-                case PlaceMode.Full:
+                case Mode.All:
                     return _matrix;
 
-                case PlaceMode.PositionOnly:
+                case Mode.PositionOnly:
                     return _matrixPosition;
 
-                case PlaceMode.OrientationOnly:
+                case Mode.OrientationOnly:
                     return _matrixOrientation;
 
                 default:

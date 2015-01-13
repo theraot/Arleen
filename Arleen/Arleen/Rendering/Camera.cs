@@ -27,7 +27,7 @@ namespace Arleen.Rendering
             GL.LoadIdentity();
         }
 
-        public void Place(Location.PlaceMode mode)
+        public void Place(Location.Mode mode)
         {
             ViewingVolume.Place();
             Location.Place(mode);
