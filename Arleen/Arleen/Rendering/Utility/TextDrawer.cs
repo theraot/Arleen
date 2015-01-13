@@ -130,34 +130,8 @@ namespace Arleen.Rendering.Utility
 
         public void Draw(Color color, double left, double top)
         {
-            Texture texture;
-            if (TryGetTexture(out texture))
-            {
-                GL.Enable(EnableCap.Texture2D);
-                texture.Bind();
-                double minX = left;
-                double minY = top;
-                double maxX = left + texture.Width;
-                double maxY = top + texture.Height;
-
-                GL.Color4(color);
-
-                GL.Begin(BeginMode.Quads);
-                {
-                    GL.TexCoord2(0f, 0f);
-                    GL.Vertex3(minX, minY, -1);
-
-                    GL.TexCoord2(1f, 0f);
-                    GL.Vertex3(maxX, minY, -1);
-
-                    GL.TexCoord2(1f, 1f);
-                    GL.Vertex3(maxX, maxY, -1);
-
-                    GL.TexCoord2(0f, 1f);
-                    GL.Vertex3(minX, maxY, -1);
-                }
-                GL.End();
-            }
+            Texture texture = GetTexture();
+            TextureDrawer.DrawTexture(texture, color, left, top);
         }
 
         public void Draw(Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
@@ -223,7 +197,7 @@ namespace Arleen.Rendering.Utility
             return _size.Value;
         }
 
-        private bool TryGetTexture(out Texture texture)
+        private Texture GetTexture()
         {
             if (_texture == null)
             {
@@ -238,12 +212,10 @@ namespace Arleen.Rendering.Utility
                 }
                 else
                 {
-                    texture = _texture;
-                    return true;
+                    return _texture;
                 }
             }
-            texture = null;
-            return false;
+            return null;
         }
 
         private Texture CreateTexture()

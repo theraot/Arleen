@@ -77,6 +77,7 @@
     <Compile Include="Rendering\Utility\TextDrawer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rendering\Utility\TextureDrawer.cs" />
     <Compile Include="Rendering\Utility\TextWrap.cs">
       <SubType>Code</SubType>
     </Compile>
