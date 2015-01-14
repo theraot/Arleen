@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
@@ -28,6 +29,7 @@ namespace Arleen.Rendering.Sources
             GL.ClearDepth(_depth);
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void OnRender()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
@@ -24,6 +25,7 @@ namespace Arleen.Rendering.Sources
             _initialize();
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void OnRender()
         {
             _render();

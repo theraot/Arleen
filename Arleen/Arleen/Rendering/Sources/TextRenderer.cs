@@ -1,6 +1,7 @@
 ﻿using Arleen.Rendering.Utility;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
@@ -194,6 +195,7 @@ namespace Arleen.Rendering.Sources
             CreateDrawer();
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void OnRender()
         {
             var targetSize = Renderer.RenderInfo.TargetSize;
