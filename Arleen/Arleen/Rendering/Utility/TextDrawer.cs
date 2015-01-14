@@ -1,23 +1,20 @@
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering.Utility
 {
     public sealed class TextDrawer : IDisposable
     {
-        private readonly bool _antialias;
-        private readonly Font _font;
-        private readonly TextWrap _wrap;
-
+        private bool _antialias;
+        private Font _font;
         private bool _invalidated;
-
         private Size? _maxSize;
         private Size? _size;
-
         private string _text;
-
         private Texture _texture;
+        private TextWrap _wrap;
 
         public TextDrawer(string text, Font font, bool antialias)
         {
@@ -59,6 +56,32 @@ namespace Arleen.Rendering.Utility
             _wrap = wrap;
         }
 
+        public bool Antialias
+        {
+            get
+            {
+                return _antialias;
+            }
+            set
+            {
+                _antialias = value;
+                _invalidated = true;
+            }
+        }
+
+        public Font Font
+        {
+            get
+            {
+                return _font;
+            }
+            set
+            {
+                _font = value;
+                _invalidated = true;
+            }
+        }
+
         public string Text
         {
             get
@@ -72,6 +95,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias, wrap, maxSize))
@@ -80,6 +104,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, bool antialias, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias))
@@ -88,6 +113,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
             using (var textDrawer = new TextDrawer(text, font, wrap, maxSize))
@@ -96,6 +122,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
             using (var textDrawer = new TextDrawer(text, font))
@@ -104,6 +131,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, double left, double top)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias, wrap, maxSize))
@@ -112,6 +140,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, bool antialias, Color color, double left, double top)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias))
@@ -120,6 +149,7 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color, double left, double top)
         {
             using (var textDrawer = new TextDrawer(text, font, wrap, maxSize))
@@ -128,12 +158,20 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, Color color, double left, double top)
         {
             using (var textDrawer = new TextDrawer(text, font))
             {
                 textDrawer.Draw(color, left, top);
             }
+        }
+
+        public void DisableWrapping()
+        {
+            _wrap = TextWrap.Truncate;
+            _maxSize = null;
+            _invalidated = true;
         }
 
         public void Dispose()
@@ -145,12 +183,15 @@ namespace Arleen.Rendering.Utility
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Draw(Color color, double left, double top)
         {
+            // We use GetTexture, that's why we mark SecurityPermission
             Texture texture = GetTexture();
             TextureDrawer.DrawTexture(texture, color, left, top);
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Draw(Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
             var size = GetSize();
@@ -179,6 +220,13 @@ namespace Arleen.Rendering.Utility
                     break;
             }
             Draw(color, x, y);
+        }
+
+        public void EnableWrapping(TextWrap wrap, Size maxSize)
+        {
+            _wrap = wrap;
+            _maxSize = maxSize;
+            _invalidated = true;
         }
 
         private Texture CreateTexture()
@@ -277,6 +325,7 @@ namespace Arleen.Rendering.Utility
             return _size.Value;
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private Texture GetTexture()
         {
             if (_texture == null)
@@ -294,6 +343,7 @@ namespace Arleen.Rendering.Utility
                 {
                     if (_invalidated)
                     {
+                        // We use UpdateTexture, that's why we mark SecurityPermission
                         UpdateTexture();
                     }
                     return _texture;
@@ -302,6 +352,7 @@ namespace Arleen.Rendering.Utility
             return null;
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private void UpdateTexture()
         {
             SizeF size = GetSize();
@@ -321,8 +372,8 @@ namespace Arleen.Rendering.Utility
                 using (var bitmap = new Bitmap(_texture.Width, _texture.Height))
                 {
                     DrawTextToBitmap(bitmap, size);
-                    _texture.Update(bitmap, new Rectangle(0, 0, _texture.Width, _texture.Height),
-                        TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+                    // We use update, that's why we mark SecurityPermission
+                    _texture.Update(bitmap, new Rectangle(0, 0, _texture.Width, _texture.Height), TextureMinFilter.Nearest, TextureMagFilter.Nearest);
                 }
             }
         }
