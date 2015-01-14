@@ -71,7 +71,7 @@ namespace Arleen.Game
                                 new RenderSource[]
                                 {
                                     sources,
-                                    _textRenderer1
+                                    _textRenderer2
                                 }
                             )
                         )
@@ -107,8 +107,7 @@ namespace Arleen.Game
                              "z:" + camera.Location.Position.Z + "\n" +
                              "Bearing: " + MathHelper.RadiansToDegrees(bearing).ToString("0.000") + "\n" +
                              "Elevation: " + MathHelper.RadiansToDegrees(elevation).ToString("0.000") + "\n" +
-                             "Roll: " +
-                             MathHelper.RadiansToDegrees(roll).ToString("0.000") + "\n";
+                             "Roll: " + MathHelper.RadiansToDegrees(roll).ToString("0.000") + "\n";
             textRenderer.Text = cameraInfo;
         }
     }
