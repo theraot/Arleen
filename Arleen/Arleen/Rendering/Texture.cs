@@ -12,8 +12,8 @@ namespace Arleen.Rendering
     public sealed class Texture : IDisposable
     {
         private readonly int _height;
-        private readonly int _index;
         private readonly int _width;
+        private int _index;
 
         /// <summary>
         /// Creates a new instance of Texture.
@@ -141,13 +141,13 @@ namespace Arleen.Rendering
         public void Dispose()
         {
             GL.DeleteTexture(_index);
+            _index = 0;
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Update(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
         {
-            // Do testing on non-windows platforms
-            if (GL.IsTexture(_index))
+            if (_index != 0)
             {
                 GL.BindTexture(TextureTarget.Texture2D, _index);
 
