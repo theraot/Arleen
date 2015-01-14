@@ -14,16 +14,12 @@ namespace Arleen.Rendering.Sources
         {
             _drawer = new TextDrawer(string.Empty, font, antialias);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(string text, Font font, bool antialias)
         {
             _drawer = new TextDrawer(text, font, antialias);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(Font font, bool antialias, TextWrap wrap, Size maxSize)
@@ -31,8 +27,6 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(string.Empty, font, antialias);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(string text, Font font, bool antialias, TextWrap wrap, Size maxSize)
@@ -40,24 +34,18 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(text, font, antialias);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(Font font)
         {
             _drawer = new TextDrawer(string.Empty, font, false);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(string text, Font font)
         {
             _drawer = new TextDrawer(text, font, false);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(Font font, TextWrap wrap, Size maxSize)
@@ -65,8 +53,6 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(string.Empty, font, false);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public TextRenderer(string text, Font font, TextWrap wrap, Size maxSize)
@@ -74,8 +60,6 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(text, font, false);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
-            HorizontalTextAlign = TextAlign.Left;
-            VerticalTextAlign = TextAlign.Top;
         }
 
         public bool Antialias
