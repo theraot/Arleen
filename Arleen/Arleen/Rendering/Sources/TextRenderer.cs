@@ -88,7 +88,7 @@ namespace Arleen.Rendering.Sources
             }
         }
 
-        public TextAlign HorizontalTextAlign { get; private set; }
+        public TextAlign HorizontalTextAlign { get; set; }
 
         public string Text
         {
