@@ -143,9 +143,33 @@ namespace Arleen.Rendering
 
             _fpsCounter.OnRender(elapsed / 1000.0);
 
-            foreach (var item in _renderTargets)
+            foreach (var target in _renderTargets)
             {
-                item.Render(_realClipArea, elapsed, _fpsCounter.Fps);
+                RenderTarget(target, elapsed);
+            }
+        }
+
+        private void RenderTarget(RenderTarget target, double elapsed)
+        {
+            if (target.Enabled)
+            {
+                var targetClipArea = target.GetTargetClipArea(_realClipArea);
+                var camera = target.Camera;
+                var renderInfo = new RenderInfo
+                {
+                    Camera = camera,
+                    TargetSize = targetClipArea.Size,
+                    ElapsedMilliseconds = elapsed,
+                    Fps = _fpsCounter.Fps
+                };
+
+                camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
+                camera.ViewingVolume.Place();
+
+                GL.Viewport(targetClipArea);
+                GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
+
+                target.RenderSource.Render(renderInfo);
             }
         }
     }

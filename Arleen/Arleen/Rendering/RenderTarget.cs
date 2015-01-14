@@ -1,4 +1,3 @@
-using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
 namespace Arleen.Rendering
@@ -53,6 +52,14 @@ namespace Arleen.Rendering
             }
         }
 
+        public RenderSource RenderSource
+        {
+            get
+            {
+                return _renderSource;
+            }
+        }
+
         /// <summary>
         /// Gets the rectangle in which to render, in screen = 1.
         /// </summary>
@@ -65,31 +72,15 @@ namespace Arleen.Rendering
         }
 
         /// <summary>
-        /// Requests the output of the given list of RenderSource.
+        /// Returns the computed target clip area of the RenderTarget.
         /// </summary>
-        /// <param name="realClipArea">The rectangle in which to render, in pixel = 1.</param>
-        /// <param name="elapsedMilliseconds">The time since the last iteration of the Renderer.</param>
-        /// <param name="fps">The number of frames that were rendered in the past second.</param>
-        public void Render(Rectangle realClipArea, double elapsedMilliseconds, int fps)
+        /// <param name="realClipArea">The clip area of the graphic context.</param>
+        /// <returns>A rectangle representing the target clip area.</returns>
+        internal Rectangle GetTargetClipArea(Rectangle realClipArea)
         {
-            if (_enabled)
-            {
-                var targetClipArea = ComputeClipArea(realClipArea, _virtualClipArea);
-                _camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
-                GL.Viewport(targetClipArea);
-                GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
-                Camera.ViewingVolume.Place();
-
-                var renderInfo = new RenderInfo
-                {
-                    Camera = Camera,
-                    TargetSize = targetClipArea.Size,
-                    ElapsedMilliseconds = elapsedMilliseconds,
-                    Fps = fps
-                };
-
-                _renderSource.Render(renderInfo);
-            }
+            var targetClipArea = ComputeClipArea(realClipArea, _virtualClipArea);
+            _camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
+            return targetClipArea;
         }
 
         private static Rectangle ComputeClipArea(Rectangle realClipArea, RectangleF virtualClipArea)
