@@ -294,7 +294,7 @@ namespace Arleen.Rendering.Utility
 
         private Size GetSize()
         {
-            if (_size == null)
+            if (_invalidated || _size == null)
             {
                 using (var bitmap = new Bitmap(1, 1))
                 {
@@ -345,6 +345,7 @@ namespace Arleen.Rendering.Utility
                     {
                         // We use UpdateTexture, that's why we mark SecurityPermission
                         UpdateTexture();
+                        _invalidated = false;
                     }
                     return _texture;
                 }
