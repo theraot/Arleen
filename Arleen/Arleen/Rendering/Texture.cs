@@ -144,7 +144,7 @@ namespace Arleen.Rendering
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public void UpdateTexture(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
+        public void Update(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
         {
             // Do testing on non-windows platforms
             if (GL.IsTexture(_index))

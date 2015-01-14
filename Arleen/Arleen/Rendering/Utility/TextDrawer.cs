@@ -8,11 +8,15 @@ namespace Arleen.Rendering.Utility
     {
         private readonly bool _antialias;
         private readonly Font _font;
-        private readonly string _text;
         private readonly TextWrap _wrap;
-        private Size? _maxSize;
 
+        private bool _invalidated;
+
+        private Size? _maxSize;
         private Size? _size;
+
+        private string _text;
+
         private Texture _texture;
 
         public TextDrawer(string text, Font font, bool antialias)
@@ -53,6 +57,19 @@ namespace Arleen.Rendering.Utility
 
             _maxSize = maxSize;
             _wrap = wrap;
+        }
+
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                _invalidated = true;
+            }
         }
 
         public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
@@ -164,6 +181,69 @@ namespace Arleen.Rendering.Utility
             Draw(color, x, y);
         }
 
+        private Texture CreateTexture()
+        {
+            SizeF size = GetSize();
+            var textureWidth = (int)Math.Ceiling(size.Width);
+            var textureHeight = (int)Math.Ceiling(size.Height);
+            return CreateTextureExtracted(textureWidth, textureHeight, size);
+        }
+
+        private Texture CreateTextureExtracted(int textureWidth, int textureHeight, SizeF size)
+        {
+            if (textureWidth > 0 && textureHeight > 0)
+            {
+                using (var bitmap = new Bitmap(textureWidth, textureHeight))
+                {
+                    DrawTextToBitmap(bitmap, size);
+                    return new Texture(bitmap, TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+                }
+            }
+            return null;
+        }
+
+        private void DrawTextToBitmap(Bitmap bitmap, SizeF size)
+        {
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                if (_antialias)
+                {
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                }
+                graphics.Clear(Color.Transparent);
+
+                StringFormat stringFormat = GetFormat();
+                graphics.DrawString(_text, _font, Brushes.White, new RectangleF(0f, 0f, size.Width, size.Height), stringFormat);
+            }
+
+            bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+        }
+
+        /// <summary>
+        /// Gets the string format used for drawing or measuring text.
+        /// </summary>
+        private StringFormat GetFormat()
+        {
+            var stringFormat = new StringFormat(StringFormatFlags.MeasureTrailingSpaces);
+            switch (_wrap)
+            {
+                case TextWrap.Truncate:
+                    stringFormat.Trimming = StringTrimming.None;
+                    stringFormat.FormatFlags |= StringFormatFlags.NoWrap;
+                    break;
+
+                case TextWrap.Ellipsis:
+                    stringFormat.Trimming = StringTrimming.EllipsisCharacter;
+                    stringFormat.FormatFlags |= StringFormatFlags.NoWrap;
+                    break;
+
+                case TextWrap.Wrap:
+                    stringFormat.Trimming = StringTrimming.None;
+                    break;
+            }
+            return stringFormat;
+        }
+
         private Size GetSize()
         {
             if (_size == null)
@@ -212,64 +292,39 @@ namespace Arleen.Rendering.Utility
                 }
                 else
                 {
+                    if (_invalidated)
+                    {
+                        UpdateTexture();
+                    }
                     return _texture;
                 }
             }
             return null;
         }
 
-        private Texture CreateTexture()
+        private void UpdateTexture()
         {
             SizeF size = GetSize();
             var textureWidth = (int)Math.Ceiling(size.Width);
             var textureHeight = (int)Math.Ceiling(size.Height);
-            if (textureWidth > 0 && textureHeight > 0)
+            if (_texture == null)
             {
-                using (var bitmap = new Bitmap(textureWidth, textureHeight))
+                _texture = CreateTextureExtracted(textureWidth, textureHeight, size);
+            }
+            else if (textureWidth > _texture.Width || textureHeight > _texture.Height)
+            {
+                _texture.Dispose();
+                _texture = CreateTextureExtracted(textureWidth, textureHeight, size);
+            }
+            else
+            {
+                using (var bitmap = new Bitmap(_texture.Width, _texture.Height))
                 {
-                    using (var graphics = Graphics.FromImage(bitmap))
-                    {
-                        if (_antialias)
-                        {
-                            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                        }
-                        graphics.Clear(Color.Transparent);
-
-                        StringFormat stringFormat = GetFormat();
-                        graphics.DrawString(_text, _font, Brushes.White, new RectangleF(0f, 0f, size.Width, size.Height), stringFormat);
-                    }
-
-                    bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
-
-                    return new Texture(bitmap, TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+                    DrawTextToBitmap(bitmap, size);
+                    _texture.Update(bitmap, new Rectangle(0, 0, _texture.Width, _texture.Height),
+                        TextureMinFilter.Nearest, TextureMagFilter.Nearest);
                 }
             }
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the string format used for drawing or measuring text.
-        /// </summary>
-        private StringFormat GetFormat()
-        {
-            var stringFormat = new StringFormat(StringFormatFlags.MeasureTrailingSpaces);
-            switch (_wrap)
-            {
-                case TextWrap.Truncate:
-                    stringFormat.Trimming = StringTrimming.None;
-                    stringFormat.FormatFlags |= StringFormatFlags.NoWrap;
-                    break;
-
-                case TextWrap.Ellipsis:
-                    stringFormat.Trimming = StringTrimming.EllipsisCharacter;
-                    stringFormat.FormatFlags |= StringFormatFlags.NoWrap;
-                    break;
-
-                case TextWrap.Wrap:
-                    stringFormat.Trimming = StringTrimming.None;
-                    break;
-            }
-            return stringFormat;
         }
     }
 }
