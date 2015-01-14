@@ -45,8 +45,7 @@ namespace Arleen.Rendering
         /// <summary>
         /// Request this render source to produce its output.
         /// </summary>
-        /// <param name="renderInfo">Information about the context in which this operation is called.</param>
-        public void Render(RenderInfo renderInfo)
+        public void Render()
         {
             if (_enabled)
             {
@@ -55,7 +54,7 @@ namespace Arleen.Rendering
                     OnInitilaize();
                     _initialized = true;
                 }
-                OnRender(renderInfo);
+                OnRender();
             }
         }
 
@@ -70,7 +69,6 @@ namespace Arleen.Rendering
         /// <summary>
         /// Performs the output of the current RenderSource.
         /// </summary>
-        /// <param name="renderInfo"></param>
-        protected abstract void OnRender(RenderInfo renderInfo);
+        protected abstract void OnRender();
     }
 }

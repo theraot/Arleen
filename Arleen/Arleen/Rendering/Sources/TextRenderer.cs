@@ -194,13 +194,14 @@ namespace Arleen.Rendering.Sources
             CreateDrawer();
         }
 
-        protected override void OnRender(RenderInfo renderInfo)
+        protected override void OnRender()
         {
+            var targetSize = Renderer.RenderInfo.TargetSize;
             var drawer = CreateDrawer();
             GL.Disable(EnableCap.DepthTest);
             GL.LoadIdentity();
-            ViewingVolumeHelper.PlaceOthogonalProjection(renderInfo.TargetSize.Width, renderInfo.TargetSize.Height, 0, 1);
-            drawer.Draw(Color, new Rectangle(0, 0, renderInfo.TargetSize.Width, renderInfo.TargetSize.Height), HorizontalTextAlign, VerticalTextAlign);
+            ViewingVolumeHelper.PlaceOthogonalProjection(targetSize.Width, targetSize.Height, 0, 1);
+            drawer.Draw(Color, new Rectangle(0, 0, targetSize.Width, targetSize.Height), HorizontalTextAlign, VerticalTextAlign);
             GL.Enable(EnableCap.DepthTest);
         }
 

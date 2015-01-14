@@ -58,11 +58,11 @@ namespace Arleen.Rendering.Sources
             _renderSources.Clear();
         }
 
-        protected override void OnRender(RenderInfo renderInfo)
+        protected override void OnRender()
         {
             foreach (var item in _renderSources)
             {
-                item.Render(renderInfo);
+                item.Render();
             }
         }
     }

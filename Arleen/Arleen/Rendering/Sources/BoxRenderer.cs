@@ -72,9 +72,9 @@ namespace Arleen.Rendering.Sources
             _bitmap = null;
         }
 
-        protected override void OnRender(RenderInfo info)
+        protected override void OnRender()
         {
-            _render(info.Camera);
+            _render(Renderer.RenderInfo.Camera);
         }
 
         private void Build()

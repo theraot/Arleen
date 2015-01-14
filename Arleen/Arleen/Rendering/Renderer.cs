@@ -12,6 +12,9 @@ namespace Arleen.Rendering
     /// </summary>
     public class Renderer
     {
+        [ThreadStatic]
+        private static RenderInfo _renderInfo;
+
         private readonly List<RenderTarget> _renderTargets;
         private FpsCounter _fpsCounter;
         private double _last_time;
@@ -25,6 +28,14 @@ namespace Arleen.Rendering
         public Renderer()
         {
             _renderTargets = new List<RenderTarget>();
+        }
+
+        public static RenderInfo RenderInfo
+        {
+            get
+            {
+                return Renderer._renderInfo;
+            }
         }
 
         /// <summary>
@@ -155,7 +166,8 @@ namespace Arleen.Rendering
             {
                 var targetClipArea = target.GetTargetClipArea(_realClipArea);
                 var camera = target.Camera;
-                var renderInfo = new RenderInfo
+
+                _renderInfo = new RenderInfo
                 {
                     Camera = camera,
                     TargetSize = targetClipArea.Size,
@@ -169,7 +181,7 @@ namespace Arleen.Rendering
                 GL.Viewport(targetClipArea);
                 GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
 
-                target.RenderSource.Render(renderInfo);
+                target.RenderSource.Render();
             }
         }
     }

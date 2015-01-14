@@ -5,40 +5,18 @@ namespace Arleen.Rendering.Sources
     public class CustomRenderer : RenderSource
     {
         private readonly Action _initialize;
-        private readonly Action<RenderInfo> _render;
+        private readonly Action _render;
 
-        public CustomRenderer(Action<RenderInfo> render, Action initialize)
+        public CustomRenderer(Action render, Action initialize)
         {
-            _render = render ??
-                (
-                    _ =>
-                    {
-                        //Empty
-                    }
-                );
-            _initialize = initialize ??
-                (
-                    () =>
-                    {
-                        //Empty
-                    }
-                );
+            _render = render ?? NoOp;
+            _initialize = initialize ?? NoOp;
         }
 
-        public CustomRenderer(Action<RenderInfo> render)
+        public CustomRenderer(Action render)
         {
-            _render = render ??
-                (
-                    _ =>
-                    {
-                        //Empty
-                    }
-                );
-            _initialize =
-                () =>
-                {
-                    //Empty
-                };
+            _render = render ?? NoOp;
+            _initialize = NoOp;
         }
 
         protected override void OnInitilaize()
@@ -46,9 +24,14 @@ namespace Arleen.Rendering.Sources
             _initialize();
         }
 
-        protected override void OnRender(RenderInfo renderInfo)
+        protected override void OnRender()
         {
-            _render(renderInfo);
+            _render();
+        }
+
+        private static void NoOp()
+        {
+            // Empty
         }
     }
 }
