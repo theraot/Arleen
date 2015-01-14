@@ -1,26 +1,18 @@
 ﻿using Arleen.Rendering.Utility;
 using OpenTK.Graphics.OpenGL;
+using System;
 using System.Drawing;
 using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
-    public class TextRenderer : RenderSource
+    public sealed class TextRenderer : RenderSource, IDisposable
     {
-        private bool _antialias;
-        private TextDrawer _drawer;
-        private Font _font;
-        private string _text;
+        private readonly TextDrawer _drawer;
 
         public TextRenderer(Font font, bool antialias)
         {
-            _text = string.Empty;
-            _font = font;
-            _antialias = antialias;
-
-            MaxSize = null;
-            Wrap = TextWrap.Truncate;
-
+            _drawer = new TextDrawer(string.Empty, font, antialias);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -28,13 +20,7 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(string text, Font font, bool antialias)
         {
-            _text = text;
-            _font = font;
-            _antialias = antialias;
-
-            MaxSize = null;
-            Wrap = TextWrap.Truncate;
-
+            _drawer = new TextDrawer(text, font, antialias);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -42,13 +28,8 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(Font font, bool antialias, TextWrap wrap, Size maxSize)
         {
-            _text = string.Empty;
-            _font = font;
-            _antialias = antialias;
-
-            MaxSize = maxSize;
-            Wrap = wrap;
-
+            _drawer = new TextDrawer(string.Empty, font, antialias);
+            _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -56,13 +37,8 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(string text, Font font, bool antialias, TextWrap wrap, Size maxSize)
         {
-            _text = text;
-            _font = font;
-            _antialias = antialias;
-
-            MaxSize = maxSize;
-            Wrap = wrap;
-
+            _drawer = new TextDrawer(text, font, antialias);
+            _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -70,13 +46,7 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(Font font)
         {
-            _text = string.Empty;
-            _font = font;
-            _antialias = false;
-
-            MaxSize = null;
-            Wrap = TextWrap.Truncate;
-
+            _drawer = new TextDrawer(string.Empty, font, false);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -84,13 +54,7 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(string text, Font font)
         {
-            _text = text;
-            _font = font;
-            _antialias = false;
-
-            MaxSize = null;
-            Wrap = TextWrap.Truncate;
-
+            _drawer = new TextDrawer(text, font, false);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -98,13 +62,8 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(Font font, TextWrap wrap, Size maxSize)
         {
-            _text = string.Empty;
-            _font = font;
-            _antialias = false;
-
-            MaxSize = maxSize;
-            Wrap = wrap;
-
+            _drawer = new TextDrawer(string.Empty, font, false);
+            _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -112,13 +71,8 @@ namespace Arleen.Rendering.Sources
 
         public TextRenderer(string text, Font font, TextWrap wrap, Size maxSize)
         {
-            _text = text;
-            _font = font;
-            _antialias = false;
-
-            MaxSize = maxSize;
-            Wrap = wrap;
-
+            _drawer = new TextDrawer(text, font, false);
+            _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
             HorizontalTextAlign = TextAlign.Left;
             VerticalTextAlign = TextAlign.Top;
@@ -128,12 +82,11 @@ namespace Arleen.Rendering.Sources
         {
             get
             {
-                return _antialias;
+                return _drawer.Antialias;
             }
             set
             {
-                _antialias = value;
-                DestroyDrawer();
+                _drawer.Antialias = value;
             }
         }
 
@@ -143,48 +96,43 @@ namespace Arleen.Rendering.Sources
         {
             get
             {
-                return _font;
+                return _drawer.Font;
             }
             set
             {
-                _font = value;
-                DestroyDrawer();
+                _drawer.Font = value;
             }
         }
 
         public TextAlign HorizontalTextAlign { get; private set; }
 
-        public Size? MaxSize { get; private set; }
-
         public string Text
         {
             get
             {
-                return _text;
+                return _drawer.Text;
             }
             set
             {
-                _text = value;
-                DestroyDrawer();
+                _drawer.Text = value;
             }
         }
 
         public TextAlign VerticalTextAlign { get; set; }
 
-        public TextWrap Wrap { get; private set; }
-
         public void DisableWrapping()
         {
-            Wrap = TextWrap.Truncate;
-            MaxSize = null;
-            DestroyDrawer();
+            _drawer.DisableWrapping();
+        }
+
+        public void Dispose()
+        {
+            _drawer.Dispose();
         }
 
         public void EnableWrapping(TextWrap wrap, Size maxSize)
         {
-            Wrap = wrap;
-            MaxSize = maxSize;
-            DestroyDrawer();
+            _drawer.EnableWrapping(wrap, maxSize);
         }
 
         protected override void OnInitilaize()
@@ -192,38 +140,17 @@ namespace Arleen.Rendering.Sources
             GL.Enable(EnableCap.Blend);
             GL.BlendEquation(BlendEquationMode.FuncAdd);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            CreateDrawer();
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void OnRender()
         {
             var targetSize = Renderer.RenderInfo.TargetSize;
-            var drawer = CreateDrawer();
             GL.Disable(EnableCap.DepthTest);
             GL.LoadIdentity();
             ViewingVolumeHelper.PlaceOthogonalProjection(targetSize.Width, targetSize.Height, 0, 1);
-            drawer.Draw(Color, new Rectangle(0, 0, targetSize.Width, targetSize.Height), HorizontalTextAlign, VerticalTextAlign);
+            _drawer.Draw(Color, new Rectangle(0, 0, targetSize.Width, targetSize.Height), HorizontalTextAlign, VerticalTextAlign);
             GL.Enable(EnableCap.DepthTest);
-        }
-
-        private TextDrawer CreateDrawer()
-        {
-            var drawer = _drawer;
-            if (drawer == null)
-            {
-                drawer = _drawer = MaxSize.HasValue ? new TextDrawer(_text, _font, _antialias, Wrap, MaxSize.Value) : new TextDrawer(_text, _font, _antialias);
-            }
-            return drawer;
-        }
-
-        private void DestroyDrawer()
-        {
-            if (_drawer != null)
-            {
-                _drawer.Dispose();
-                _drawer = null;
-            }
         }
     }
 }
