@@ -144,6 +144,39 @@ namespace Arleen.Rendering
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        public void UpdateTexture(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
+        {
+            // Do testing on non-windows platforms
+            if (GL.IsTexture(_index))
+            {
+                GL.BindTexture(TextureTarget.Texture2D, _index);
+
+                BitmapData bitmapData = null;
+
+                try
+                {
+                    // We use lockbits, that's why we mark SecurityPermission
+                    bitmapData = bitmap.LockBits(rectangle, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    {
+                        GL.BindTexture(TextureTarget.Texture2D, _index);
+                        GL.TexSubImage2D(TextureTarget.Texture2D, 0, rectangle.Left, rectangle.Top, rectangle.Width, rectangle.Height, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmapData.Scan0);
+                    }
+                }
+                finally
+                {
+                    if (bitmapData != null)
+                    {
+                        bitmap.UnlockBits(bitmapData);
+                    }
+                }
+            }
+            else
+            {
+                throw new ObjectDisposedException("The texture has been disposed.");
+            }
+        }
+
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private static int LoadTexture(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
         {
             var texture = new int[1];
@@ -155,6 +188,7 @@ namespace Arleen.Rendering
 
             try
             {
+                // We use lockbits, that's why we mark SecurityPermission
                 bitmapData = bitmap.LockBits(rectangle, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 {
                     GL.BindTexture(TextureTarget.Texture2D, texture[0]);
