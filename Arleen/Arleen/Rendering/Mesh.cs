@@ -1,9 +1,10 @@
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {
-    public sealed class Mesh : IDisposable
+    public sealed class Mesh : IDisposable, IRenderable
     {
         private const int INT_ColorSize = 4;
         private const int INT_NormalSize = 3;
@@ -125,6 +126,7 @@ namespace Arleen.Rendering
             GL.DeleteBuffer(_bufferIndexes);
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Render()
         {
             _render();

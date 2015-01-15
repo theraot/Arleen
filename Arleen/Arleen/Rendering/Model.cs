@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {
-    public sealed class Model : IDisposable
+    public sealed class Model : IDisposable, IRenderable
     {
         // TODO: Multiple mesh per model
         private readonly Mesh _mesh;
@@ -17,6 +18,7 @@ namespace Arleen.Rendering
             _mesh.Dispose();
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Render()
         {
             _mesh.Render();

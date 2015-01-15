@@ -5,7 +5,7 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents something that will be systematically rendered.
     /// </summary>
-    public abstract class RenderSource
+    public abstract class RenderSource : IRenderable
     {
         private bool _enabled;
         private bool _initialized;
