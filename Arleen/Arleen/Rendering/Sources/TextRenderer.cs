@@ -1,6 +1,5 @@
 ﻿using Arleen.Geometry;
 using Arleen.Rendering.Utility;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -8,7 +7,7 @@ using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class TextRenderer : RenderSource, IDisposable
+    public sealed class TextRenderer : RenderSource, IDisposable, ILocable
     {
         private readonly TextDrawer _drawer;
 
@@ -16,12 +15,14 @@ namespace Arleen.Rendering.Sources
         {
             _drawer = new TextDrawer(string.Empty, font, antialias);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(string text, Font font, bool antialias)
         {
             _drawer = new TextDrawer(text, font, antialias);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(Font font, bool antialias, TextWrap wrap, Size maxSize)
@@ -29,6 +30,7 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(string.Empty, font, antialias);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(string text, Font font, bool antialias, TextWrap wrap, Size maxSize)
@@ -36,18 +38,21 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(text, font, antialias);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(Font font)
         {
             _drawer = new TextDrawer(string.Empty, font, false);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(string text, Font font)
         {
             _drawer = new TextDrawer(text, font, false);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(Font font, TextWrap wrap, Size maxSize)
@@ -55,6 +60,7 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(string.Empty, font, false);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
+            Location = new Location();
         }
 
         public TextRenderer(string text, Font font, TextWrap wrap, Size maxSize)
@@ -62,6 +68,7 @@ namespace Arleen.Rendering.Sources
             _drawer = new TextDrawer(text, font, false);
             _drawer.EnableWrapping(wrap, maxSize);
             Color = Color.White;
+            Location = new Location();
         }
 
         public bool Antialias
@@ -91,6 +98,8 @@ namespace Arleen.Rendering.Sources
         }
 
         public TextAlign HorizontalTextAlign { get; set; }
+
+        public Location Location { get; set; }
 
         public string Text
         {
@@ -135,7 +144,7 @@ namespace Arleen.Rendering.Sources
             GL.Disable(EnableCap.DepthTest);
             GL.LoadIdentity();
             ViewingVolumeHelper.PlaceOthogonalProjection(targetSize.Width, targetSize.Height, 0, 1);
-            _drawer.Draw(Color, new Location { Position = new Vector3d(0, 0, -1) }, targetSize, HorizontalTextAlign, VerticalTextAlign);
+            _drawer.Draw(Color, Location, targetSize, HorizontalTextAlign, VerticalTextAlign);
             GL.Enable(EnableCap.DepthTest);
         }
     }
