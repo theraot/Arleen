@@ -10,7 +10,6 @@ namespace Arleen.Rendering
         private readonly Camera _camera;
         private readonly RenderSource _renderSource;
         private readonly RectangleF _virtualClipArea;
-        private bool _enabled;
 
         /// <summary>
         /// Creates a new RenderTarget
@@ -23,7 +22,7 @@ namespace Arleen.Rendering
             _virtualClipArea = virtualClipArea;
             _camera = camera;
             _renderSource = renderSource;
-            _enabled = true;
+            Enabled = true;
         }
 
         /// <summary>
@@ -40,17 +39,7 @@ namespace Arleen.Rendering
         /// <summary>
         /// Gets or sets whatever this RenderTargets receives output.
         /// </summary>
-        public bool Enabled
-        {
-            get
-            {
-                return _enabled;
-            }
-            set
-            {
-                _enabled = value;
-            }
-        }
+        public bool Enabled { get; private set; }
 
         public RenderSource RenderSource
         {
