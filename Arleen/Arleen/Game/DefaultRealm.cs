@@ -35,7 +35,7 @@ namespace Arleen.Game
             var brickwall = Resources.LoadBitmap("brickwall.png");
             var sources = new AggregateRenderSource
                 (
-                    new RenderSource[]
+                    new IRenderable[]
                     {
                         new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
                         new SkyboxRenderer(Resources.LoadBitmap("skybox.png")),
@@ -48,11 +48,11 @@ namespace Arleen.Game
                 (
                     new RenderTarget
                         (
-                            new RectangleF(0, 0, 1.0f, 0.5f),
+                            new RectangleF(0.0f, 0.0f, 1.0f, 0.5f),
                             _camera1,
                             new AggregateRenderSource
                             (
-                                new RenderSource[]
+                                new IRenderable[]
                                 {
                                     sources,
                                     _textRenderer1
@@ -64,11 +64,11 @@ namespace Arleen.Game
                 (
                     new RenderTarget
                         (
-                            new RectangleF(0, 0.5f, 1.0f, 0.5f),
+                            new RectangleF(0.0f, 0.5f, 1.0f, 0.5f),
                             _camera2,
                             new AggregateRenderSource
                             (
-                                new RenderSource[]
+                                new IRenderable[]
                                 {
                                     sources,
                                     _textRenderer2
