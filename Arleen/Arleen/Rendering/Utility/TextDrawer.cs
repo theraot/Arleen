@@ -1,4 +1,3 @@
-using Arleen.Geometry;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -97,38 +96,38 @@ namespace Arleen.Rendering.Utility
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, Location location)
+        public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias, wrap, maxSize))
             {
-                textDrawer.Draw(color, location);
+                textDrawer.Draw(color);
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, bool antialias, Color color, Location location)
+        public static void Draw(string text, Font font, bool antialias, Color color)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias))
             {
-                textDrawer.Draw(color, location);
+                textDrawer.Draw(color);
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color, Location location)
+        public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color)
         {
             using (var textDrawer = new TextDrawer(text, font, wrap, maxSize))
             {
-                textDrawer.Draw(color, location);
+                textDrawer.Draw(color);
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, Color color, Location location)
+        public static void Draw(string text, Font font, Color color)
         {
             using (var textDrawer = new TextDrawer(text, font))
             {
-                textDrawer.Draw(color, location);
+                textDrawer.Draw(color);
             }
         }
 
@@ -149,45 +148,11 @@ namespace Arleen.Rendering.Utility
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public void Draw(Color color, Location location)
+        public void Draw(Color color)
         {
             // We use GetTexture, that's why we mark SecurityPermission
             Texture texture = GetTexture();
-            TextureDrawer.DrawTexture(texture, color, location);
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public void Draw(Color color, Location location, Size area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
-        {
-            var size = GetSize();
-
-            var unitX = location.GetUnitX();
-            var unitY = location.GetUnitY();
-
-            var x = 0.0;
-            var y = 0.0;
-
-            switch (horizontalTextAlign)
-            {
-                case TextAlign.Center:
-                    x = (area.Width - size.Width) / 2.0;
-                    break;
-
-                case TextAlign.Right:
-                    x = area.Width - size.Width;
-                    break;
-            }
-            switch (verticalTextAlign)
-            {
-                case TextAlign.Center:
-                    y = (area.Height - size.Height) / 2.0;
-                    break;
-
-                case TextAlign.Top:
-                    y = area.Height - size.Height;
-                    break;
-            }
-            Draw(color, new Location { Position = location.Position + (unitX * x) + (unitY * y), Orientation = location.Orientation });
+            TextureDrawer.DrawTexture(texture, color);
         }
 
         public void EnableWrapping(TextWrap wrap, Size maxSize)
@@ -195,6 +160,39 @@ namespace Arleen.Rendering.Utility
             _wrap = wrap;
             _maxSize = maxSize;
             _invalidated = true;
+        }
+
+        public Size GetSize()
+        {
+            if (_invalidated || _size == null)
+            {
+                using (var bitmap = new Bitmap(1, 1))
+                {
+                    using (var graphics = Graphics.FromImage(bitmap))
+                    {
+                        SizeF stringSize;
+                        if (_maxSize == null)
+                        {
+                            stringSize = graphics.MeasureString(_text, _font, new PointF(0.0f, 0.0f), GetFormat());
+                        }
+                        else
+                        {
+                            var maxsize = _maxSize.Value;
+                            stringSize = graphics.MeasureString
+                                (
+                                    _text,
+                                    _font,
+                                    new SizeF(maxsize.Width, maxsize.Height),
+                                    GetFormat()
+                                );
+                        }
+                        var size = new Size((int)Math.Ceiling(stringSize.Width), (int)Math.Ceiling(stringSize.Height));
+                        _size = size;
+                        return size;
+                    }
+                }
+            }
+            return _size.Value;
         }
 
         private Texture CreateTexture()
@@ -258,39 +256,6 @@ namespace Arleen.Rendering.Utility
                     break;
             }
             return stringFormat;
-        }
-
-        private Size GetSize()
-        {
-            if (_invalidated || _size == null)
-            {
-                using (var bitmap = new Bitmap(1, 1))
-                {
-                    using (var graphics = Graphics.FromImage(bitmap))
-                    {
-                        SizeF stringSize;
-                        if (_maxSize == null)
-                        {
-                            stringSize = graphics.MeasureString(_text, _font, new PointF(0.0f, 0.0f), GetFormat());
-                        }
-                        else
-                        {
-                            var maxsize = _maxSize.Value;
-                            stringSize = graphics.MeasureString
-                                (
-                                    _text,
-                                    _font,
-                                    new SizeF(maxsize.Width, maxsize.Height),
-                                    GetFormat()
-                                );
-                        }
-                        var size = new Size((int)Math.Ceiling(stringSize.Width), (int)Math.Ceiling(stringSize.Height));
-                        _size = size;
-                        return size;
-                    }
-                }
-            }
-            return _size.Value;
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]

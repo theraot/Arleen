@@ -7,7 +7,7 @@ using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class TextRenderer : RenderSource, IDisposable, ILocable
+    public sealed class TextRenderer : RenderSource, IDisposable, ILocable, ICameraRelative
     {
         private readonly TextDrawer _drawer;
 
@@ -83,6 +83,14 @@ namespace Arleen.Rendering.Sources
             }
         }
 
+        public Location.Mode CameraPlaceMode
+        {
+            get
+            {
+                return Location.Mode.PositionOnly;
+            }
+        }
+
         public Color Color { get; set; }
 
         public Font Font
@@ -142,9 +150,41 @@ namespace Arleen.Rendering.Sources
         {
             var targetSize = Renderer.RenderInfo.TargetSize;
             GL.Disable(EnableCap.DepthTest);
-            GL.LoadIdentity();
             ViewingVolumeHelper.PlaceOthogonalProjection(targetSize.Width, targetSize.Height, 0, 1);
-            _drawer.Draw(Color, Location, targetSize, HorizontalTextAlign, VerticalTextAlign);
+
+            // ---
+
+            var size = _drawer.GetSize();
+
+            var offsetX = 0.0;
+            var offsetY = 0.0;
+
+            switch (HorizontalTextAlign)
+            {
+                case TextAlign.Center:
+                    offsetX = (targetSize.Width - size.Width) / 2.0;
+                    break;
+
+                case TextAlign.Right:
+                    offsetX = targetSize.Width - size.Width;
+                    break;
+            }
+            switch (VerticalTextAlign)
+            {
+                case TextAlign.Center:
+                    offsetY = (targetSize.Height - size.Height) / 2.0;
+                    break;
+
+                case TextAlign.Top:
+                    offsetY = targetSize.Height - size.Height;
+                    break;
+            }
+
+            GL.Translate(offsetX, offsetY, 0.0);
+
+            // ---
+
+            _drawer.Draw(Color);
             GL.Enable(EnableCap.DepthTest);
         }
     }
