@@ -1,5 +1,4 @@
 using Arleen.Geometry;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -98,42 +97,6 @@ namespace Arleen.Rendering.Utility
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
-        {
-            using (var textDrawer = new TextDrawer(text, font, antialias, wrap, maxSize))
-            {
-                textDrawer.Draw(color, area, horizontalTextAlign, verticalTextAlign);
-            }
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, bool antialias, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
-        {
-            using (var textDrawer = new TextDrawer(text, font, antialias))
-            {
-                textDrawer.Draw(color, area, horizontalTextAlign, verticalTextAlign);
-            }
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
-        {
-            using (var textDrawer = new TextDrawer(text, font, wrap, maxSize))
-            {
-                textDrawer.Draw(color, area, horizontalTextAlign, verticalTextAlign);
-            }
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
-        {
-            using (var textDrawer = new TextDrawer(text, font))
-            {
-                textDrawer.Draw(color, area, horizontalTextAlign, verticalTextAlign);
-            }
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, Location location)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias, wrap, maxSize))
@@ -194,34 +157,37 @@ namespace Arleen.Rendering.Utility
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public void Draw(Color color, Rectangle area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
+        public void Draw(Color color, Location location, Size area, TextAlign horizontalTextAlign, TextAlign verticalTextAlign)
         {
             var size = GetSize();
 
-            double x = area.Location.X;
-            double y = area.Location.Y;
+            var unitX = location.GetUnitX();
+            var unitY = location.GetUnitY();
+
+            var x = 0.0;
+            var y = 0.0;
 
             switch (horizontalTextAlign)
             {
                 case TextAlign.Center:
-                    x += (area.Size.Width - size.Width) / 2.0;
+                    x = (area.Width - size.Width) / 2.0;
                     break;
 
                 case TextAlign.Right:
-                    x += area.Size.Width - size.Width;
+                    x = area.Width - size.Width;
                     break;
             }
             switch (verticalTextAlign)
             {
                 case TextAlign.Center:
-                    y += (area.Size.Height - area.Location.Y) / 2.0;
+                    y = (area.Height - size.Height) / 2.0;
                     break;
 
                 case TextAlign.Top:
-                    y += area.Size.Height - size.Height;
+                    y = area.Height - size.Height;
                     break;
             }
-            Draw(color, new Location { Position = new Vector3d(x, y, -1) });
+            Draw(color, new Location { Position = location.Position + (unitX * x) + (unitY * y), Orientation = location.Orientation });
         }
 
         public void EnableWrapping(TextWrap wrap, Size maxSize)

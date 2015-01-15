@@ -1,4 +1,6 @@
-﻿using Arleen.Rendering.Utility;
+﻿using Arleen.Geometry;
+using Arleen.Rendering.Utility;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -133,7 +135,7 @@ namespace Arleen.Rendering.Sources
             GL.Disable(EnableCap.DepthTest);
             GL.LoadIdentity();
             ViewingVolumeHelper.PlaceOthogonalProjection(targetSize.Width, targetSize.Height, 0, 1);
-            _drawer.Draw(Color, new Rectangle(0, 0, targetSize.Width, targetSize.Height), HorizontalTextAlign, VerticalTextAlign);
+            _drawer.Draw(Color, new Location { Position = new Vector3d(0, 0, -1) }, targetSize, HorizontalTextAlign, VerticalTextAlign);
             GL.Enable(EnableCap.DepthTest);
         }
     }
