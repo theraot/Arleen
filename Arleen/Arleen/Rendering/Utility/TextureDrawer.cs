@@ -44,8 +44,8 @@ namespace Arleen.Rendering.Utility
             {
                 GL.Enable(EnableCap.Texture2D);
                 texture.Bind();
-                Vector3d x = Vector3d.Transform(new Vector3d(texture.Width, 0, 0), location.MatrixOrientation);
-                Vector3d y = Vector3d.Transform(new Vector3d(0, texture.Height, 0), location.MatrixOrientation);
+                Vector3d x = location.GetUnitX() * texture.Width;
+                Vector3d y = location.GetUnitY() * texture.Height;
 
                 GL.Color4(color);
 
