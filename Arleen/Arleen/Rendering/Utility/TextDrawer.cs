@@ -1,3 +1,5 @@
+using Arleen.Geometry;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -188,7 +190,7 @@ namespace Arleen.Rendering.Utility
         {
             // We use GetTexture, that's why we mark SecurityPermission
             Texture texture = GetTexture();
-            TextureDrawer.DrawTexture(texture, color, left, top);
+            TextureDrawer.DrawTexture(texture, color, new Location { Position = new Vector3d(left, top, -1) });
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
