@@ -30,6 +30,10 @@ namespace Arleen.Geometry
         {
             get
             {
+                if (_invalidated)
+                {
+                    UpdateModelMatrices();
+                }
                 return _matrix;
             }
         }
@@ -38,6 +42,10 @@ namespace Arleen.Geometry
         {
             get
             {
+                if (_invalidated)
+                {
+                    UpdateModelMatrices();
+                }
                 return _matrixOrientation;
             }
         }
@@ -46,6 +54,10 @@ namespace Arleen.Geometry
         {
             get
             {
+                if (_invalidated)
+                {
+                    UpdateModelMatrices();
+                }
                 return _matrixPosition;
             }
         }
