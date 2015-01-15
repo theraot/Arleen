@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Utility
 {
-    public class TextureDrawer
+    public static class TextureDrawer
     {
         public static void DrawTexture(Texture texture, Color color, double left, double top)
         {

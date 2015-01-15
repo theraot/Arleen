@@ -34,17 +34,6 @@ namespace Arleen.Rendering
         }
 
         /// <summary>
-        /// Gets whatever the initialization of this RenderSource has been executed.
-        /// </summary>
-        public bool Initialized
-        {
-            get
-            {
-                return _initialized;
-            }
-        }
-
-        /// <summary>
         /// Request this render source to produce its output.
         /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]

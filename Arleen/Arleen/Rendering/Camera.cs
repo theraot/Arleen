@@ -1,6 +1,4 @@
 ﻿using Arleen.Geometry;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering
 {
@@ -21,11 +19,6 @@ namespace Arleen.Rendering
         public Location Location { get; set; }
 
         public ViewingVolume ViewingVolume { get; set; }
-
-        public static void PlaceDefaultLocation()
-        {
-            GL.LoadIdentity();
-        }
 
         public void Place(Location.Mode mode)
         {

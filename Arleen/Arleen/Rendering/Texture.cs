@@ -145,7 +145,7 @@ namespace Arleen.Rendering
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public void Update(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
+        public void Update(Bitmap bitmap, Rectangle rectangle)
         {
             if (_index != 0)
             {

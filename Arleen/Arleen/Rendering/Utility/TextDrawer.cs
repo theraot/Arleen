@@ -376,7 +376,7 @@ namespace Arleen.Rendering.Utility
                 {
                     DrawTextToBitmap(bitmap, size);
                     // We use update, that's why we mark SecurityPermission
-                    _texture.Update(bitmap, new Rectangle(0, 0, _texture.Width, _texture.Height), TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+                    _texture.Update(bitmap, new Rectangle(0, 0, _texture.Width, _texture.Height));
                 }
             }
         }
