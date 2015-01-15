@@ -3,7 +3,7 @@ using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
-    public class CustomRenderer : RenderSource
+    public class CustomRenderer : RenderSource, ICameraRelative
     {
         private readonly Action _initialize;
         private readonly Action _render;
@@ -19,6 +19,8 @@ namespace Arleen.Rendering.Sources
             _render = render ?? NoOp;
             _initialize = NoOp;
         }
+
+        public Geometry.Location.Mode CameraPlaceMode { get; set; }
 
         protected override void OnInitilaize()
         {

@@ -69,6 +69,7 @@
     <Compile Include="Rendering\Sources\BackgroundColorRenderSource.cs" />
     <Compile Include="Rendering\Sources\CustomRenderer.cs" />
     <Compile Include="Rendering\Sources\BoxRenderer.cs" />
+    <Compile Include="Rendering\Sources\ICameraRelative.cs" />
     <Compile Include="Rendering\Sources\SkyboxRenderer.cs" />
     <Compile Include="Rendering\Sources\TextRenderer.cs" />
     <Compile Include="Rendering\Texture.cs" />

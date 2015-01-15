@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class SkyboxRenderer : RenderSource, IDisposable
+    public sealed class SkyboxRenderer : RenderSource, IDisposable, ICameraRelative
     {
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
@@ -17,7 +17,7 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width3 = FLT_width1 * 3;
 
         private Bitmap _bitmap;
-        private Action<Camera> _render;
+        private Action _render;
         private Texture _texture;
         private int dataBuffer = -1;
         private int indexBuffer = -1;
@@ -25,6 +25,14 @@ namespace Arleen.Rendering.Sources
         public SkyboxRenderer(Bitmap bitmap)
         {
             _bitmap = bitmap;
+        }
+
+        public Location.Mode CameraPlaceMode
+        {
+            get
+            {
+                return Location.Mode.OrientationOnly;
+            }
         }
 
         public void Dispose()
@@ -38,20 +46,20 @@ namespace Arleen.Rendering.Sources
         {
             if (GL.IsEnabled(EnableCap.DepthTest))
             {
-                _render = camera =>
+                _render = () =>
                 {
                     GL.Disable(EnableCap.DepthTest);
-                    Draw(camera);
+                    Draw();
                     GL.Enable(EnableCap.DepthTest);
                     GL.Clear(ClearBufferMask.DepthBufferBit);
                 };
             }
             else
             {
-                _render = camera =>
+                _render = () =>
                 {
                     GL.Clear(ClearBufferMask.DepthBufferBit);
-                    Draw(camera);
+                    Draw();
                 };
             }
             Build();
@@ -61,7 +69,7 @@ namespace Arleen.Rendering.Sources
 
         protected override void OnRender()
         {
-            _render(Renderer.RenderInfo.Camera);
+            _render();
         }
 
         private void Build()
@@ -201,9 +209,8 @@ namespace Arleen.Rendering.Sources
             GL.Arb.BufferData(BufferTargetArb.ElementArrayBuffer, (IntPtr)(_indexes.Length * sizeof(byte)), _indexes, BufferUsageArb.StaticDraw);
         }
 
-        private void Draw(Camera camera)
+        private void Draw()
         {
-            camera.Place(Location.Mode.OrientationOnly);
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));

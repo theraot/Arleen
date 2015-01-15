@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class BoxRenderer : RenderSource, IDisposable, ILocable
+    public sealed class BoxRenderer : RenderSource, IDisposable, ILocable, ICameraRelative
     {
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
@@ -18,36 +18,33 @@ namespace Arleen.Rendering.Sources
 
         private readonly Transformation _transformation;
         private Bitmap _bitmap;
-        private Location _location;
         private Mesh _mesh;
-        private Action<Camera> _render;
+        private Action _render;
         private Texture _texture;
 
         public BoxRenderer(Bitmap bitmap, Location location, Transformation transformation)
         {
             _bitmap = bitmap;
-            _location = location;
+            Location = location;
             _transformation = transformation;
         }
 
         public BoxRenderer(Bitmap bitmap, Location location)
         {
             _bitmap = bitmap;
-            _location = location;
+            Location = location;
             _transformation = Transformation.Identity;
         }
 
-        public Location Location
+        public Location.Mode CameraPlaceMode
         {
             get
             {
-                return _location;
-            }
-            set
-            {
-                _location = value;
+                return Location.Mode.All;
             }
         }
+
+        public Location Location { get; set; }
 
         public void Dispose()
         {
@@ -71,12 +68,12 @@ namespace Arleen.Rendering.Sources
             }
             else
             {
-                _render = camera =>
+                _render = () =>
                 {
                     GL.Enable(EnableCap.DepthTest);
                     GL.Clear(ClearBufferMask.DepthBufferBit);
                     GL.Disable(EnableCap.DepthTest);
-                    Draw(camera);
+                    Draw();
                 };
             }
             Build();
@@ -86,7 +83,7 @@ namespace Arleen.Rendering.Sources
 
         protected override void OnRender()
         {
-            _render(Renderer.RenderInfo.Camera);
+            _render();
         }
 
         private void Build()
@@ -191,10 +188,8 @@ namespace Arleen.Rendering.Sources
             _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, _data, BeginMode.Quads, _indexes);
         }
 
-        private void Draw(Camera camera)
+        private void Draw()
         {
-            camera.Place(Location.Mode.All);
-            _location.Apply(Location.Mode.All);
             _transformation.Apply();
             _texture.Bind();
             _mesh.Render();
