@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class BoxRenderer : RenderSource, IDisposable
+    public sealed class BoxRenderer : RenderSource, IDisposable, ILocable
     {
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
@@ -16,9 +16,9 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
-        private readonly Location _location;
         private readonly Transformation _transformation;
         private Bitmap _bitmap;
+        private Location _location;
         private Mesh _mesh;
         private Action<Camera> _render;
         private Texture _texture;
@@ -35,6 +35,18 @@ namespace Arleen.Rendering.Sources
             _bitmap = bitmap;
             _location = location;
             _transformation = Transformation.Identity;
+        }
+
+        public Location Location
+        {
+            get
+            {
+                return _location;
+            }
+            set
+            {
+                _location = value;
+            }
         }
 
         public void Dispose()

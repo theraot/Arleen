@@ -2,7 +2,7 @@
 
 namespace Arleen.Rendering
 {
-    public sealed class Camera
+    public sealed class Camera : ILocable
     {
         public Camera(ViewingVolume volume)
         {
