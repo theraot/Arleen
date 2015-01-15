@@ -134,38 +134,38 @@ namespace Arleen.Rendering.Utility
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, double left, double top)
+        public static void Draw(string text, Font font, bool antialias, TextWrap wrap, Size maxSize, Color color, Location location)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias, wrap, maxSize))
             {
-                textDrawer.Draw(color, left, top);
+                textDrawer.Draw(color, location);
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, bool antialias, Color color, double left, double top)
+        public static void Draw(string text, Font font, bool antialias, Color color, Location location)
         {
             using (var textDrawer = new TextDrawer(text, font, antialias))
             {
-                textDrawer.Draw(color, left, top);
+                textDrawer.Draw(color, location);
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color, double left, double top)
+        public static void Draw(string text, Font font, TextWrap wrap, Size maxSize, Color color, Location location)
         {
             using (var textDrawer = new TextDrawer(text, font, wrap, maxSize))
             {
-                textDrawer.Draw(color, left, top);
+                textDrawer.Draw(color, location);
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Draw(string text, Font font, Color color, double left, double top)
+        public static void Draw(string text, Font font, Color color, Location location)
         {
             using (var textDrawer = new TextDrawer(text, font))
             {
-                textDrawer.Draw(color, left, top);
+                textDrawer.Draw(color, location);
             }
         }
 
@@ -186,11 +186,11 @@ namespace Arleen.Rendering.Utility
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public void Draw(Color color, double left, double top)
+        public void Draw(Color color, Location location)
         {
             // We use GetTexture, that's why we mark SecurityPermission
             Texture texture = GetTexture();
-            TextureDrawer.DrawTexture(texture, color, new Location { Position = new Vector3d(left, top, -1) });
+            TextureDrawer.DrawTexture(texture, color, location);
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -221,7 +221,7 @@ namespace Arleen.Rendering.Utility
                     y += area.Size.Height - size.Height;
                     break;
             }
-            Draw(color, x, y);
+            Draw(color, new Location { Position = new Vector3d(x, y, -1) });
         }
 
         public void EnableWrapping(TextWrap wrap, Size maxSize)
