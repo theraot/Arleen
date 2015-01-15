@@ -181,7 +181,7 @@ namespace Arleen.Rendering
                 GL.Viewport(targetClipArea);
                 GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
 
-                target.RenderSource.Render();
+                target.Renderable.Render();
             }
         }
     }

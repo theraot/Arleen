@@ -8,7 +8,7 @@ namespace Arleen.Rendering
     public class RenderTarget
     {
         private readonly Camera _camera;
-        private readonly IRenderable _renderSource;
+        private readonly IRenderable _renderable;
         private readonly RectangleF _virtualClipArea;
 
         /// <summary>
@@ -16,12 +16,12 @@ namespace Arleen.Rendering
         /// </summary>
         /// <param name="virtualClipArea">The rectangle in which to render, in screen = 1.</param>
         /// <param name="camera">The camera associated with this target.</param>
-        /// <param name="renderSource">The render source that will be rendered to this target.</param>
-        public RenderTarget(RectangleF virtualClipArea, Camera camera, IRenderable renderSource)
+        /// <param name="renderable">The render source that will be rendered to this target.</param>
+        public RenderTarget(RectangleF virtualClipArea, Camera camera, IRenderable renderable)
         {
             _virtualClipArea = virtualClipArea;
             _camera = camera;
-            _renderSource = renderSource;
+            _renderable = renderable;
             Enabled = true;
         }
 
@@ -41,11 +41,11 @@ namespace Arleen.Rendering
         /// </summary>
         public bool Enabled { get; private set; }
 
-        public IRenderable RenderSource
+        public IRenderable Renderable
         {
             get
             {
-                return _renderSource;
+                return _renderable;
             }
         }
 
