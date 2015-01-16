@@ -19,16 +19,16 @@ namespace Arleen.Rendering.Utility
                 GL.Begin(BeginMode.Quads);
                 {
                     GL.TexCoord2(0f, 0f);
-                    GL.Vertex3(0, 0, -1);
+                    GL.Vertex3(0, 0, 0);
 
                     GL.TexCoord2(1f, 0f);
-                    GL.Vertex3(texture.Width, 0, -1);
+                    GL.Vertex3(texture.Width, 0, 0);
 
                     GL.TexCoord2(1f, 1f);
-                    GL.Vertex3(texture.Width, texture.Height, -1);
+                    GL.Vertex3(texture.Width, texture.Height, 0);
 
                     GL.TexCoord2(0f, 1f);
-                    GL.Vertex3(0, texture.Height, -1);
+                    GL.Vertex3(0, texture.Height, 0);
                 }
                 GL.End();
             }
