@@ -1,6 +1,4 @@
-﻿using Arleen.Geometry;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
 namespace Arleen.Rendering.Utility
@@ -11,6 +9,7 @@ namespace Arleen.Rendering.Utility
         {
             if (texture != null)
             {
+                GL.Scale(texture.Width, texture.Height, 0);
                 GL.Enable(EnableCap.Texture2D);
                 texture.Bind();
 
@@ -22,13 +21,13 @@ namespace Arleen.Rendering.Utility
                     GL.Vertex3(0, 0, 0);
 
                     GL.TexCoord2(1f, 0f);
-                    GL.Vertex3(texture.Width, 0, 0);
+                    GL.Vertex3(1, 0, 0);
 
                     GL.TexCoord2(1f, 1f);
-                    GL.Vertex3(texture.Width, texture.Height, 0);
+                    GL.Vertex3(1, 1, 0);
 
                     GL.TexCoord2(0f, 1f);
-                    GL.Vertex3(0, texture.Height, 0);
+                    GL.Vertex3(0, 1, 0);
                 }
                 GL.End();
             }
