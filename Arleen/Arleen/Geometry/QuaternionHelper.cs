@@ -3,8 +3,18 @@ using System;
 
 namespace Arleen.Geometry
 {
+    /// <summary>
+    /// Auxiliary methods for managing Quaternion
+    /// </summary>
     public static class QuaternionHelper
     {
+        /// <summary>
+        /// Creates a Quaternion from "euler" angles.
+        /// </summary>
+        /// <param name="bearing">The angle from the north over the horizontal plane.</param>
+        /// <param name="elevation">The angle from the horizontal plane.</param>
+        /// <param name="roll">The rotation over the viewing axis.</param>
+        /// <returns>The constructer Quaternion.</returns>
         public static Quaternion CreateFromEulerAngles(float bearing, float elevation, float roll)
         {
             var c1 = (float)Math.Cos(bearing / 2.0f);
@@ -24,17 +34,31 @@ namespace Arleen.Geometry
                 );
         }
 
-        public static Quaterniond Extrapolate(Quaterniond origin, Quaterniond rotation, double factor)
+        /// <summary>
+        /// Extrapolates a quaternion to another one.
+        /// </summary>
+        /// <param name="origin">The quaternion to explaplolate from.</param>
+        /// <param name="rotation">The quaternion to explaplolate to.</param>
+        /// <param name="factor">The extrapolation factor. 0 = origin, 1 = origin + rotation.</param>
+        /// <returns>A new quaternion creating by extrapolation a rotation.</returns>
+        public static Quaternion Extrapolate(Quaternion origin, Quaternion rotation, float factor)
         {
-            Vector3d axis;
-            double angle;
+            Vector3 axis;
+            float angle;
             rotation.ToAxisAngle(out axis, out angle);
-            var full_loop = 2 * Math.PI / angle;
+            var full_loop = (float)(2 * Math.PI / angle);
             var dt = factor % full_loop;
-            return origin * Quaterniond.FromAxisAngle(axis, angle * dt);
+            return origin * Quaternion.FromAxisAngle(axis, angle * dt);
         }
 
-        public static void ToEulerAngles(Quaterniond quaternion, out float bearing, out float elevation, out float roll)
+        /// <summary>
+        /// Retrieves the "euler" angles from a Quaternion.
+        /// </summary>
+        /// <param name="quaternion">The Quaternion.</param>
+        /// <param name="bearing">The angle from the north over the horizontal plane.</param>
+        /// <param name="elevation">The angle from the horizontal plane.</param>
+        /// <param name="roll">The rotation over the viewing axis.</param>
+        public static void ToEulerAngles(Quaternion quaternion, out float bearing, out float elevation, out float roll)
         {
             var sqx = quaternion.X * quaternion.X;
             var sqy = quaternion.Y * quaternion.Y;
