@@ -203,7 +203,7 @@ namespace Arleen.Rendering.Sources
 
         private void Draw()
         {
-            Renderer.Current.RenderInfo.Camera.PlaceLocation(Location.Mode.OrientationOnly);
+            Renderer.Current.RenderInfo.Camera.Location.PlaceInverted(Location.Mode.OrientationOnly);
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));

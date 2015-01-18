@@ -1,5 +1,4 @@
 ﻿using Arleen.Geometry;
-using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering
 {
@@ -24,16 +23,7 @@ namespace Arleen.Rendering
         public void Place(Location.Mode mode)
         {
             ViewingVolume.Place();
-            var matrix = Location.GetMatrix(mode);
-            matrix.Invert();
-            GL.LoadMatrix(ref matrix);
-        }
-
-        public void PlaceLocation(Location.Mode mode)
-        {
-            var matrix = Location.GetMatrix(mode);
-            matrix.Invert();
-            GL.LoadMatrix(ref matrix);
+            Location.PlaceInverted(mode);
         }
     }
 }

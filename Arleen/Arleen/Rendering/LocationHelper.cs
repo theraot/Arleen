@@ -10,11 +10,22 @@ namespace Arleen.Rendering
     public static class LocationHelper
     {
         /// <summary>
-        /// Places a location, replacing any prior location, to the current graphic context
+        /// Applies a location, extending any prior location, to the current graphic context
         /// </summary>
-        /// <param name="location">The location to place.</param>
+        /// <param name="location">The location to apply.</param>
         /// <param name="mode">The component of the location to use.</param>
         public static void Apply(this Location location, Location.Mode mode)
+        {
+            var matrix = location.GetMatrix(mode);
+            GL.MultMatrix(ref matrix);
+        }
+
+        /// <summary>
+        /// Applies a location inverted, extending any prior location, to the current graphic context
+        /// </summary>
+        /// <param name="location">The location to apply.</param>
+        /// <param name="mode">The component of the location to use.</param>
+        public static void ApplyInverted(this Location location, Location.Mode mode)
         {
             var matrix = location.GetMatrix(mode);
             GL.MultMatrix(ref matrix);
@@ -36,13 +47,25 @@ namespace Arleen.Rendering
         }
 
         /// <summary>
-        /// Applies a location, extending any prior location, to the current graphic context.
+        /// Places a location, replacing any prior location, to the current graphic context.
         /// </summary>
-        /// <param name="location">The location to apply.</param>
+        /// <param name="location">The location to place.</param>
         /// <param name="mode">The components of the location to use.</param>
         public static void Place(this Location location, Location.Mode mode)
         {
             var matrix = location.GetMatrix(mode);
+            GL.LoadMatrix(ref matrix);
+        }
+
+        /// <summary>
+        /// Places a location inverted, replacing any prior location, to the current graphic context.
+        /// </summary>
+        /// <param name="location">The location to place.</param>
+        /// <param name="mode">The components of the location to use.</param>
+        public static void PlaceInverted(this Location location, Location.Mode mode)
+        {
+            var matrix = location.GetMatrix(mode);
+            matrix.Invert();
             GL.LoadMatrix(ref matrix);
         }
     }
