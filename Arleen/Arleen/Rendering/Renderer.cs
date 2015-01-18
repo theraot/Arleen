@@ -1,4 +1,5 @@
 ﻿using Arleen.Game;
+using Arleen.Geometry;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Arleen.Rendering
     /// <summary>
     /// Manages the rendering process.
     /// </summary>
-    public class Renderer
+    public class Renderer : ILocable
     {
         [ThreadStatic]
         private static RenderInfo _renderInfo;
@@ -46,6 +47,17 @@ namespace Arleen.Rendering
             get
             {
                 return _fpsCounter.Fps;
+            }
+        }
+
+        /// <summary>
+        /// Returns the location of the current Camera
+        /// </summary>
+        public Location Location
+        {
+            get
+            {
+                return RenderInfo.Location;
             }
         }
 
