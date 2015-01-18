@@ -87,7 +87,7 @@ namespace Arleen.Rendering.Sources
         {
             get
             {
-                return Location.Mode.PositionOnly;
+                return Location.Mode.None;
             }
         }
 
