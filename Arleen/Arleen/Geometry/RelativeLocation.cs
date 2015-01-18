@@ -1,4 +1,3 @@
-using Arleen.Rendering;
 using OpenTK;
 using System;
 
@@ -69,6 +68,30 @@ namespace Arleen.Geometry
                 {
                     base.Position = value;
                 }
+            }
+        }
+
+        public Quaterniond RelativeOrientation
+        {
+            get
+            {
+                return base.Orientation;
+            }
+            set
+            {
+                base.Orientation = value;
+            }
+        }
+
+        public Vector3d RelativePosition
+        {
+            get
+            {
+                return base.Position;
+            }
+            set
+            {
+                base.Position = value;
             }
         }
 
