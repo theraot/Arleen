@@ -1,5 +1,6 @@
 using Arleen.Geometry;
 using Arleen.Rendering.Sources;
+using OpenTK.Graphics.OpenGL;
 using System.Security.Permissions;
 
 namespace Arleen.Rendering
@@ -52,6 +53,10 @@ namespace Arleen.Rendering
                 if (cameraRelation != null)
                 {
                     Renderer.Current.RenderInfo.Camera.Place(cameraRelation.CameraPlaceMode);
+                }
+                else
+                {
+                    GL.LoadIdentity();
                 }
                 var locable = this as ILocable;
                 if (locable != null)
