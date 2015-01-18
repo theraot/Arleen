@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class SkyboxRenderer : RenderSource, IDisposable, ILocable
+    public sealed class SkyboxRenderer : RenderSource, IDisposable, ICameraRelative
     {
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
@@ -16,8 +16,6 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
-        private readonly Location _location;
-
         private Bitmap _bitmap;
         private Action _render;
         private Texture _texture;
@@ -27,15 +25,6 @@ namespace Arleen.Rendering.Sources
         public SkyboxRenderer(Bitmap bitmap)
         {
             _bitmap = bitmap;
-            _location = new RelativeLocation(Renderer.Current, Location.Mode.PositionOnly);
-        }
-
-        public Location Location
-        {
-            get
-            {
-                return _location;
-            }
         }
 
         public void Dispose()
@@ -214,6 +203,7 @@ namespace Arleen.Rendering.Sources
 
         private void Draw()
         {
+            Renderer.Current.RenderInfo.Camera.Location.Place(Location.Mode.OrientationOnly);
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));

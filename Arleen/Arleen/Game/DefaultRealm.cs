@@ -85,19 +85,22 @@ namespace Arleen.Game
                 (
                     _camera1,
                     QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
+                    new Vector3d(0, 0, 0.001),
                     _textRenderer1
                 );
             UpdateCamera
                 (
                     _camera2,
                     QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
+                    new Vector3d(0, 0, 0.001),
                     _textRenderer2
                 );
         }
 
-        private void UpdateCamera(Camera camera, Quaterniond rotationPerSecond, TextRenderer textRenderer)
+        private void UpdateCamera(Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
         {
             camera.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
+            camera.Location.Position = translationPerSecond * TotalTime;
             //---
             double bearing, elevation, roll;
             QuaterniondHelper.ToEulerAngles(camera.Location.Orientation, out bearing, out elevation, out roll);
