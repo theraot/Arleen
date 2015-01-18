@@ -6,8 +6,8 @@ namespace Arleen.Geometry
     public class RelativeLocation : Location
     {
         private ILocable _anchor;
-        private Mode _mode;
         private int _lastSeenVersion;
+        private Mode _mode;
 
         public RelativeLocation()
         {
@@ -20,6 +20,18 @@ namespace Arleen.Geometry
             SetAnchor(anchor, mode);
         }
 
+        public Location Anchor
+        {
+            get
+            {
+                if (_anchor == null)
+                {
+                    return null;
+                }
+                return _anchor.Location;
+            }
+        }
+
         public override Quaterniond Orientation
         {
             get
@@ -29,7 +41,6 @@ namespace Arleen.Geometry
                 if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.OrientationOnly) != Mode.None)
                 {
                     var orientation = location.Orientation;
-                    orientation.Conjugate();
                     return orientation * base.Orientation;
                 }
                 return base.Orientation;
@@ -41,7 +52,8 @@ namespace Arleen.Geometry
                 if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.OrientationOnly) != Mode.None)
                 {
                     var orientation = location.Orientation;
-                    base.Orientation = value * orientation;
+                    orientation.Conjugate();
+                    base.Orientation = orientation * value;
                 }
                 else
                 {
@@ -59,7 +71,8 @@ namespace Arleen.Geometry
                 if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.PositionOnly) != Mode.None)
                 {
                     var position = location.Position;
-                    return position + base.Position;
+                    var matrix = location.MatrixOrientation;
+                    return Vector3d.Transform(base.Position, matrix) + position;
                 }
                 return base.Position;
             }
@@ -70,7 +83,9 @@ namespace Arleen.Geometry
                 if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.PositionOnly) != Mode.None)
                 {
                     var position = location.Position;
-                    base.Position = value - position;
+                    var matrix = location.MatrixOrientation;
+                    matrix.Invert();
+                    base.Position = Vector3d.Transform(value - position, matrix);
                 }
                 else
                 {
@@ -128,7 +143,9 @@ namespace Arleen.Geometry
                     if (check && (_mode & Mode.PositionOnly) != Mode.None)
                     {
                         var position = location.Position;
-                        base.Position = value - position;
+                        var matrix = location.MatrixOrientation;
+                        matrix.Invert();
+                        base.Position = Vector3d.Transform(value - position, matrix);
                     }
                     else
                     {
@@ -140,7 +157,8 @@ namespace Arleen.Geometry
                     if (check && (_mode & Mode.OrientationOnly) != Mode.None)
                     {
                         var orientation = location.Orientation;
-                        base.Orientation = value * orientation;
+                        orientation.Conjugate();
+                        base.Orientation = orientation * value;
                     }
                     else
                     {

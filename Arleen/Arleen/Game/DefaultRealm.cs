@@ -85,14 +85,14 @@ namespace Arleen.Game
                 (
                     _camera1,
                     QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
-                    new Vector3d(0, 0, 0.001),
+                    new Vector3d(0, 0, -0.001),
                     _textRenderer1
                 );
             UpdateCamera
                 (
                     _camera2,
                     QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
-                    new Vector3d(0, 0, 0.001),
+                    new Vector3d(0, 0, -0.001),
                     _textRenderer2
                 );
         }

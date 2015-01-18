@@ -183,7 +183,7 @@ namespace Arleen.Geometry
             {
                 _matrixPosition = OpenTK.Matrix4d.CreateTranslation(Position);
                 _matrixOrientation = OpenTK.Matrix4d.Rotate(Orientation);
-                _matrix = _matrixPosition * _matrixOrientation;
+                _matrix = _matrixOrientation * _matrixPosition;
                 _computedVersion = current;
             }
             return current;

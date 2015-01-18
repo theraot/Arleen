@@ -7,21 +7,30 @@ namespace Arleen.Rendering.Sources
     public class CustomRenderer : RenderSource, ILocable
     {
         private readonly Action _initialize;
+        private readonly Location _location;
         private readonly Action _render;
 
         public CustomRenderer(Action render, Action initialize)
         {
             _render = render ?? NoOp;
             _initialize = initialize ?? NoOp;
+            _location = new Location();
         }
 
         public CustomRenderer(Action render)
         {
             _render = render ?? NoOp;
             _initialize = NoOp;
+            _location = new Location();
         }
 
-        public Location Location { get; set; }
+        public Location Location
+        {
+            get
+            {
+                return _location;
+            }
+        }
 
         protected override void OnInitilaize()
         {
