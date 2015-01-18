@@ -38,10 +38,7 @@ namespace Arleen.Geometry
         {
             get
             {
-                if (_invalidated)
-                {
-                    UpdateModelMatrices();
-                }
+                UpdateModelMatrices();
                 return _matrix;
             }
         }
@@ -50,10 +47,7 @@ namespace Arleen.Geometry
         {
             get
             {
-                if (_invalidated)
-                {
-                    UpdateModelMatrices();
-                }
+                UpdateModelMatrices();
                 return _matrixOrientation;
             }
         }
@@ -62,10 +56,7 @@ namespace Arleen.Geometry
         {
             get
             {
-                if (_invalidated)
-                {
-                    UpdateModelMatrices();
-                }
+                UpdateModelMatrices();
                 return _matrixPosition;
             }
         }
@@ -105,29 +96,19 @@ namespace Arleen.Geometry
 
         public Vector3d Apply(Vector3d target, Mode mode)
         {
-            if (_invalidated)
-            {
-                UpdateModelMatrices();
-                _invalidated = false;
-            }
+            UpdateModelMatrices();
             return ApplyExtracted(target, mode);
         }
 
         public Matrix4d Apply(Matrix4d target, Mode mode)
         {
-            if (_invalidated)
-            {
-                UpdateModelMatrices();
-            }
+            UpdateModelMatrices();
             return ApplyExtracted(target, mode);
         }
 
         public Vector3d Apply(Vector3d target, Mode mode, bool reverse)
         {
-            if (_invalidated)
-            {
-                UpdateModelMatrices();
-            }
+            UpdateModelMatrices();
             if (reverse)
             {
                 switch (mode)
@@ -153,10 +134,7 @@ namespace Arleen.Geometry
 
         public Matrix4d Apply(Matrix4d target, Mode mode, bool reverse)
         {
-            if (_invalidated)
-            {
-                UpdateModelMatrices();
-            }
+            UpdateModelMatrices();
             if (reverse)
             {
                 switch (mode)
@@ -182,20 +160,32 @@ namespace Arleen.Geometry
 
         public Matrix4d GetMatrix(Mode mode)
         {
-            if (_invalidated)
-            {
-                UpdateModelMatrices();
-            }
+            UpdateModelMatrices();
             return GetMatrixExtracted(mode);
         }
 
         public override string ToString()
         {
+            UpdateModelMatrices();
+            return string.Format("Location: {0} - {1}", Position, Orientation);
+        }
+
+        internal void Invalidate()
+        {
+            _invalidated = true;
+        }
+
+        internal virtual bool UpdateModelMatrices()
+        {
             if (_invalidated)
             {
-                UpdateModelMatrices();
+                _matrixPosition = OpenTK.Matrix4d.CreateTranslation(Position);
+                _matrixOrientation = OpenTK.Matrix4d.Rotate(Orientation);
+                _matrix = _matrixPosition * _matrixOrientation;
+                _invalidated = false;
+                return true;
             }
-            return string.Format("Location: {0} - {1}", _position, _orientation);
+            return false;
         }
 
         private Vector3d ApplyExtracted(Vector3d target, Mode mode)
@@ -250,14 +240,6 @@ namespace Arleen.Geometry
                 default:
                     return Matrix4d.Identity;
             }
-        }
-
-        private void UpdateModelMatrices()
-        {
-            _matrixPosition = OpenTK.Matrix4d.CreateTranslation(_position);
-            _matrixOrientation = OpenTK.Matrix4d.Rotate(_orientation);
-            _matrix = _matrixPosition * _matrixOrientation;
-            _invalidated = false;
         }
     }
 }

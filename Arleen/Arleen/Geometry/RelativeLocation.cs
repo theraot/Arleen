@@ -23,21 +23,22 @@ namespace Arleen.Geometry
         {
             get
             {
-                if ((_mode & Mode.OrientationOnly) != Mode.None && _anchor.Location != null)
+                ILocable anchor;
+                Location location;
+                if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.OrientationOnly) != Mode.None)
                 {
-                    var orientation = _anchor.Location.Orientation;
+                    var orientation = location.Orientation;
                     return orientation * base.Orientation;
                 }
-                else
-                {
-                    return base.Orientation;
-                }
+                return base.Orientation;
             }
             set
             {
-                if ((_mode & Mode.OrientationOnly) != Mode.None && _anchor.Location != null)
+                ILocable anchor;
+                Location location;
+                if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.OrientationOnly) != Mode.None)
                 {
-                    var orientation = _anchor.Location.Orientation;
+                    var orientation = location.Orientation;
                     orientation.Conjugate();
                     base.Orientation = value * orientation;
                 }
@@ -52,21 +53,22 @@ namespace Arleen.Geometry
         {
             get
             {
-                if ((_mode & Mode.PositionOnly) != Mode.None && _anchor.Location != null)
+                ILocable anchor;
+                Location location;
+                if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.PositionOnly) != Mode.None)
                 {
-                    var position = _anchor.Location.Position;
+                    var position = location.Position;
                     return position + base.Position;
                 }
-                else
-                {
-                    return base.Position;
-                }
+                return base.Position;
             }
             set
             {
-                if ((_mode & Mode.PositionOnly) != Mode.None && _anchor.Location != null)
+                ILocable anchor;
+                Location location;
+                if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.PositionOnly) != Mode.None)
                 {
-                    var position = _anchor.Location.Position;
+                    var position = location.Position;
                     base.Position = value - position;
                 }
                 else
@@ -117,11 +119,13 @@ namespace Arleen.Geometry
         {
             if ((mode == Mode.None) == (anchor == null))
             {
+                Location location = null;
+                var check = anchor != null && (location = anchor.Location) != null;
                 {
                     var value = Position;
-                    if ((_mode & Mode.PositionOnly) != Mode.None)
+                    if (check && (_mode & Mode.PositionOnly) != Mode.None)
                     {
-                        var position = anchor.Location.Position;
+                        var position = location.Position;
                         base.Position = value - position;
                     }
                     else
@@ -131,9 +135,9 @@ namespace Arleen.Geometry
                 }
                 {
                     var value = Orientation;
-                    if ((_mode & Mode.OrientationOnly) != Mode.None)
+                    if (check && (_mode & Mode.OrientationOnly) != Mode.None)
                     {
-                        var orientation = anchor.Location.Orientation;
+                        var orientation = location.Orientation;
                         orientation.Conjugate();
                         base.Orientation = value * orientation;
                     }
@@ -147,6 +151,20 @@ namespace Arleen.Geometry
             {
                 throw new ArgumentException("Whenever anchor is null mode must be None, whenever mode is None anchor must be null.");
             }
+        }
+
+        internal override bool UpdateModelMatrices()
+        {
+            ILocable anchor;
+            Location location;
+            if ((anchor = _anchor) != null && (location = anchor.Location) != null)
+            {
+                if (location.UpdateModelMatrices())
+                {
+                    Invalidate();
+                }
+            }
+            return base.UpdateModelMatrices();
         }
     }
 }
