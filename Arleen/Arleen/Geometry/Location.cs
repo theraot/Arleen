@@ -62,7 +62,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public Quaterniond Orientation
+        public virtual Quaterniond Orientation
         {
             get
             {
@@ -79,7 +79,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public Vector3d Position
+        public virtual Vector3d Position
         {
             get
             {
