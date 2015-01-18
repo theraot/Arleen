@@ -3,7 +3,7 @@ using System;
 
 namespace Arleen.Geometry
 {
-    public class Location
+    public class Location : ILocable
     {
         private bool _invalidated;
         private OpenTK.Matrix4d _matrix = OpenTK.Matrix4d.Identity;
@@ -24,6 +24,14 @@ namespace Arleen.Geometry
             PositionOnly = 1,
             OrientationOnly = 2,
             All = 3
+        }
+
+        Location ILocable.Location
+        {
+            get
+            {
+                return this;
+            }
         }
 
         public OpenTK.Matrix4d Matrix

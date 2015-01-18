@@ -50,13 +50,14 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Game\DefaultRealm.cs" />
     <Compile Include="Geometry\QuaternionHelper.cs" />
+    <Compile Include="Geometry\RelativeLocation.cs" />
     <Compile Include="Geometry\Vector3dHelper.cs" />
     <Compile Include="Geometry\Vector3Helper.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Geometry\Location.cs" />
     <Compile Include="Geometry\QuaterniondHelper.cs" />
     <Compile Include="Rendering\FpsCounter.cs" />
-    <Compile Include="Rendering\ILocable.cs" />
+    <Compile Include="Geometry\ILocable.cs" />
     <Compile Include="Rendering\IRenderable.cs" />
     <Compile Include="Rendering\LocationHelper.cs" />
     <Compile Include="Rendering\Mesh.cs" />
