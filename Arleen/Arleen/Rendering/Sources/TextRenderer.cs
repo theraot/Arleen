@@ -148,7 +148,7 @@ namespace Arleen.Rendering.Sources
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void OnRender()
         {
-            var targetSize = Renderer.RenderInfo.TargetSize;
+            var targetSize = Renderer.Current.RenderInfo.TargetSize;
             GL.Disable(EnableCap.DepthTest);
             ViewingVolumeHelper.PlaceOthogonalProjection(targetSize.Width, targetSize.Height, 0, 1);
 

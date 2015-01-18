@@ -14,13 +14,14 @@ namespace Arleen.Rendering
     public class Renderer : ILocable
     {
         [ThreadStatic]
-        private static RenderInfo _renderInfo;
+        private static Renderer _current;
 
         private readonly List<RenderTarget> _renderTargets;
         private FpsCounter _fpsCounter;
         private double _last_time;
         private Rectangle _realClipArea;
         private Realm _realm;
+        private RenderInfo _renderInfo;
         private Thread _thread;
 
         /// <summary>
@@ -28,14 +29,20 @@ namespace Arleen.Rendering
         /// </summary>
         public Renderer()
         {
+            _current = this;
             _renderTargets = new List<RenderTarget>();
         }
 
-        public static RenderInfo RenderInfo
+        /// <summary>
+        /// Gets the Current renderer.
+        /// </summary>
+        /// <remarks>On a renderer thread, by default returns the Renderer that created the Thread.
+        /// Otherwise returns the last created renderer on the Thread, if none, returns null.</remarks>
+        public static Renderer Current
         {
             get
             {
-                return Renderer._renderInfo;
+                return _current;
             }
         }
 
@@ -51,13 +58,24 @@ namespace Arleen.Rendering
         }
 
         /// <summary>
-        /// Returns the location of the current Camera
+        /// Returns the location of the current Camera.
         /// </summary>
         public Location Location
         {
             get
             {
                 return RenderInfo.Location;
+            }
+        }
+
+        /// <summary>
+        /// Returns the last used RenderInfo.
+        /// </summary>
+        public RenderInfo RenderInfo
+        {
+            get
+            {
+                return _renderInfo;
             }
         }
 
@@ -89,6 +107,7 @@ namespace Arleen.Rendering
                 (
                     () =>
                     {
+                        _current = this;
                         _realm.Context.MakeCurrent(_realm.WindowInfo);
                         InitializeOpenGl();
                         while (true)

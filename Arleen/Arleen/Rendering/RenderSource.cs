@@ -51,7 +51,7 @@ namespace Arleen.Rendering
                 var cameraRelation = this as ICameraRelative;
                 if (cameraRelation != null)
                 {
-                    Renderer.RenderInfo.Camera.Place(cameraRelation.CameraPlaceMode);
+                    Renderer.Current.RenderInfo.Camera.Place(cameraRelation.CameraPlaceMode);
                 }
                 var locable = this as ILocable;
                 if (locable != null)
