@@ -14,6 +14,11 @@ namespace Arleen.Geometry
             _mode = Mode.None;
         }
 
+        public RelativeLocation(ILocable anchor, Mode mode)
+        {
+            SetAnchor(anchor, mode);
+        }
+
         public override Quaterniond Orientation
         {
             get
@@ -97,7 +102,7 @@ namespace Arleen.Geometry
 
         public void SetAnchor(ILocable anchor, Mode mode)
         {
-            if ((mode == Mode.None) == (_anchor == null))
+            if ((mode == Mode.None) == (anchor == null))
             {
                 _anchor = anchor;
                 _mode = mode;
@@ -110,7 +115,7 @@ namespace Arleen.Geometry
 
         public void TransferAnchor(ILocable anchor, Mode mode)
         {
-            if ((mode == Mode.None) == (_anchor == null))
+            if ((mode == Mode.None) == (anchor == null))
             {
                 {
                     var value = Position;
