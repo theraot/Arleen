@@ -7,6 +7,7 @@ namespace Arleen.Geometry
     {
         private ILocable _anchor;
         private Mode _mode;
+        private int _lastSeenVersion;
 
         public RelativeLocation()
         {
@@ -28,6 +29,7 @@ namespace Arleen.Geometry
                 if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.OrientationOnly) != Mode.None)
                 {
                     var orientation = location.Orientation;
+                    orientation.Conjugate();
                     return orientation * base.Orientation;
                 }
                 return base.Orientation;
@@ -39,7 +41,6 @@ namespace Arleen.Geometry
                 if ((anchor = _anchor) != null && (location = anchor.Location) != null && (_mode & Mode.OrientationOnly) != Mode.None)
                 {
                     var orientation = location.Orientation;
-                    orientation.Conjugate();
                     base.Orientation = value * orientation;
                 }
                 else
@@ -108,6 +109,7 @@ namespace Arleen.Geometry
             {
                 _anchor = anchor;
                 _mode = mode;
+                _lastSeenVersion = 0;
             }
             else
             {
@@ -138,7 +140,6 @@ namespace Arleen.Geometry
                     if (check && (_mode & Mode.OrientationOnly) != Mode.None)
                     {
                         var orientation = location.Orientation;
-                        orientation.Conjugate();
                         base.Orientation = value * orientation;
                     }
                     else
@@ -146,6 +147,9 @@ namespace Arleen.Geometry
                         base.Orientation = value;
                     }
                 }
+                _anchor = anchor;
+                _mode = mode;
+                _lastSeenVersion = 0;
             }
             else
             {
@@ -153,15 +157,17 @@ namespace Arleen.Geometry
             }
         }
 
-        internal override bool UpdateModelMatrices()
+        internal override int UpdateModelMatrices()
         {
             ILocable anchor;
             Location location;
             if ((anchor = _anchor) != null && (location = anchor.Location) != null)
             {
-                if (location.UpdateModelMatrices())
+                var seen = location.UpdateModelMatrices();
+                if (seen != _lastSeenVersion)
                 {
                     Invalidate();
+                    _lastSeenVersion = seen;
                 }
             }
             return base.UpdateModelMatrices();

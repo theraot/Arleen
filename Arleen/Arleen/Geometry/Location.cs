@@ -5,7 +5,8 @@ namespace Arleen.Geometry
 {
     public class Location : ILocable
     {
-        private bool _invalidated;
+        private int _computedVersion;
+        private int _currentVersion;
         private OpenTK.Matrix4d _matrix = OpenTK.Matrix4d.Identity;
         private OpenTK.Matrix4d _matrixOrientation = OpenTK.Matrix4d.Identity;
         private OpenTK.Matrix4d _matrixPosition = OpenTK.Matrix4d.Identity;
@@ -73,7 +74,7 @@ namespace Arleen.Geometry
                 {
                     _orientation = value;
                     _orientation.Normalize();
-                    _invalidated = true;
+                    _currentVersion++;
                 }
             }
         }
@@ -89,7 +90,7 @@ namespace Arleen.Geometry
                 if (_position != value)
                 {
                     _position = value;
-                    _invalidated = true;
+                    _currentVersion++;
                 }
             }
         }
@@ -172,20 +173,20 @@ namespace Arleen.Geometry
 
         internal void Invalidate()
         {
-            _invalidated = true;
+            _currentVersion++;
         }
 
-        internal virtual bool UpdateModelMatrices()
+        internal virtual int UpdateModelMatrices()
         {
-            if (_invalidated)
+            var current = _currentVersion;
+            if (current != _computedVersion)
             {
                 _matrixPosition = OpenTK.Matrix4d.CreateTranslation(Position);
                 _matrixOrientation = OpenTK.Matrix4d.Rotate(Orientation);
                 _matrix = _matrixPosition * _matrixOrientation;
-                _invalidated = false;
-                return true;
+                _computedVersion = current;
             }
-            return false;
+            return current;
         }
 
         private Vector3d ApplyExtracted(Vector3d target, Mode mode)
