@@ -37,8 +37,8 @@ namespace Arleen.Geometry
         /// <summary>
         /// Extrapolates a Quaterniond to another one.
         /// </summary>
-        /// <param name="origin">The Quaterniond to explaplolate from.</param>
-        /// <param name="rotation">The Quaterniond to explaplolate to.</param>
+        /// <param name="origin">The Quaterniond to extrapolate from.</param>
+        /// <param name="rotation">The Quaterniond to extrapolate to.</param>
         /// <param name="factor">The extrapolation factor. 0 = origin, 1 = origin + rotation.</param>
         /// <returns>A new Quaterniond creating by extrapolation a rotation.</returns>
         public static Quaterniond Extrapolate(Quaterniond origin, Quaterniond rotation, double factor)
