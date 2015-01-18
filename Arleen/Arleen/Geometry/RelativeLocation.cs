@@ -23,7 +23,7 @@ namespace Arleen.Geometry
         {
             get
             {
-                if ((_mode & Mode.OrientationOnly) != Mode.None)
+                if ((_mode & Mode.OrientationOnly) != Mode.None && _anchor.Location != null)
                 {
                     var orientation = _anchor.Location.Orientation;
                     return orientation * base.Orientation;
@@ -35,7 +35,7 @@ namespace Arleen.Geometry
             }
             set
             {
-                if ((_mode & Mode.OrientationOnly) != Mode.None)
+                if ((_mode & Mode.OrientationOnly) != Mode.None && _anchor.Location != null)
                 {
                     var orientation = _anchor.Location.Orientation;
                     orientation.Conjugate();
@@ -52,7 +52,7 @@ namespace Arleen.Geometry
         {
             get
             {
-                if ((_mode & Mode.PositionOnly) != Mode.None)
+                if ((_mode & Mode.PositionOnly) != Mode.None && _anchor.Location != null)
                 {
                     var position = _anchor.Location.Position;
                     return position + base.Position;
@@ -64,7 +64,7 @@ namespace Arleen.Geometry
             }
             set
             {
-                if ((_mode & Mode.PositionOnly) != Mode.None)
+                if ((_mode & Mode.PositionOnly) != Mode.None && _anchor.Location != null)
                 {
                     var position = _anchor.Location.Position;
                     base.Position = value - position;

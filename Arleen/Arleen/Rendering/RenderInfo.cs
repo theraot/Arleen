@@ -30,7 +30,14 @@ namespace Arleen.Rendering
         {
             get
             {
-                return Camera.Location;
+                if (Camera == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return Camera.Location;
+                }
             }
         }
 
