@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Arleen.Rendering.Sources
 {
-    public sealed class BoxRenderer : RenderSource, IDisposable, ILocable, ICameraRelative
+    public sealed class BoxRenderer : RenderSource, IDisposable, ILocable
     {
         private const float FLT_height0 = 0.0f;
         private const float FLT_height1 = 1.0f / 3.0f;
@@ -34,14 +34,6 @@ namespace Arleen.Rendering.Sources
             _bitmap = bitmap;
             Location = location;
             _transformation = Transformation.Identity;
-        }
-
-        public Location.Mode CameraPlaceMode
-        {
-            get
-            {
-                return Location.Mode.All;
-            }
         }
 
         public Location Location { get; set; }

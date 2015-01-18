@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Arleen.Geometry;
+using System;
 using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {
-    public class CustomRenderer : RenderSource, ICameraRelative
+    public class CustomRenderer : RenderSource, ILocable
     {
         private readonly Action _initialize;
         private readonly Action _render;
@@ -20,7 +21,7 @@ namespace Arleen.Rendering.Sources
             _initialize = NoOp;
         }
 
-        public Geometry.Location.Mode CameraPlaceMode { get; set; }
+        public Location Location { get; set; }
 
         protected override void OnInitilaize()
         {

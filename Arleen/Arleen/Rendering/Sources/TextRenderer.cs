@@ -83,14 +83,6 @@ namespace Arleen.Rendering.Sources
             }
         }
 
-        public Location.Mode CameraPlaceMode
-        {
-            get
-            {
-                return Location.Mode.None;
-            }
-        }
-
         public Color Color { get; set; }
 
         public Font Font

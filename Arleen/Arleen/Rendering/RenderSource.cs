@@ -49,14 +49,13 @@ namespace Arleen.Rendering
                     OnInitilaize();
                     _initialized = true;
                 }
-                var cameraRelation = this as ICameraRelative;
-                if (cameraRelation != null)
+                if (this is ICameraRelative)
                 {
-                    Renderer.Current.RenderInfo.Camera.Place(cameraRelation.CameraPlaceMode);
+                    GL.LoadIdentity();
                 }
                 else
                 {
-                    GL.LoadIdentity();
+                    Renderer.Current.RenderInfo.Camera.Place(Location.Mode.All);
                 }
                 var locable = this as ILocable;
                 if (locable != null)

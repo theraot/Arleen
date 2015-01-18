@@ -27,7 +27,7 @@ namespace Arleen.Rendering.Sources
         public SkyboxRenderer(Bitmap bitmap)
         {
             _bitmap = bitmap;
-            _location = new RelativeLocation(Renderer.Current, Location.Mode.OrientationOnly);
+            _location = new RelativeLocation(Renderer.Current, Location.Mode.PositionOnly);
         }
 
         public Location Location

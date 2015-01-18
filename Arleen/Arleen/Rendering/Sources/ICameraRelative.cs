@@ -1,9 +1,7 @@
-﻿using Arleen.Geometry;
-
-namespace Arleen.Rendering.Sources
+﻿namespace Arleen.Rendering.Sources
 {
     public interface ICameraRelative
     {
-        Location.Mode CameraPlaceMode { get; }
+        //Empty
     }
 }
