@@ -27,6 +27,7 @@ namespace Arleen.Geometry
             All = 3
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes", Justification = "Returns this")]
         Location ILocable.Location
         {
             get
