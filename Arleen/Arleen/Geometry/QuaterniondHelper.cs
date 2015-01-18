@@ -4,17 +4,17 @@ using System;
 namespace Arleen.Geometry
 {
     /// <summary>
-    /// Auxiliary methods for managing Quaterniond
+    /// Auxiliary methods for managing <see cref="Quaterniond"/>
     /// </summary>
     public static class QuaterniondHelper
     {
         /// <summary>
-        /// Creates a Quaterniond from "euler" angles.
+        /// Creates a <see cref="Quaterniond"/> from "euler" angles.
         /// </summary>
         /// <param name="bearing">The angle from the north over the horizontal plane.</param>
         /// <param name="elevation">The angle from the horizontal plane.</param>
         /// <param name="roll">The rotation over the viewing axis.</param>
-        /// <returns>The constructer Quaterniond.</returns>
+        /// <returns>The constructer <see cref="Quaterniond"/>.</returns>
         public static Quaterniond CreateFromEulerAngles(double bearing, double elevation, double roll)
         {
             var c1 = Math.Cos(bearing / 2.0);
@@ -35,12 +35,12 @@ namespace Arleen.Geometry
         }
 
         /// <summary>
-        /// Extrapolates a Quaterniond to another one.
+        /// Extrapolates a <see cref="Quaterniond"/> to another one.
         /// </summary>
-        /// <param name="origin">The Quaterniond to extrapolate from.</param>
-        /// <param name="rotation">The Quaterniond to extrapolate to.</param>
+        /// <param name="origin">The <see cref="Quaterniond"/> to extrapolate from.</param>
+        /// <param name="rotation">The <see cref="Quaterniond"/> to extrapolate to.</param>
         /// <param name="factor">The extrapolation factor. 0 = origin, 1 = origin + rotation.</param>
-        /// <returns>A new Quaterniond creating by extrapolation a rotation.</returns>
+        /// <returns>A new <see cref="Quaterniond"/> creating by extrapolation a rotation.</returns>
         public static Quaterniond Extrapolate(Quaterniond origin, Quaterniond rotation, double factor)
         {
             Vector3d axis;
@@ -52,9 +52,9 @@ namespace Arleen.Geometry
         }
 
         /// <summary>
-        /// Retrieves the "euler" angles from a Quaterniond.
+        /// Retrieves the "euler" angles from a <see cref="Quaterniond"/>.
         /// </summary>
-        /// <param name="quaterniond">The Quaterniond.</param>
+        /// <param name="quaterniond">The <see cref="Quaterniond"/>.</param>
         /// <param name="bearing">The angle from the north over the horizontal plane.</param>
         /// <param name="elevation">The angle from the horizontal plane.</param>
         /// <param name="roll">The rotation over the viewing axis.</param>
