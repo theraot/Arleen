@@ -4,6 +4,9 @@ using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {
+    /// <summary>
+    /// Represents a 3D structure.
+    /// </summary>
     public sealed class Mesh : IDisposable, IRenderable
     {
         private const int INT_ColorSize = 4;
@@ -41,6 +44,13 @@ namespace Arleen.Rendering
             }
         }
 
+        /// <summary>
+        /// Creates a new instance of Mesh.
+        /// </summary>
+        /// <param name="vextexInfo">The kinds of vertex info contained in this mesh.</param>
+        /// <param name="data">The vertexes data.</param>
+        /// <param name="beginMode">The way the vertexes are organized.</param>
+        /// <param name="indexes">The order of the vertexes.</param>
         public Mesh(VextexInfo vextexInfo, float[] data, BeginMode beginMode, byte[] indexes)
         {
             _stride = INT_PositionSize;
@@ -111,6 +121,9 @@ namespace Arleen.Rendering
             }
         }
 
+        /// <summary>
+        /// Represents the kinds of vertex information.
+        /// </summary>
         [Flags]
         public enum VextexInfo
         {
@@ -120,12 +133,18 @@ namespace Arleen.Rendering
             Texture = 4
         }
 
+        /// <summary>
+        /// Releases the allocated memory of the current Mesh.
+        /// </summary>
         public void Dispose()
         {
             GL.DeleteBuffer(_bufferData);
             GL.DeleteBuffer(_bufferIndexes);
         }
 
+        /// <summary>
+        /// Renders the current Mesh.
+        /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Render()
         {
