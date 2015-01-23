@@ -1,7 +1,6 @@
 ﻿using Arleen;
 using System;
 using System.Diagnostics;
-using Engine = Arleen.Program;
 
 namespace Articus
 {

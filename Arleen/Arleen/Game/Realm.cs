@@ -9,7 +9,7 @@ namespace Arleen.Game
         private readonly Stopwatch _time = new Stopwatch();
 
         protected Realm()
-            : this(Program.Configuration)
+            : this(Engine.Configuration)
         {
             // Empty
         }

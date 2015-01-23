@@ -72,7 +72,7 @@ namespace Arleen
             // - %AppData%\InternalName\Lang\langcode\AssemblyName.json
             // - Assembly!Namespace.Lang.langcode.json
 
-            var language = Program.CurrentLanguage.Split('-');
+            var language = Engine.CurrentLanguage.Split('-');
 
             var prefixes = new List<string>();
 

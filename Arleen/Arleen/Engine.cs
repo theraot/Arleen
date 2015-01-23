@@ -7,9 +7,9 @@ using System.IO;
 namespace Arleen
 {
     /// <summary>
-    /// The Program class contains the entry point
+    /// The Engine class is the main façade of the library
     /// </summary>
-    public static class Program
+    public static class Engine
     {
         private static Realm _currentRealm;
         private static bool _debugMode;

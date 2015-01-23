@@ -18,7 +18,7 @@ namespace Arleen
 
         private Logbook(SourceLevels level, bool allowDefaultListener)
         {
-            var displayName = Program.InternalName;
+            var displayName = Engine.InternalName;
             _logSource = new TraceSource(displayName)
             {
                 Switch = new SourceSwitch(displayName)

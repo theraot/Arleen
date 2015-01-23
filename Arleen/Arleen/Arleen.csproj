@@ -57,7 +57,7 @@
     <Compile Include="Geometry\RelativeLocation.cs" />
     <Compile Include="Geometry\Vector3dHelper.cs" />
     <Compile Include="Geometry\Vector3Helper.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Engine.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Geometry\Location.cs" />
     <Compile Include="Geometry\QuaterniondHelper.cs" />

@@ -67,12 +67,12 @@ namespace Arleen
 
         private static IEnumerable<string> GetConfigurationStorageFolders(string[] prefixes)
         {
-            var folders = new List<string> { Program.Folder };
+            var folders = new List<string> { Engine.Folder };
             var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                          + Path.DirectorySeparatorChar
-                         + Program.InternalName
+                         + Engine.InternalName
                          + Path.DirectorySeparatorChar;
-            if (optional != Program.Folder)
+            if (optional != Engine.Folder)
             {
                 folders.Add(optional);
             }
