@@ -4,8 +4,8 @@
     /// Represents the loaded configuration
     /// </summary>
     /// <remarks>Changing the values in Configuration does not reflect in the running program.
-    /// Note: Instances of this class are created via Resources.LoadConfig<Configuration></remarks>
-    internal class Configuration
+    /// Note: Instances of this class are created via Resources.LoadConfig</remarks>
+    public class Configuration
     {
         /// <summary>
         /// Sets or gets the display name for this program.
