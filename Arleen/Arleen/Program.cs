@@ -13,8 +13,11 @@ namespace Arleen
     {
         private static Realm _currentRealm;
         private static bool _debugMode;
-        private static LocalizedTexts _localizedTexts;
-        private static Logbook _logBook;
+
+        /// <summary>
+        /// Gets the loaded configuration for the program.
+        /// </summary>
+        public static Configuration Configuration { get; private set; }
 
         public static string CurrentLanguage { get; private set; }
 
@@ -35,21 +38,7 @@ namespace Arleen
         /// <remarks>The internal name is the simple name of the assembly, that is "Arleen"</remarks>
         public static string InternalName { get; private set; }
 
-        /// <summary>
-        /// Gets the localized texts for the assembly.
-        /// </summary>
-        internal static LocalizedTexts _
-        {
-            get
-            {
-                return _localizedTexts;
-            }
-        }
-
-        /// <summary>
-        /// Gets the loaded configuration for the program.
-        /// </summary>
-        internal static Configuration Configuration { get; private set; }
+        public static Logbook LogBook { get; private set; }
 
         /// <summary>
         /// Changes the current Realm.
@@ -71,7 +60,7 @@ namespace Arleen
             if (eventArgs.ExceptionObject is Exception)
             {
                 var exception = eventArgs.ExceptionObject as Exception;
-                _logBook.Trace
+                LogBook.Trace
                     (
                         TraceEventType.Critical,
                         "And suddently something went wrong, really wrong...\n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
@@ -81,7 +70,7 @@ namespace Arleen
             }
             else if (eventArgs.ExceptionObject != null)
             {
-                _logBook.Trace
+                LogBook.Trace
                     (
                         TraceEventType.Critical,
                         "Help me..."
@@ -89,7 +78,7 @@ namespace Arleen
             }
             else
             {
-                _logBook.Trace
+                LogBook.Trace
                     (
                         TraceEventType.Critical,
                         "It is all darkness..."
@@ -114,9 +103,9 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                if (_logBook != null)
+                if (LogBook != null)
                 {
-                    _logBook.ReportException(exception, "doing initialization", true);
+                    LogBook.ReportException(exception, "doing initialization", true);
                 }
                 else
                 {
@@ -172,16 +161,16 @@ namespace Arleen
             // Creating the logbook
             // *********************************
 
-            _logBook = Logbook.Initialize(_debugMode ? SourceLevels.All : SourceLevels.Information, true);
+            LogBook = Logbook.Initialize(_debugMode ? SourceLevels.All : SourceLevels.Information, true);
 
             try
             {
                 var logStreamWriter = new StreamWriter(Folder + "log.txt") { AutoFlush = true };
-                _logBook.AddListener(new TextWriterTraceListener(logStreamWriter));
+                LogBook.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
             catch (Exception exception)
             {
-                _logBook.ReportException(exception, "trying to create the log file.", true);
+                LogBook.ReportException(exception, "trying to create the log file.", true);
                 try
                 {
                     Console.WriteLine("Unable to create log file.");
@@ -200,19 +189,19 @@ namespace Arleen
             {
                 // Test for Console
                 GC.KeepAlive(Console.WindowHeight);
-                _logBook.AddListener(new ConsoleTraceListener());
+                LogBook.AddListener(new ConsoleTraceListener());
             }
             catch (Exception exception)
             {
-                _logBook.ReportException(exception, "trying to access the Console.", false);
+                LogBook.ReportException(exception, "trying to access the Console.", false);
             }
 
             if (_debugMode)
             {
-                _logBook.Trace(TraceEventType.Information, "[Running debug build]");
+                LogBook.Trace(TraceEventType.Information, "[Running debug build]");
             }
 
-            _logBook.Trace(TraceEventType.Information, "Internal name: {0}", assembly.FullName);
+            LogBook.Trace(TraceEventType.Information, "Internal name: {0}", assembly.FullName);
 
             // *********************************
             // Detecting Language
@@ -236,8 +225,8 @@ namespace Arleen
             {
                 if (!_debugMode)
                 {
-                    _logBook.ChangeLevel(SourceLevels.All);
-                    _logBook.Trace(TraceEventType.Information, "[Forced debug mode]");
+                    LogBook.ChangeLevel(SourceLevels.All);
+                    LogBook.Trace(TraceEventType.Information, "[Forced debug mode]");
                 }
             }
             if (string.IsNullOrEmpty(Configuration.DisplayName))
@@ -252,32 +241,26 @@ namespace Arleen
             {
                 CurrentLanguage = Configuration.Language;
             }
-
-            // *********************************
-            // Load loacalized text
-            // *********************************
-
-            _localizedTexts = Resources.LoadTexts();
         }
 
         private static void Main()
         {
             Initialize();
 
+            var _ = Resources.LoadTexts();
+
             // Salute
-            _logBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
+            LogBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             if (Configuration == null)
             {
-                _logBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
+                LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
                 return;
             }
 
-            Run();
-
-            Terminate();
+            Run(new Arleen.Game.DefaultRealm());
         }
 
         private static void Panic()
@@ -286,7 +269,7 @@ namespace Arleen
                 "Consider yourself lucky that this has been good to you so far.\n" +
                 "Alternatively, if this hasn't been good to you so far,\n" +
                 "consider yourself lucky that it won't be troubling you much longer.";
-            _logBook.Trace(TraceEventType.Critical, STR_PanicMessage);
+            LogBook.Trace(TraceEventType.Critical, STR_PanicMessage);
             if (_debugMode)
             {
                 Console.WriteLine("[Press a key to exit]");
@@ -294,13 +277,13 @@ namespace Arleen
             }
         }
 
-        private static void Run()
+        private static void Run(Realm realm)
         {
             try
             {
                 try
                 {
-                    _currentRealm = new Game.DefaultRealm();
+                    _currentRealm = realm;
                     _currentRealm.Run();
                 }
                 finally
@@ -309,13 +292,14 @@ namespace Arleen
                     {
                         _currentRealm.Dispose();
                     }
+                    Terminate();
                 }
             }
             catch (Exception exception)
             {
                 // Pokémon
                 // Gotta catch'em all!
-                _logBook.ReportException(exception, true);
+                LogBook.ReportException(exception, true);
                 Panic();
             }
         }
@@ -334,11 +318,11 @@ namespace Arleen
 
                 if (!Resources.SaveConfig(Configuration))
                 {
-                    _logBook.Trace(TraceEventType.Error, "Failed to save configuration.");
+                    LogBook.Trace(TraceEventType.Error, "Failed to save configuration.");
                 }
 
                 // Exit
-                _logBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
+                LogBook.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
 
                 if (_debugMode)
                 {
@@ -350,8 +334,7 @@ namespace Arleen
             {
                 // Pokémon
                 // Gotta catch'em all!
-                _logBook.ReportException(exception, true);
-                Panic();
+                LogBook.ReportException(exception, true);
             }
         }
     }
