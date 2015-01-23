@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace Arleen.Game
 {
-    public class Realm : GameWindow
+    public abstract class Realm : GameWindow
     {
         private readonly Stopwatch _time = new Stopwatch();
 
-        public Realm()
+        protected Realm()
             : this(Program.Configuration)
         {
             // Empty
@@ -26,10 +26,10 @@ namespace Arleen.Game
         // ---
         // TODO: Physics
         // ---
-        private Realm(Configuration configuration)
+        protected Realm(Configuration configuration)
             : base(configuration.Resolution.Width, configuration.Resolution.Height)
         {
-            Title = Program.DisplayName;
+            Title = configuration.DisplayName;
             _time.Start();
         }
 
