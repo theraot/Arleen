@@ -54,48 +54,7 @@ namespace Arleen
             }
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
-        {
-            // Legendary Pokémon
-            if (eventArgs.ExceptionObject is Exception)
-            {
-                var exception = eventArgs.ExceptionObject as Exception;
-                LogBook.Trace
-                    (
-                        TraceEventType.Critical,
-                        "And suddently something went wrong, really wrong...\n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
-                        exception.Message,
-                        exception.StackTrace
-                    );
-            }
-            else if (eventArgs.ExceptionObject != null)
-            {
-                LogBook.Trace
-                    (
-                        TraceEventType.Critical,
-                        "Help me..."
-                    );
-            }
-            else
-            {
-                LogBook.Trace
-                    (
-                        TraceEventType.Critical,
-                        "It is all darkness..."
-                    );
-            }
-        }
-
-        private static string GetApplicationDataFolder()
-        {
-            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
-                + System.IO.Path.DirectorySeparatorChar
-                + InternalName;
-            Directory.CreateDirectory(folder);
-            return folder;
-        }
-
-        private static void Initialize()
+        public static void Initialize()
         {
             try
             {
@@ -112,6 +71,42 @@ namespace Arleen
                     throw;
                 }
             }
+        }
+
+        public static void Run(Realm realm)
+        {
+            try
+            {
+                try
+                {
+                    _currentRealm = realm;
+                    _currentRealm.Run();
+                }
+                finally
+                {
+                    if (_currentRealm != null)
+                    {
+                        _currentRealm.Dispose();
+                    }
+                    Terminate();
+                }
+            }
+            catch (Exception exception)
+            {
+                // Pokémon
+                // Gotta catch'em all!
+                LogBook.ReportException(exception, true);
+                Panic();
+            }
+        }
+
+        private static string GetApplicationDataFolder()
+        {
+            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
+                + System.IO.Path.DirectorySeparatorChar
+                + InternalName;
+            Directory.CreateDirectory(folder);
+            return folder;
         }
 
         private static void InitializeExtracted()
@@ -243,26 +238,6 @@ namespace Arleen
             }
         }
 
-        private static void Main()
-        {
-            Initialize();
-
-            var _ = Resources.LoadTexts();
-
-            // Salute
-            LogBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = DisplayName }));
-
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-            if (Configuration == null)
-            {
-                LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
-                return;
-            }
-
-            Run(new Arleen.Game.DefaultRealm());
-        }
-
         private static void Panic()
         {
             const string STR_PanicMessage =
@@ -274,33 +249,6 @@ namespace Arleen
             {
                 Console.WriteLine("[Press a key to exit]");
                 Console.ReadKey();
-            }
-        }
-
-        private static void Run(Realm realm)
-        {
-            try
-            {
-                try
-                {
-                    _currentRealm = realm;
-                    _currentRealm.Run();
-                }
-                finally
-                {
-                    if (_currentRealm != null)
-                    {
-                        _currentRealm.Dispose();
-                    }
-                    Terminate();
-                }
-            }
-            catch (Exception exception)
-            {
-                // Pokémon
-                // Gotta catch'em all!
-                LogBook.ReportException(exception, true);
-                Panic();
             }
         }
 

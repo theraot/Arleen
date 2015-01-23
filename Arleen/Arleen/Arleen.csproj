@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4C874DEF-D057-4ED7-A110-81A294C78C3A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Arleen</RootNamespace>
     <AssemblyName>Arleen</AssemblyName>
@@ -34,6 +34,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -53,6 +57,7 @@
     <Compile Include="Geometry\RelativeLocation.cs" />
     <Compile Include="Geometry\Vector3dHelper.cs" />
     <Compile Include="Geometry\Vector3Helper.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Geometry\Location.cs" />
     <Compile Include="Geometry\QuaterniondHelper.cs" />
@@ -89,9 +94,6 @@
     <Compile Include="Geometry\ViewingVolume.cs" />
     <Compile Include="Geometry\ViewingVolume.Perspective.cs" />
     <Compile Include="LocalizedTexts.cs" />
-    <Compile Include="netfx\System\StringFormatWith.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="Rendering\ViewingVolumeHelper.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Game\Realm.cs" />
@@ -99,7 +101,6 @@
     <Compile Include="Logbook.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -107,7 +108,6 @@
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="Config\default.json" />
-    <EmbeddedResource Include="Lang\es.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
