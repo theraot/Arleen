@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Security.Permissions;
 
 namespace Arleen
 {
@@ -54,6 +55,7 @@ namespace Arleen
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Initialize()
         {
             try
@@ -109,6 +111,7 @@ namespace Arleen
             return folder;
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private static void InitializeExtracted()
         {
             // *********************************

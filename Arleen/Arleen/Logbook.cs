@@ -16,6 +16,7 @@ namespace Arleen
     {
         private readonly TraceSource _logSource;
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private Logbook(SourceLevels level, bool allowDefaultListener)
         {
             var displayName = Engine.InternalName;
@@ -160,6 +161,7 @@ namespace Arleen
         /// Changes the level for the messages that will be recorded.
         /// </summary>
         /// <param name="level"></param>
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         internal void ChangeLevel(SourceLevels level)
         {
             _logSource.Switch.Level = level;
