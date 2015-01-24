@@ -56,7 +56,7 @@ namespace Arleen.Geometry
         /// <summary>
         /// Returns the last placed projection matrix for the current viewing volume.
         /// </summary>
-        public OpenTK.Matrix4d ProjectionMatrix
+        public Matrix4d ProjectionMatrix
         {
             get
             {

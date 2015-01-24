@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Arleen.Rendering.Sources
 {
@@ -48,12 +49,9 @@ namespace Arleen.Rendering.Sources
         public void Dispose()
         {
             var sources = _renderSources;
-            foreach (var source in sources)
+            foreach (var source in sources.OfType<IDisposable>())
             {
-                if (source is IDisposable)
-                {
-                    (source as IDisposable).Dispose();
-                }
+                source.Dispose();
             }
             _renderSources.Clear();
         }

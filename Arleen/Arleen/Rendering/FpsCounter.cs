@@ -9,7 +9,7 @@ namespace Arleen.Rendering
     {
         private int _fpsCount;
         private int _fpsLast;
-        private double time;
+        private double _time;
 
         /// <summary>
         /// The last recorded number of frames per second.
@@ -29,12 +29,12 @@ namespace Arleen.Rendering
         public void OnRender(double elapsedSeconds)
         {
             _fpsCount++;
-            time += elapsedSeconds;
-            if (time >= 1)
+            _time += elapsedSeconds;
+            if (_time >= 1)
             {
                 _fpsLast = _fpsCount;
                 _fpsCount = 0;
-                time -= Math.Floor(time);
+                _time -= Math.Floor(_time);
             }
         }
     }

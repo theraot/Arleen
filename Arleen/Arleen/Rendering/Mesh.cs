@@ -17,8 +17,8 @@ namespace Arleen.Rendering
         private static readonly bool? CoreSupport;
 
         private readonly BeginMode _beginMode;
-        private readonly int _bufferData = -1;
-        private readonly int _bufferIndexes = -1;
+        private readonly int _bufferData;
+        private readonly int _bufferIndexes;
 
         private readonly int _length;
 

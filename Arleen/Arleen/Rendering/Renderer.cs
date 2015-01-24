@@ -18,7 +18,7 @@ namespace Arleen.Rendering
 
         private readonly List<RenderTarget> _renderTargets;
         private FpsCounter _fpsCounter;
-        private double _last_time;
+        private double _lastTime;
         private Rectangle _realClipArea;
         private Realm _realm;
         private RenderInfo _renderInfo;
@@ -97,7 +97,7 @@ namespace Arleen.Rendering
         public void Initialize(Realm realm)
         {
             _realm = realm;
-            _last_time = _realm.TotalTime;
+            _lastTime = _realm.TotalTime;
 
             _realm.Resize += RealmResize;
 
@@ -144,7 +144,7 @@ namespace Arleen.Rendering
             _fpsCounter = new FpsCounter();
         }
 
-        private void InitializeOpenGl()
+        private static void InitializeOpenGl()
         {
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.CullFace);
@@ -180,8 +180,8 @@ namespace Arleen.Rendering
         private void Render()
         {
             var totalTime = _realm.TotalTime;
-            var elapsed = totalTime - _last_time;
-            _last_time = _realm.TotalTime;
+            var elapsed = totalTime - _lastTime;
+            _lastTime = _realm.TotalTime;
 
             _fpsCounter.OnRender(elapsed / 1000.0);
 

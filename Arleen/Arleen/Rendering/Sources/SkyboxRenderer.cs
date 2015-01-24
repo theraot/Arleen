@@ -121,7 +121,7 @@ namespace Arleen.Rendering.Sources
             //  |/
             //  0----!__
 
-            var _data = new[]
+            var data = new[]
             {
                 //VEXTEX
                 //0
@@ -182,7 +182,7 @@ namespace Arleen.Rendering.Sources
                 up.Left, up.Top
             };
 
-            var _indexes = new byte[]
+            var indexes = new byte[]
             {
                 0, 1, 2, 3,
                 4, 5, 1, 0,
@@ -194,11 +194,11 @@ namespace Arleen.Rendering.Sources
 
             GL.Arb.GenBuffers(1, out dataBuffer);
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
-            GL.Arb.BufferData(BufferTargetArb.ArrayBuffer, (IntPtr)(_data.Length * sizeof(float)), _data, BufferUsageArb.StaticDraw);
+            GL.Arb.BufferData(BufferTargetArb.ArrayBuffer, (IntPtr)(data.Length * sizeof(float)), data, BufferUsageArb.StaticDraw);
 
             GL.Arb.GenBuffers(1, out indexBuffer);
             GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
-            GL.Arb.BufferData(BufferTargetArb.ElementArrayBuffer, (IntPtr)(_indexes.Length * sizeof(byte)), _indexes, BufferUsageArb.StaticDraw);
+            GL.Arb.BufferData(BufferTargetArb.ElementArrayBuffer, (IntPtr)(indexes.Length * sizeof(byte)), indexes, BufferUsageArb.StaticDraw);
         }
 
         private void Draw()

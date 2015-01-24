@@ -135,7 +135,7 @@ namespace Arleen.Rendering.Sources
             //  |/
             //  0----!__
 
-            var _data = new[]
+            var data = new[]
             {
                 //VEXTEX    //TEXTURES
                 //0
@@ -167,7 +167,7 @@ namespace Arleen.Rendering.Sources
                 A, B, B,    up.Left, up.Top
             };
 
-            var _indexes = new byte[]
+            var indexes = new byte[]
             {
                 3, 2, 1, 0,
                 0, 1, 5, 4,
@@ -177,7 +177,7 @@ namespace Arleen.Rendering.Sources
                 17, 16, 15, 14
             };
 
-            _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, _data, BeginMode.Quads, _indexes);
+            _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, BeginMode.Quads, indexes);
         }
 
         private void Draw()

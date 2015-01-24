@@ -123,17 +123,11 @@ namespace Arleen
             DisplayName = InternalName;
 
             var location = assembly.Location;
-            Folder = Path.GetDirectoryName(location);
-            if (Folder == null)
-            {
-                // Failed to get permision to query the file storage system.
-                // Fallback to ApplicationData
-                Folder = GetApplicationDataFolder();
-            }
-            if (!Folder.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            Folder = Path.GetDirectoryName(location) ?? GetApplicationDataFolder();
+            if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
-                Folder += System.IO.Path.DirectorySeparatorChar;
+                Folder += Path.DirectorySeparatorChar;
             }
 
             // *********************************

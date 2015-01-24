@@ -60,14 +60,7 @@ namespace Arleen
             get
             {
                 string result;
-                if (_wrapped.TryGetValue(key, out result))
-                {
-                    return result;
-                }
-                else
-                {
-                    return key;
-                }
+                return _wrapped.TryGetValue(key, out result) ? result : key;
             }
             set
             {
@@ -85,14 +78,7 @@ namespace Arleen
             get
             {
                 string result;
-                if (_wrapped.TryGetValue(key, out result))
-                {
-                    return result;
-                }
-                else
-                {
-                    return key;
-                }
+                return _wrapped.TryGetValue(key, out result) ? result : key;
             }
         }
 

@@ -128,10 +128,7 @@ namespace Arleen.Geometry
                         return target;
                 }
             }
-            else
-            {
-                return ApplyExtracted(target, mode);
-            }
+            return ApplyExtracted(target, mode);
         }
 
         public Matrix4d Apply(Matrix4d target, Mode mode, bool reverse)
@@ -154,10 +151,7 @@ namespace Arleen.Geometry
                         return target;
                 }
             }
-            else
-            {
-                return ApplyExtracted(target, mode);
-            }
+            return ApplyExtracted(target, mode);
         }
 
         public Matrix4d GetMatrix(Mode mode)

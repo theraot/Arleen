@@ -151,7 +151,7 @@ namespace Arleen.Rendering.Utility
         public void Draw(Color color)
         {
             // We use GetTexture, that's why we mark SecurityPermission
-            Texture texture = GetTexture();
+            var texture = GetTexture();
             TextureDrawer.DrawTexture(texture, color);
         }
 
@@ -226,7 +226,7 @@ namespace Arleen.Rendering.Utility
                 }
                 graphics.Clear(Color.Transparent);
 
-                StringFormat stringFormat = GetFormat();
+                var stringFormat = GetFormat();
                 graphics.DrawString(_text, _font, Brushes.White, new RectangleF(0f, 0f, size.Width, size.Height), stringFormat);
             }
 

@@ -19,7 +19,7 @@ namespace Arleen.Rendering.Utility
 
                 const float A = 0.0f;
                 const float B = 1.0f;
-                var _data = new[]
+                var data = new[]
                 {
                     //VEXTEX    //TEXTURES
                     //0
@@ -29,13 +29,13 @@ namespace Arleen.Rendering.Utility
                     B, B, A,    B, B,
                     A, B, A,    A, B
                 };
-                var _indexes = new byte[]
+                var indexes = new byte[]
                 {
                     0, 1, 2, 3
                 };
-                using (var _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, _data, BeginMode.Quads, _indexes))
+                using (var mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, BeginMode.Quads, indexes))
                 {
-                    _mesh.Render();
+                    mesh.Render();
                 }
             }
         }

@@ -101,13 +101,10 @@ namespace Arleen
                 );
                 return new LocalizedTexts(new Dictionary<string, string>());
             }
-            else
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
             {
-                using (var reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    var str = reader.ReadToEnd();
-                    return new LocalizedTexts(JsonConvert.DeserializeObject<Dictionary<string, string>>(str));
-                }
+                var str = reader.ReadToEnd();
+                return new LocalizedTexts(JsonConvert.DeserializeObject<Dictionary<string, string>>(str));
             }
         }
 
