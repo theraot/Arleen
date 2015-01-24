@@ -12,9 +12,9 @@ namespace Articus
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
             // Legendary Pokémon
-            if (eventArgs.ExceptionObject is Exception)
+            var exception = eventArgs.ExceptionObject as Exception;
+            if (exception != null)
             {
-                var exception = eventArgs.ExceptionObject as Exception;
                 Engine.LogBook.Trace
                     (
                         TraceEventType.Critical,
