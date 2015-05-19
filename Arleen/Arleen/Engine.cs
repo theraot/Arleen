@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Security.Permissions;
+using System.Threading;
 
 namespace Arleen
 {
@@ -12,14 +13,22 @@ namespace Arleen
     /// </summary>
     public static class Engine
     {
+		private const int INT_NotInitialized = 0;
+		private const int INT_Initializing = 1;
+		private const int INT_Initialized = 2;
+
         private static Realm _currentRealm;
         private static bool _debugMode;
+        private static int _status;
 
         /// <summary>
         /// Gets the loaded configuration for the program.
         /// </summary>
         public static Configuration Configuration { get; private set; }
 
+        /// <summary>
+        /// Gets the currently configured langauge.
+        /// </summary>
         public static string CurrentLanguage { get; private set; }
 
         /// <summary>
@@ -39,6 +48,9 @@ namespace Arleen
         /// <remarks>The internal name is the simple name of the assembly, that is "Arleen"</remarks>
         public static string InternalName { get; private set; }
 
+        /// <summary>
+        /// Gets the LogBook used to write log entries.
+        /// </summary>
         public static Logbook LogBook { get; private set; }
 
         /// <summary>
@@ -55,12 +67,19 @@ namespace Arleen
             }
         }
 
+        /// <summary>
+        /// Initialized the engine
+        /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Initialize()
         {
             try
             {
-                InitializeExtracted();
+                if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
+                {
+                    InitializeExtracted();
+                    Thread.VolatileWrite(ref _status, INT_Initialized);
+                }
             }
             catch (Exception exception)
             {
@@ -75,8 +94,17 @@ namespace Arleen
             }
         }
 
+        /// <summary>
+        /// Runs the specified realm.
+        /// </summary>
+        /// <param name="realm">The realm to run.</param>
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Run(Realm realm)
         {
+            if (Thread.VolatileRead(ref _status) != INT_Initialized)
+            {
+                throw new InvalidOperationException("The Engine has not been initialized");
+            }
             try
             {
                 try
@@ -114,6 +142,8 @@ namespace Arleen
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private static void InitializeExtracted()
         {
+            // Note: this method is not thread safe.
+
             // *********************************
             // Getting folder and display name
             // *********************************
