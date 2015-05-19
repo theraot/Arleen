@@ -60,10 +60,23 @@ namespace Arleen
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TextLocalization LoadTexts()
         {
-            return (format, source) => GetLocalizedTexts()[format].FormatWith(source);
+            var dictionary = GetLocalizedTexts();
+            if (dictionary == null)
+            {
+                return (format, source) => format;
+            }
+            return (format, source) =>
+            {
+                string result;
+                if (dictionary.TryGetValue(format, out result))
+                {
+                    return result.FormatWith(source);
+                }
+                return format;
+            };
         }
 
-        private static LocalizedTexts GetLocalizedTexts()
+        private static Dictionary<string, string> GetLocalizedTexts()
         {
             var assembly = Assembly.GetCallingAssembly();
             Logbook.Instance.Trace
@@ -104,12 +117,12 @@ namespace Arleen
                     "No localized texts for {0}",
                     assembly.GetName().Name
                 );
-                return new LocalizedTexts(new Dictionary<string, string>());
+                return null;
             }
             using (var reader = new StreamReader(stream, Encoding.UTF8))
             {
                 var str = reader.ReadToEnd();
-                return new LocalizedTexts(JsonConvert.DeserializeObject<Dictionary<string, string>>(str));
+                return JsonConvert.DeserializeObject<Dictionary<string, string>>(str);
             }
         }
 

@@ -90,7 +90,6 @@
     </Compile>
     <Compile Include="Geometry\ViewingVolume.cs" />
     <Compile Include="Geometry\ViewingVolume.Perspective.cs" />
-    <Compile Include="LocalizedTexts.cs" />
     <Compile Include="Rendering\ViewingVolumeHelper.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Game\Realm.cs" />
