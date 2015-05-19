@@ -13,9 +13,9 @@ namespace Arleen
     /// </summary>
     public static class Engine
     {
-		private const int INT_NotInitialized = 0;
-		private const int INT_Initializing = 1;
-		private const int INT_Initialized = 2;
+        private const int INT_NotInitialized = 0;
+        private const int INT_Initializing = 1;
+        private const int INT_Initialized = 2;
 
         private static Realm _currentRealm;
         private static bool _debugMode;
@@ -52,6 +52,11 @@ namespace Arleen
         /// Gets the LogBook used to write log entries.
         /// </summary>
         public static Logbook LogBook { get; private set; }
+
+        /// <summary>
+        /// Gets the text localization 
+        /// </summary>
+        public static TextLocalization TextLocalization { get; private set; }
 
         /// <summary>
         /// Changes the current Realm.
@@ -238,7 +243,7 @@ namespace Arleen
             // Reading main configuration
             // *********************************
 
-            Configuration = Resources.LoadConfig<Configuration>();
+            Configuration = ResourcesInternal.LoadConfig<Configuration>();
             if (Configuration == null)
             {
                 return;
@@ -263,6 +268,14 @@ namespace Arleen
             {
                 CurrentLanguage = Configuration.Language;
             }
+
+            LogBook.Trace(TraceEventType.Information, "Current Language: {0}", CurrentLanguage);
+
+            // *********************************
+            // Load localized texts
+            // *********************************
+
+            TextLocalization = ResourcesInternal.LoadTexts(CurrentLanguage);
         }
 
         private static void Panic()
@@ -291,7 +304,7 @@ namespace Arleen
             {
                 // Save configuration
 
-                if (!Resources.SaveConfig(Configuration))
+                if (!ResourcesInternal.SaveConfig(Configuration))
                 {
                     LogBook.Trace(TraceEventType.Error, "Failed to save configuration.");
                 }

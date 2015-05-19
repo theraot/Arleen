@@ -45,7 +45,7 @@ namespace Articus
         {
             Engine.Initialize();
 
-            var _ = Resources.LoadTexts();
+            var _ = Engine.TextLocalization;
 
             // Salute
             Engine.LogBook.Trace(TraceEventType.Information, _("Hello, my name is {name}.", new { name = Engine.DisplayName }));

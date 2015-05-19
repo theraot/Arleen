@@ -98,6 +98,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourcesInternal.cs" />
     <Compile Include="TextLocalization.cs" />
   </ItemGroup>
   <ItemGroup>
