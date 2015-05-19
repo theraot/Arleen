@@ -48,7 +48,7 @@ namespace Articus
             var _ = Resources.LoadTexts();
 
             // Salute
-            Engine.LogBook.Trace(TraceEventType.Information, _["Hello, my name is {name}."].FormatWith(new { name = Engine.DisplayName }));
+            Engine.LogBook.Trace(TraceEventType.Information, _("Hello, my name is {name}.", new { name = Engine.DisplayName }));
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 

@@ -58,7 +58,12 @@ namespace Arleen
         /// </summary>
         /// <returns>a new LocalizedTexts object for the calling assembly</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static LocalizedTexts LoadTexts()
+        public static TextLocalization LoadTexts()
+        {
+            return (format, source) => GetLocalizedTexts()[format].FormatWith(source);
+        }
+
+        private static LocalizedTexts GetLocalizedTexts()
         {
             var assembly = Assembly.GetCallingAssembly();
             Logbook.Instance.Trace
