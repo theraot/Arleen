@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arleen", "Arleen\Arleen.csproj", "{4C874DEF-D057-4ED7-A110-81A294C78C3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articus", "Articus\Articus.csproj", "{C6DE1F5A-EAD4-4800-88C5-A8C005808B3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experior", "Experior\Experior.csproj", "{D6F2FF0A-2DA3-4A54-BCFF-EDA8A1E98C26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C6DE1F5A-EAD4-4800-88C5-A8C005808B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6DE1F5A-EAD4-4800-88C5-A8C005808B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6DE1F5A-EAD4-4800-88C5-A8C005808B3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F2FF0A-2DA3-4A54-BCFF-EDA8A1E98C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F2FF0A-2DA3-4A54-BCFF-EDA8A1E98C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F2FF0A-2DA3-4A54-BCFF-EDA8A1E98C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F2FF0A-2DA3-4A54-BCFF-EDA8A1E98C26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
