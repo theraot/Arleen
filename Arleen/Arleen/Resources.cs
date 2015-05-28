@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -20,6 +21,16 @@ namespace Arleen
         {
             var assembly = Assembly.GetCallingAssembly();
             var stream = ResourceLoader.Read(assembly, Path.DirectorySeparatorChar + resourceName, new[] { "Images" }, resourceName);
+            if (stream == null)
+            {
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Error,
+                    " - Unable to load Bitmap {0}.",
+                    resourceName
+                );
+                return null;
+            }
             return new Bitmap(stream);
         }
     }
