@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Security.Permissions;
@@ -30,7 +31,11 @@ namespace Arleen.Rendering
             }
             catch (Exception)
             {
-                Console.WriteLine("Invalid resource.");
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Error,
+                    " - Invalid resource."
+                );
             }
         }
 
@@ -50,7 +55,11 @@ namespace Arleen.Rendering
             }
             catch (Exception)
             {
-                Console.WriteLine("Invalid resource.");
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Error,
+                    " - Invalid resource."
+                );
             }
         }
 
@@ -71,7 +80,11 @@ namespace Arleen.Rendering
             }
             catch (Exception)
             {
-                Console.WriteLine("Invalid resource.");
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Error,
+                    " - Invalid resource."
+                );
             }
         }
 
@@ -93,7 +106,11 @@ namespace Arleen.Rendering
             }
             catch (Exception)
             {
-                Console.WriteLine("Invalid resource.");
+                Logbook.Instance.Trace
+                (
+                    TraceEventType.Error,
+                    " - Invalid resource."
+                );
             }
         }
 
