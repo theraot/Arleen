@@ -11,6 +11,26 @@ namespace Arleen
     /// </summary>
     internal static class ResourceLoader
     {
+        public static IEnumerable<string> GetFolders(string[] prefixes)
+        {
+            var folders = new List<string> { Engine.Folder };
+            var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                         + Path.DirectorySeparatorChar
+                         + Engine.InternalName
+                         + Path.DirectorySeparatorChar;
+            if (optional != Engine.Folder)
+            {
+                folders.Add(optional);
+            }
+            foreach (var folder in folders)
+            {
+                foreach (var prefix in prefixes)
+                {
+                    yield return folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                }
+            }
+        }
+
         /// <summary>
         /// Reads a resource as an stream.
         /// </summary>
@@ -64,27 +84,6 @@ namespace Arleen
                 output.Write(buffer, 0, index);
             }
         }
-
-        private static IEnumerable<string> GetFolders(string[] prefixes)
-        {
-            var folders = new List<string> { Engine.Folder };
-            var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                         + Path.DirectorySeparatorChar
-                         + Engine.InternalName
-                         + Path.DirectorySeparatorChar;
-            if (optional != Engine.Folder)
-            {
-                folders.Add(optional);
-            }
-            foreach (var folder in folders)
-            {
-                foreach (var prefix in prefixes)
-                {
-                    yield return folder + prefix.Replace('.', Path.DirectorySeparatorChar);
-                }
-            }
-        }
-
         private static bool TryProcessResource(Assembly assembly, string resource, out Stream stream)
         {
             stream = assembly.GetManifestResourceStream(resource);
