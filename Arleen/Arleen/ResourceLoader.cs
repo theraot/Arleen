@@ -23,9 +23,9 @@ namespace Arleen
         {
             Stream stream;
 
-            foreach (var configurationStorageFolder in GetConfigurationStorageFolders(prefixes))
+            foreach (var folder in GetFolders(prefixes))
             {
-                if (TryReadStream(configurationStorageFolder, extension, assembly, out stream))
+                if (TryReadStream(folder, extension, assembly, out stream))
                 {
                     return stream;
                 }
@@ -44,9 +44,9 @@ namespace Arleen
         /// <returns>true if the resource was written, false otherwise.</returns>
         public static bool Write(Assembly assembly, string prefix, string resourceName, Stream stream)
         {
-            foreach (var configurationStorageFolder in GetConfigurationStorageFolders(new[] { prefix }))
+            foreach (var folder in GetFolders(new[] { prefix }))
             {
-                if (TryWriteStream(configurationStorageFolder, resourceName, assembly, stream))
+                if (TryWriteStream(folder, resourceName, assembly, stream))
                 {
                     return true;
                 }
@@ -65,7 +65,7 @@ namespace Arleen
             }
         }
 
-        private static IEnumerable<string> GetConfigurationStorageFolders(string[] prefixes)
+        private static IEnumerable<string> GetFolders(string[] prefixes)
         {
             var folders = new List<string> { Engine.Folder };
             var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
