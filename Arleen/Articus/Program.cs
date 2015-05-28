@@ -18,7 +18,8 @@ namespace Articus
                 Engine.LogBook.Trace
                     (
                         TraceEventType.Critical,
-                        "And suddently something went wrong, really wrong...\n == Exception Report == \n{0}\n == Stacktrace == \n{1}",
+                        "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
+                        exception.GetType().Name,
                         exception.Message,
                         exception.StackTrace
                     );
