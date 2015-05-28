@@ -26,7 +26,11 @@ namespace Arleen
             {
                 foreach (var prefix in prefixes)
                 {
-                    yield return folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                    var result = folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                    if (Directory.Exists(result))
+                    {
+                        yield return result;
+                    }
                 }
             }
         }
