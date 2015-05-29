@@ -31,7 +31,7 @@ namespace Arleen.Game
             _textRenderer1 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
             _textRenderer2 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
             //---
-            _renderer = new Renderer();
+			var scene = new Scene();
             var brickwall = Resources.LoadBitmap("brickwall.png");
             var sources = new AggregateRenderSource
                 (
@@ -44,7 +44,7 @@ namespace Arleen.Game
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
                     }
                 );
-            _renderer.RenderTargets.Add
+			scene.RenderTargets.Add
                 (
                     new RenderTarget
                         (
@@ -60,7 +60,7 @@ namespace Arleen.Game
                             )
                         )
                 );
-            _renderer.RenderTargets.Add
+			scene.RenderTargets.Add
                 (
                     new RenderTarget
                         (
@@ -76,7 +76,8 @@ namespace Arleen.Game
                             )
                         )
                 );
-            _renderer.Initialize(this);
+			_renderer = new Renderer(scene);
+            _renderer.Initialize(this, this);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)

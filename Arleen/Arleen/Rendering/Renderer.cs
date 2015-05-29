@@ -70,7 +70,6 @@ namespace Arleen.Rendering
                 (
                     () =>
                     {
-                        _current = this;
                         _realm.Context.MakeCurrent(_realm.WindowInfo);
                         InitializeOpenGl();
                         while (true)
@@ -96,7 +95,6 @@ namespace Arleen.Rendering
                                 break;
                             }
                         }
-                        Release();
                     }
                 )
             {
