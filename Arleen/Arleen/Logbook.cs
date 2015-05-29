@@ -14,6 +14,7 @@ namespace Arleen
     /// C) There should be only one Logbook per AppDomain. </remarks>
     public class Logbook
     {
+        static Logbook _instance;
         private readonly TraceSource _logSource;
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -37,7 +38,17 @@ namespace Arleen
         /// Gets the existing instance of Logbook.
         /// </summary>
         /// <remarks>This may be null during initialization. </remarks>
-        public static Logbook Instance { get; private set; }
+        public static Logbook Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    throw new InvalidOperationException ("Engine initialization is not done");
+                }
+                return _instance;
+            }
+        }
 
         /// <summary>
         /// Adds a new listener to the Logbook.
@@ -150,11 +161,11 @@ namespace Arleen
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
             // Since that should not happen, let's accept the garbage if somehow that comes to be.
-            if (Instance != null)
+            if (_instance != null)
             {
-                return Instance;
+                return _instance;
             }
-            return Instance = new Logbook(level, allowDefaultListener);
+            return _instance = new Logbook(level, allowDefaultListener);
         }
 
         /// <summary>
