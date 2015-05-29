@@ -14,7 +14,7 @@ namespace Arleen
     /// C) There should be only one Logbook per AppDomain. </remarks>
     public class Logbook
     {
-        static Logbook _instance;
+        private static Logbook _instance;
         private readonly TraceSource _logSource;
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
