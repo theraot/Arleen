@@ -8,6 +8,8 @@ namespace Arleen.Rendering
     /// </summary>
     public struct RenderInfo : ILocable
     {
+        public static RenderInfo Current;
+
         /// <summary>
         /// The camera to which to render.
         /// </summary>
