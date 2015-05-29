@@ -9,7 +9,7 @@ namespace Arleen
     /// <summary>
     /// Use ResourceLoader to read and write resources.
     /// </summary>
-    internal static class ResourceLoader
+	public static class ResourceLoader
     {
         public static IEnumerable<string> GetFolders(string[] prefixes)
         {
@@ -43,7 +43,7 @@ namespace Arleen
         /// <param name="prefixes">A list of valid prefixes for the resource to load.</param>
         /// <param name="resourceName">The name of the resource to load.</param>
         /// <returns>A readable stream for the resource.</returns>
-        public static Stream Read(Assembly assembly, string extension, string[] prefixes, string resourceName)
+        internal static Stream Read(Assembly assembly, string extension, string[] prefixes, string resourceName)
         {
             Stream stream;
 
@@ -66,7 +66,7 @@ namespace Arleen
         /// <param name="resourceName">The name of the resource to write.</param>
         /// <param name="stream">A readable stream with the resource to be written.</param>
         /// <returns>true if the resource was written, false otherwise.</returns>
-        public static bool Write(Assembly assembly, string prefix, string resourceName, Stream stream)
+		internal static bool Write(Assembly assembly, string prefix, string resourceName, Stream stream)
         {
             foreach (var folder in GetFolders(new[] { prefix }))
             {
