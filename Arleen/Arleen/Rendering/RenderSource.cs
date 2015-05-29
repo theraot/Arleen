@@ -55,7 +55,7 @@ namespace Arleen.Rendering
                 }
                 else
                 {
-                    Renderer.Current.RenderInfo.Camera.Place(Location.Mode.All);
+                    RenderInfo.Current.Camera.Place(Location.Mode.All);
                 }
                 var locable = this as ILocable;
                 if (locable != null)
