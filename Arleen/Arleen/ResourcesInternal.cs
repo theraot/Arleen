@@ -32,7 +32,7 @@ namespace Arleen
             // - ~\Config\AssemblyName.json
             // - %AppData%\InternalName\Config\AssemblyName.json
             // - Assembly!Namespace.Config.default.json
-            using (var reader = new StreamReader(ResourceLoader.Read(assembly, ".json", new[] { "Config" }, "default.json"), Encoding.UTF8))
+            using (var reader = new StreamReader(Resources.Instance.Read(assembly, ".json", new[] { "Config" }, "default.json"), Encoding.UTF8))
             {
                 var str = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<T>(str);
@@ -94,7 +94,7 @@ namespace Arleen
 
             prefixes.Reverse();
 
-            var stream = ResourceLoader.Read(assembly, ".json", prefixes.ToArray(), "json");
+            var stream = Resources.Instance.Read(assembly, ".json", prefixes.ToArray(), "json");
             if (stream == null)
             {
                 Logbook.Instance.Trace
@@ -134,7 +134,7 @@ namespace Arleen
             // - %AppData%\InternalName\Config\AssemblyName.json
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
             {
-                return ResourceLoader.Write(assembly, "Config", ".json", stream);
+                return Resources.Instance.Write(assembly, "Config", ".json", stream);
             }
         }
     }

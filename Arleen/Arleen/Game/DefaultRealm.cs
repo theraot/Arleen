@@ -31,20 +31,20 @@ namespace Arleen.Game
             _textRenderer1 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
             _textRenderer2 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
             //---
-			var scene = new Scene();
-            var brickwall = Resources.LoadBitmap("brickwall.png");
+            var scene = new Scene();
+            var brickwall = Resources.Instance.LoadBitmap("brickwall.png");
             var sources = new AggregateRenderSource
                 (
                     new IRenderable[]
                     {
                         new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
-                        new SkyboxRenderer(Resources.LoadBitmap("skybox.png")),
+                        new SkyboxRenderer(Resources.Instance.LoadBitmap("skybox.png")),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
                     }
                 );
-			scene.RenderTargets.Add
+            scene.RenderTargets.Add
                 (
                     new RenderTarget
                         (
@@ -60,7 +60,7 @@ namespace Arleen.Game
                             )
                         )
                 );
-			scene.RenderTargets.Add
+            scene.RenderTargets.Add
                 (
                     new RenderTarget
                         (
@@ -76,7 +76,7 @@ namespace Arleen.Game
                             )
                         )
                 );
-			_renderer = new Renderer(scene);
+            _renderer = new Renderer(scene);
             _renderer.Initialize(this, this);
         }
 
