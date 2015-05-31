@@ -6,14 +6,9 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents the information about the context of a render call.
     /// </summary>
-    public struct RenderInfo : ILocable
+    public struct RenderInfo
     {
         public static RenderInfo Current;
-
-        /// <summary>
-        /// The camera to which to render.
-        /// </summary>
-        public Camera Camera { get; set; }
 
         /// <summary>
         /// The time since the last Renderer iteration.
@@ -26,19 +21,8 @@ namespace Arleen.Rendering
         public int Fps { get; set; }
 
         /// <summary>
-        /// Returns the location of the Camera
-        /// </summary>
-        public Location Location
-        {
-            get
-            {
-                return Camera == null ? null : Camera.Location;
-            }
-        }
-
-        /// <summary>
         /// The size of the are to which to render, in pixel = 1.
         /// </summary>
-        public Size TargetSize { get; set; }
+        public Size SurfaceSize { get; set; }
     }
 }

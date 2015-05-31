@@ -17,7 +17,7 @@ namespace Arleen
         private const int INT_Initializing = 1;
         private const int INT_Initialized = 2;
 
-        private static Realm _currentRealm;
+        private static RealmRunner _realmRunner;
         private static bool _debugMode;
         private static int _status;
 
@@ -64,11 +64,28 @@ namespace Arleen
         /// <param name="realm">The new realm.</param>
         public static void ChangeRealm(Realm realm)
         {
-            _currentRealm.Dispose();
-            _currentRealm = realm;
-            if (_currentRealm != null)
+            if (realm == null)
             {
-                _currentRealm.Run();
+                if (_realmRunner != null)
+                {
+                    _realmRunner.CurrentRealm = null;
+                    _realmRunner.Dispose ();
+                    _realmRunner = null;
+                }
+            }
+            else
+            {
+                if (_realmRunner == null)
+                {
+                    _realmRunner = new RealmRunner
+                    {
+                        CurrentRealm = realm
+                    };
+                }
+                else
+                {
+                    _realmRunner.CurrentRealm = realm;
+                }
             }
         }
 
@@ -114,15 +131,15 @@ namespace Arleen
             {
                 try
                 {
-                    _currentRealm = realm;
-                    _currentRealm.Run();
+                    ChangeRealm(realm);
+                }
+                catch (Exception exception)
+                {
+                    LogBook.ReportException(exception, true);
                 }
                 finally
                 {
-                    if (_currentRealm != null)
-                    {
-                        _currentRealm.Dispose();
-                    }
+                    ChangeRealm(null);
                     Terminate();
                 }
             }
@@ -137,8 +154,8 @@ namespace Arleen
 
         private static string GetApplicationDataFolder()
         {
-            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
-                + System.IO.Path.DirectorySeparatorChar
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                + Path.DirectorySeparatorChar
                 + InternalName;
             Directory.CreateDirectory(folder);
             return folder;

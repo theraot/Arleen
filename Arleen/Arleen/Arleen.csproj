@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="Game\DefaultRealm.cs" />
     <Compile Include="Geometry\QuaternionHelper.cs" />
     <Compile Include="Geometry\RelativeLocation.cs" />
     <Compile Include="Geometry\Vector3dHelper.cs" />
@@ -106,6 +105,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcesInternal.cs" />
     <Compile Include="TextLocalization.cs" />
+    <Compile Include="Game\RealmRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -116,12 +116,6 @@
     <None Include="..\OpenSourceKey.snk">
       <Link>OpenSourceKey.snk</Link>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Images\skybox.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Images\brickwall.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

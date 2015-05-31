@@ -10,7 +10,7 @@ namespace Arleen.Rendering
 
         public Scene()
         {
-            _renderTargets = new List<Arleen.Rendering.RenderTarget>();
+            _renderTargets = new List<RenderTarget>();
         }
 
         public List<RenderTarget> RenderTargets
@@ -21,28 +21,29 @@ namespace Arleen.Rendering
             }
         }
 
-        internal void Render(Rectangle clipArea, double elapsed, int fps)
+        internal void Render(Size surfaceSize, double elapsedMiliseconds, int fps)
         {
+            RenderInfo.Current = new RenderInfo
+            {
+                SurfaceSize = surfaceSize,
+                ElapsedMilliseconds = elapsedMiliseconds,
+                Fps = fps
+            };
+
             foreach (var target in _renderTargets)
             {
-                RenderTarget(target, clipArea, elapsed, fps);
+                Render(target, surfaceSize, elapsedMiliseconds, fps);
             }
         }
 
-        private void RenderTarget(RenderTarget target, Rectangle clipArea, double elapsed, int fps)
+        private static void Render(RenderTarget target, Size surfaceSize, double elapsed, int fps)
         {
             if (target.Enabled)
             {
-                var targetClipArea = target.GetTargetClipArea(clipArea);
+                var targetClipArea = target.SetSurfaceSize(surfaceSize);
                 var camera = target.Camera;
 
-                RenderInfo.Current = new RenderInfo
-                {
-                    Camera = camera,
-                    TargetSize = targetClipArea.Size,
-                    ElapsedMilliseconds = elapsed,
-                    Fps = fps
-                };
+                RenderTarget.Current = target;
 
                 camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
                 camera.ViewingVolume.Place();
