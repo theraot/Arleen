@@ -15,14 +15,19 @@ namespace Articus
             var exception = eventArgs.ExceptionObject as Exception;
             if (exception != null)
             {
-                Engine.LogBook.Trace
-                    (
-                        TraceEventType.Critical,
-                        "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
-                        exception.GetType().Name,
-                        exception.Message,
-                        exception.StackTrace
-                    );
+                var current = exception;
+                do
+                {
+                    Engine.LogBook.Trace
+                        (
+                            TraceEventType.Critical,
+                            "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n{1}\n == Stacktrace == \n{2}",
+                            current.GetType().Name,
+                            current.Message,
+                            current.StackTrace
+                        );
+                    current = current.InnerException;
+                } while (current != null);
             }
             else if (eventArgs.ExceptionObject != null)
             {
@@ -30,6 +35,11 @@ namespace Articus
                     (
                         TraceEventType.Critical,
                         "Help me..."
+                    );
+                Engine.LogBook.Trace
+                    (
+                        TraceEventType.Critical,
+                        eventArgs.ExceptionObject.ToString()
                     );
             }
             else
