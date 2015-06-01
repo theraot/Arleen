@@ -189,18 +189,6 @@ namespace Arleen
             _debugMode = false;
             SetDebugMode();
 
-            if (_debugMode)
-            {
-                try
-                {
-                    Console.Clear();
-                }
-                catch (IOException)
-                {
-                    // Ignore.
-                }
-            }
-
             // *********************************
             // Creating the logbook
             // *********************************
@@ -237,7 +225,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                LogBook.ReportException(exception, "trying to access the Console.", false);
+                LogBook.ReportException(exception, "trying to access the Console", false);
             }
 
             if (_debugMode)
@@ -302,11 +290,6 @@ namespace Arleen
                 "Alternatively, if this hasn't been good to you so far,\n" +
                 "consider yourself lucky that it won't be troubling you much longer.";
             LogBook.Trace(TraceEventType.Critical, STR_PanicMessage);
-            if (_debugMode)
-            {
-                Console.WriteLine("[Press a key to exit]");
-                Console.ReadKey();
-            }
         }
 
         [Conditional("DEBUG")]
@@ -331,8 +314,18 @@ namespace Arleen
 
                 if (_debugMode)
                 {
-                    Console.WriteLine("[Press a key to exit]");
-                    Console.ReadKey();
+					try
+					{
+						// Test for Console
+						GC.KeepAlive(Console.WindowHeight);
+						Console.WriteLine("[Press a key to exit]");
+						Console.ReadKey();
+					}
+					catch (IOException exception)
+					{
+						GC.KeepAlive(exception);
+						// Running without console
+					}
                 }
             }
             catch (Exception exception)
