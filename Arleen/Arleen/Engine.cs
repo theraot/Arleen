@@ -93,13 +93,13 @@ namespace Arleen
         /// Initialized the engine
         /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Initialize()
+      public static void Initialize(string purpose)
         {
             try
             {
                 if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
                 {
-                    InitializeExtracted();
+               InitializeExtracted(purpose);
                     Thread.VolatileWrite(ref _status, INT_Initialized);
                 }
             }
@@ -153,7 +153,7 @@ namespace Arleen
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        private static void InitializeExtracted()
+        private static void InitializeExtracted(string purpose)
         {
             // Note: this method is not thread safe.
 
@@ -166,7 +166,7 @@ namespace Arleen
             DisplayName = InternalName;
 
             var location = assembly.Location;
-			Folder = Path.GetDirectoryName(location);
+            Folder = Path.GetDirectoryName(location);
             if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
@@ -188,7 +188,12 @@ namespace Arleen
 
             try
             {
-                var logStreamWriter = new StreamWriter(Folder + "log.txt") { AutoFlush = true };
+	            var logFile = purpose + ".log";
+	            foreach (char character in Path.GetInvalidFileNameChars())
+	            {
+	               logFile = logFile.Replace(character.ToString(), ""); 
+	            }
+	            var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
                 LogBook.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
             catch (Exception exception)
@@ -305,18 +310,18 @@ namespace Arleen
 
                 if (_debugMode)
                 {
-					try
-					{
-						// Test for Console
-						GC.KeepAlive(Console.WindowHeight);
-						Console.WriteLine("[Press a key to exit]");
-						Console.ReadKey();
-					}
-					catch (IOException exception)
-					{
-						GC.KeepAlive(exception);
-						// Running without console
-					}
+                    try
+                    {
+                        // Test for Console
+                        GC.KeepAlive(Console.WindowHeight);
+                        Console.WriteLine("[Press a key to exit]");
+                        Console.ReadKey();
+                    }
+                    catch (IOException exception)
+                    {
+                        GC.KeepAlive(exception);
+                        // Running without console
+                    }
                 }
             }
             catch (Exception exception)
