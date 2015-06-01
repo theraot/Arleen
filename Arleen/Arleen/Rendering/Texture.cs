@@ -29,12 +29,13 @@ namespace Arleen.Rendering
                 _width = bitmap.Width;
                 _height = bitmap.Height;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                Logbook.Instance.Trace
+                Logbook.Instance.ReportException
                 (
-                    TraceEventType.Error,
-                    " - Invalid resource."
+                    exception,
+                    "trying to load texture",
+                    false
                 );
             }
         }
@@ -53,12 +54,13 @@ namespace Arleen.Rendering
                 _width = rectangle.Width;
                 _height = rectangle.Height;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                Logbook.Instance.Trace
+                Logbook.Instance.ReportException
                 (
-                    TraceEventType.Error,
-                    " - Invalid resource."
+                    exception,
+                    "trying to load texture",
+                    false
                 );
             }
         }
@@ -78,12 +80,13 @@ namespace Arleen.Rendering
                 _width = bitmap.Width;
                 _height = bitmap.Height;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                Logbook.Instance.Trace
+                Logbook.Instance.ReportException
                 (
-                    TraceEventType.Error,
-                    " - Invalid resource."
+                    exception,
+                    "trying to load texture",
+                    false
                 );
             }
         }
@@ -104,12 +107,13 @@ namespace Arleen.Rendering
                 _width = rectangle.Width;
                 _height = rectangle.Height;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                Logbook.Instance.Trace
+                Logbook.Instance.ReportException
                 (
-                    TraceEventType.Error,
-                    " - Invalid resource."
+                    exception,
+                    "trying to load texture",
+                    false
                 );
             }
         }
