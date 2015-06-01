@@ -93,13 +93,13 @@ namespace Arleen
         /// Initialized the engine
         /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-      public static void Initialize(string purpose)
+        public static void Initialize(string purpose)
         {
             try
             {
                 if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
                 {
-               InitializeExtracted(purpose);
+                    InitializeExtracted(purpose);
                     Thread.VolatileWrite(ref _status, INT_Initialized);
                 }
             }
@@ -188,12 +188,12 @@ namespace Arleen
 
             try
             {
-	            var logFile = purpose + ".log";
-	            foreach (char character in Path.GetInvalidFileNameChars())
-	            {
-	               logFile = logFile.Replace(character.ToString(), ""); 
-	            }
-	            var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
+                var logFile = purpose + ".log";
+                foreach (char character in Path.GetInvalidFileNameChars())
+                {
+                   logFile = logFile.Replace(character.ToString(), ""); 
+                }
+                var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
                 LogBook.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
             catch (Exception exception)

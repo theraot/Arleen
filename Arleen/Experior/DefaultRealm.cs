@@ -80,11 +80,11 @@ namespace Experior
             return scene;
         }
 
-		protected override void UpdateFrame(RenderInfo renderInfo)
+        protected override void UpdateFrame(RenderInfo renderInfo)
         {
             UpdateCamera
                 (
-					renderInfo,
+                    renderInfo,
                     _camera1,
                     QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
                     new Vector3d(0, 0, -0.001),
@@ -92,7 +92,7 @@ namespace Experior
                 );
             UpdateCamera
                 (
-					renderInfo,
+                    renderInfo,
                     _camera2,
                     QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
                     new Vector3d(0, 0, -0.001),
@@ -100,14 +100,14 @@ namespace Experior
                 );
         }
 
-		private void UpdateCamera(RenderInfo renderinfo, Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
+        private void UpdateCamera(RenderInfo renderinfo, Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
         {
             camera.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
             camera.Location.Position = translationPerSecond * TotalTime;
             //---
             double bearing, elevation, roll;
             QuaterniondHelper.ToEulerAngles(camera.Location.Orientation, out bearing, out elevation, out roll);
-			var cameraInfo = "FPS: " + renderinfo.Fps + "\n" +
+            var cameraInfo = "FPS: " + renderinfo.Fps + "\n" +
                              "x:" + camera.Location.Position.X + "\n" +
                              "y:" + camera.Location.Position.Y + "\n" +
                              "z:" + camera.Location.Position.Z + "\n" +

@@ -54,7 +54,7 @@ namespace Articus
         public static object Load(Component component)
         {
             Initialize();
-			var result = AppDomain.CurrentDomain.CreateInstanceFromAndUnwrap(component.AssamblyFile, component.TypeName);
+            var result = AppDomain.CurrentDomain.CreateInstanceFromAndUnwrap(component.AssamblyFile, component.TypeName);
             Logbook.Instance.Trace(TraceEventType.Information, "Created Instance of {0}", component.TypeName);
             return result;
         }

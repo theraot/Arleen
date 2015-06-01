@@ -49,21 +49,21 @@ namespace Arleen
 
         public IEnumerable<string> GetFolders(string[] prefixes)
         {
-			foreach (var prefix in prefixes)
-			{
-				var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
-				if (Directory.Exists(result))
-				{
-					yield return result;
-				}
-			}
+            foreach (var prefix in prefixes)
+            {
+                var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                if (Directory.Exists(result))
+                {
+                    yield return result;
+                }
+            }
         }
 
         public IEnumerable<string> GetFolders(string[] prefixes, bool create)
         {
             foreach (var prefix in prefixes)
             {
-				var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
                 if (create && !Directory.Exists (result))
                 {
                     try
