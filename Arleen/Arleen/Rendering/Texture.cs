@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Security.Permissions;
+using System.IO;
 
 namespace Arleen.Rendering
 {
@@ -19,12 +20,13 @@ namespace Arleen.Rendering
         /// <summary>
         /// Creates a new instance of Texture.
         /// </summary>
-        /// <param name="bitmap">The bitmap that will be loaded to video memory.</param>
+        /// <param name="stream">The bitmap stream that will be loaded to video memory.</param>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public Texture(Bitmap bitmap)
+        public Texture(Stream stream)
         {
             try
             {
+                var bitmap = new Bitmap(stream);
                 _index = LoadTexture(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), TextureMinFilter.Nearest, TextureMagFilter.Nearest);
                 _width = bitmap.Width;
                 _height = bitmap.Height;

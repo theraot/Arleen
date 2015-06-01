@@ -33,13 +33,13 @@ namespace Experior
             _textRenderer2 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
             //---
             var scene = new Scene();
-            var brickwall = Resources.Instance.LoadBitmap("brickwall.png");
+            var brickwall = Resources.Instance.LoadStream("brickwall.png");
             var sources = new AggregateRenderSource
                 (
                     new IRenderable[]
                     {
                         new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
-                        new SkyboxRenderer(Resources.Instance.LoadBitmap("skybox.png")),
+						new SkyboxRenderer(Resources.Instance.LoadStream("skybox.png")),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
