@@ -7,14 +7,17 @@ using System.Security;
 using System.Security.Permissions;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Articus
 {
     /// <summary>
     /// The Program class contains the entry point
     /// </summary>
-    public static class Program
+    public class Program : MarshalByRefObject
     {
+        private static int _initialized;
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)
         {
             // Legendary Pokémon
@@ -68,20 +71,24 @@ namespace Articus
             //---
 
             Engine.LogBook.Trace (TraceEventType.Information, "Migrating to Sandbox.");
-            PermissionSet permSet = new PermissionSet(PermissionState.Unrestricted);
-            AppDomainSetup adSetup = new AppDomainSetup();
+            var permSet = new PermissionSet(PermissionState.Unrestricted);
+            var adSetup = new AppDomainSetup();
             adSetup.ApplicationBase = folder;
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
-            newDomain.ExecuteAssembly (path);
+            var program = newDomain.CreateInstanceFromAndUnwrap (path, "Articus.Program") as Program;
+            program.Launch ();
             Engine.LogBook.Trace (TraceEventType.Information, "Sandbox Execution Completed.");
         }
 
         static void Initialize (string purpose)
         {
-            Engine.Initialize (purpose);
-            if (Engine.Configuration == null)
+            if (Interlocked.CompareExchange (ref _initialized, 1, 0) == 0)
             {
-                Engine.LogBook.Trace (TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
+                Engine.Initialize (purpose);
+                if (Engine.Configuration == null)
+                {
+                    Engine.LogBook.Trace (TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
+                }
             }
         }
 
@@ -91,48 +98,19 @@ namespace Articus
 
             if (args.Length == 0)
             {
-                if (AppDomain.CurrentDomain.FriendlyName == "Sandbox")
-                {
-                    Initialize ("Sandbox");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
-                    var realmComponents = ModuleLoader.GetComponents(typeof(Realm));
-                    Realm realm = null;
-                    foreach (var realmComponent in realmComponents)
-                    {
-                        var tmp = ModuleLoader.Load(realmComponent);
-                        Engine.LogBook.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
-                        realm = tmp as Realm;
-                        break;
-                    }
-                    if (realm == null)
-                    {
-                        Engine.LogBook.Trace(TraceEventType.Critical, "No realm found.");
-                    }
-                    else
-                    {
-                        Engine.Run(realm);
-                    }
-                }
-                else
-                {
-                    Initialize ("Default");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
-                    Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
-                    var _ = Engine.TextLocalization;
-                    Engine.LogBook.Trace
-                    (
-                        TraceEventType.Information,
-                        _("Hello, my name is {name}.", new { name = Engine.DisplayName })
-                    );
-                    CreateSandbox ();
-                }
+                Initialize ("Default");
+                Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
+                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
+                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
+                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
+                Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
+                var _ = Engine.TextLocalization;
+                Engine.LogBook.Trace
+                (
+                    TraceEventType.Information,
+                    _("Hello, my name is {name}.", new { name = Engine.DisplayName })
+                );
+                CreateSandbox ();
             }
             else if (args[0] == "discover")
             {
@@ -152,6 +130,48 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Information, "Attempting to store in: {0}", file);
                 System.IO.File.WriteAllText(file, data);
                 Engine.LogBook.Trace(TraceEventType.Information, "Done.");
+            }
+        }
+
+        public Program ()
+        {
+            if (AppDomain.CurrentDomain.FriendlyName == "Sandbox")
+            {
+				if (Thread.VolatileRead(ref _initialized) != 0)
+                {
+                    throw new InvalidOperationException ("Initialization already done.");
+                }    
+            }
+            else
+            {
+                throw new InvalidOperationException ("Wrong AppDomain.");
+            }
+        }
+
+        public void Launch()
+        {
+            Initialize ("Sandbox");
+            Engine.LogBook.Trace (TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
+            Engine.LogBook.Trace (TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
+            Engine.LogBook.Trace (TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
+            Engine.LogBook.Trace (TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
+            Engine.LogBook.Trace (TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
+            var realmComponents = ModuleLoader.GetComponents (typeof(Realm));
+            Realm realm = null;
+            foreach (var realmComponent in realmComponents)
+            {
+                var tmp = ModuleLoader.Load (realmComponent);
+                Engine.LogBook.Trace (TraceEventType.Information, "Loaded: {0}", tmp.ToString ());
+                realm = tmp as Realm;
+                break;
+            }
+            if (realm == null)
+            {
+                Engine.LogBook.Trace (TraceEventType.Critical, "No realm found.");
+            }
+            else
+            {
+                Engine.Run (realm);
             }
         }
     }
