@@ -49,24 +49,36 @@ namespace Arleen
 
         public IEnumerable<string> GetFolders(string[] prefixes)
         {
-            var folders = new List<string> { Engine.Folder };
-            var optional = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                         + Path.DirectorySeparatorChar
-                         + Engine.InternalName
-                         + Path.DirectorySeparatorChar;
-            if (optional != Engine.Folder)
+			foreach (var prefix in prefixes)
+			{
+				var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+				if (Directory.Exists(result))
+				{
+					yield return result;
+				}
+			}
+        }
+
+        public IEnumerable<string> GetFolders(string[] prefixes, bool create)
+        {
+            foreach (var prefix in prefixes)
             {
-                folders.Add(optional);
-            }
-            foreach (var folder in folders)
-            {
-                foreach (var prefix in prefixes)
+				var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                if (create && !Directory.Exists (result))
                 {
-                    var result = folder + prefix.Replace('.', Path.DirectorySeparatorChar);
-                    if (Directory.Exists(result))
+                    try
                     {
-                        yield return result;
+                        Directory.CreateDirectory(result);
                     }
+                    catch (Exception exception)
+                    {
+                        Logbook.Instance.Trace (TraceEventType.Error, "Unable to create folder: {0}", result);
+                        Logbook.Instance.ReportException (exception, false);
+                    }
+                }
+                if (Directory.Exists(result))
+                {
+                    yield return result;
                 }
             }
         }
@@ -127,14 +139,16 @@ namespace Arleen
         /// <returns>true if the resource was written, false otherwise.</returns>
         internal bool Write(Assembly assembly, string prefix, string resourceName, Stream stream)
         {
-            foreach (var folder in GetFolders(new[] { prefix }))
+            foreach (var create in new []{false, true})
             {
-                if (TryWriteStream(folder, resourceName, assembly, stream))
+                foreach (var folder in GetFolders(new[] { prefix }, create))
                 {
-                    return true;
+                    if (TryWriteStream(folder, resourceName, assembly, stream))
+                    {
+                        return true;
+                    }
                 }
             }
-
             return false;
         }
 

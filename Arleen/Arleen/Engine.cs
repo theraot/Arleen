@@ -152,15 +152,6 @@ namespace Arleen
             }
         }
 
-        private static string GetApplicationDataFolder()
-        {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                + Path.DirectorySeparatorChar
-                + InternalName;
-            Directory.CreateDirectory(folder);
-            return folder;
-        }
-
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private static void InitializeExtracted()
         {
@@ -175,7 +166,7 @@ namespace Arleen
             DisplayName = InternalName;
 
             var location = assembly.Location;
-            Folder = Path.GetDirectoryName(location) ?? GetApplicationDataFolder();
+			Folder = Path.GetDirectoryName(location);
             if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
