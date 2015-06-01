@@ -12,7 +12,7 @@ namespace Arleen
     /// <summary>
     /// Façade to save and load resources.
     /// </summary>
-    public class Resources
+    public class Resources : MarshalByRefObject
     {
         private static Resources _instance;
 
@@ -47,28 +47,31 @@ namespace Arleen
             }
         }
 
-        public IEnumerable<string> GetFolders(string[] prefixes)
+        public List<string> GetFolders(string[] prefixes)
         {
+            var result = new List<string> ();
             foreach (var prefix in prefixes)
             {
-                var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
-                if (Directory.Exists(result))
+                var folder = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                if (Directory.Exists(folder))
                 {
-                    yield return result;
+                    result.Add(folder);
                 }
             }
+            return result;
         }
 
-        public IEnumerable<string> GetFolders(string[] prefixes, bool create)
+        public List<string> GetFolders(string[] prefixes, bool create)
         {
+            var result = new List<string> ();
             foreach (var prefix in prefixes)
             {
-                var result = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
-                if (create && !Directory.Exists (result))
+                var folder = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
+                if (create && !Directory.Exists (folder))
                 {
                     try
                     {
-                        Directory.CreateDirectory(result);
+                        Directory.CreateDirectory(folder);
                     }
                     catch (Exception exception)
                     {
@@ -76,11 +79,12 @@ namespace Arleen
                         Logbook.Instance.ReportException (exception, false);
                     }
                 }
-                if (Directory.Exists(result))
+                if (Directory.Exists(folder))
                 {
-                    yield return result;
+                    result.Add(folder);
                 }
             }
+            return result;
         }
 
         /// <summary>
@@ -89,7 +93,7 @@ namespace Arleen
         /// <param name="resourceName"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public Bitmap LoadBitmap(string resourceName)
+        public Stream LoadStream(string resourceName)
         {
             var assembly = Assembly.GetCallingAssembly();
             var stream = Read(assembly, Path.DirectorySeparatorChar + resourceName, new[] { "Images" }, resourceName);
@@ -103,7 +107,7 @@ namespace Arleen
                 );
                 return null;
             }
-            return new Bitmap(stream);
+            return stream;
         }
 
         /// <summary>
@@ -161,6 +165,7 @@ namespace Arleen
                 output.Write(buffer, 0, index);
             }
         }
+        
         private static bool TryProcessResource(Assembly assembly, string resource, out Stream stream)
         {
             stream = assembly.GetManifestResourceStream(resource);

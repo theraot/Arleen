@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Articus
 {
-    public static class ModuleLoader
+    public class ModuleLoader : MarshalByRefObject
     {
         public const string STR_Module_Extension = "mod";
 
@@ -20,8 +20,38 @@ namespace Articus
 
         private static Dictionary<Type, List<Component>> _components;
         private static int _status;
+        private static ModuleLoader _instance;
+        private AppDomain _targetDomain;
 
-        public static IEnumerable<Component> Discover(string assemblyFile)
+        private ModuleLoader(AppDomain targetDomain)
+        {
+            _targetDomain = targetDomain;
+        }
+
+        public static ModuleLoader Instance
+        {
+            get
+            {
+                var found = _instance;
+                if (found == null)
+                {
+                    throw new InvalidOperationException ("ModuleLoader not initialized");
+                }
+                // if found an instance just return it
+                return found;
+            }
+            set
+            {
+                Interlocked.CompareExchange (ref _instance, value, null);
+            }
+        }
+
+        public static void Initialize(AppDomain targetDomain)
+        {
+            Interlocked.CompareExchange(ref _instance, new ModuleLoader(targetDomain), null);
+        }
+
+        public IEnumerable<Component> Discover(string assemblyFile)
         {
             var assembly = Assembly.LoadFile(assemblyFile);
             if (assembly != null)
@@ -40,7 +70,7 @@ namespace Articus
             }
         }
 
-        public static IEnumerable<Component> GetComponents(Type targetType)
+        public IEnumerable<Component> GetComponents(Type targetType)
         {
             LoadModules();
             List<Component> components;
@@ -51,10 +81,10 @@ namespace Articus
             return new Component[] { };
         }
 
-        public static object Load(Component component)
+        public object Load(Component component)
         {
             Initialize();
-            var result = AppDomain.CurrentDomain.CreateInstanceFromAndUnwrap(component.AssamblyFile, component.TypeName);
+            var result = _targetDomain.CreateInstanceFromAndUnwrap(component.AssamblyFile, component.TypeName);
             Logbook.Instance.Trace(TraceEventType.Information, "Created Instance of {0}", component.TypeName);
             return result;
         }

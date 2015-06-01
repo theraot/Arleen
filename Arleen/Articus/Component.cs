@@ -2,6 +2,7 @@ using System;
 
 namespace Articus
 {
+    [Serializable]
     public class Component
     {
         private readonly Type _targetType;

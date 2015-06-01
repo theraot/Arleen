@@ -76,7 +76,10 @@ namespace Articus
             adSetup.ApplicationBase = folder;
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
             var program = newDomain.CreateInstanceFromAndUnwrap (path, "Articus.Program") as Program;
-            program.Launch ();
+            var resources = Resources.Instance;
+            ModuleLoader.Initialize (newDomain);
+            var moduleLoader = ModuleLoader.Instance;
+            program.Launch (resources, moduleLoader);
             Engine.LogBook.Trace (TraceEventType.Information, "Sandbox Execution Completed.");
         }
 
@@ -122,7 +125,7 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
                 Engine.LogBook.Trace(TraceEventType.Information, "Target: {0}", dll);
-                var result = new List<Component>(ModuleLoader.Discover (dll));
+                var result = new List<Component>(ModuleLoader.Instance.Discover (dll));
                 Engine.LogBook.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
                 Engine.LogBook.Trace(TraceEventType.Information, "Serializing...");
                 var data = JsonConvert.SerializeObject(result);
@@ -137,7 +140,7 @@ namespace Articus
         {
             if (AppDomain.CurrentDomain.FriendlyName == "Sandbox")
             {
-				if (Thread.VolatileRead(ref _initialized) != 0)
+                if (Thread.VolatileRead(ref _initialized) != 0)
                 {
                     throw new InvalidOperationException ("Initialization already done.");
                 }    
@@ -148,19 +151,21 @@ namespace Articus
             }
         }
 
-        public void Launch()
+        public void Launch(Resources resources, ModuleLoader moduleLoader)
         {
+            Resources.Instance = resources;
+            ModuleLoader.Instance = moduleLoader;
             Initialize ("Sandbox");
             Engine.LogBook.Trace (TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
             Engine.LogBook.Trace (TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
             Engine.LogBook.Trace (TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
             Engine.LogBook.Trace (TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
             Engine.LogBook.Trace (TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
-            var realmComponents = ModuleLoader.GetComponents (typeof(Realm));
+            var realmComponents = ModuleLoader.Instance.GetComponents (typeof(Realm));
             Realm realm = null;
             foreach (var realmComponent in realmComponents)
             {
-                var tmp = ModuleLoader.Load (realmComponent);
+                var tmp = ModuleLoader.Instance.Load (realmComponent);
                 Engine.LogBook.Trace (TraceEventType.Information, "Loaded: {0}", tmp.ToString ());
                 realm = tmp as Realm;
                 break;
