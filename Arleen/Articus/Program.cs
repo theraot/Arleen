@@ -79,8 +79,8 @@ namespace Articus
             permSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
             permSet.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
-            permSet.AddPermission(new FileIOPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
+            permSet.AddPermission (new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder));
 
             var adSetup = new AppDomainSetup { ApplicationBase = folder };
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
