@@ -78,7 +78,7 @@ namespace Arleen
             }
             else
             {
-                if (_realmRunner == null)
+                if (_realmRunner == null || _realmRunner.IsClosed)
                 {
                     _realmRunner = new RealmRunner
                     {
