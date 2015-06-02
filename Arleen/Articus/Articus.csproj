@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrossCaller.cs" />
     <Compile Include="Program.cs">
       <SubType>
       </SubType>
