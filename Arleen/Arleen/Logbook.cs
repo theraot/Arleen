@@ -75,16 +75,18 @@ namespace Arleen
         {
             if (severe)
             {
+                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
                         TraceEventType.Error,
-                        "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Source == \n\n{3}\n\n == AppDomain == \n\n{4}\n\n == Stacktrace == \n\n{5}\n",
+                        "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Source == \n\n{3}\n\n == AppDomain == \n\n{4}\n\n == Stacktrace == \n\n{5}\n\n == Extended Stacktrace == \n\n{6}\n",
                         exception.GetType().Name,
                         situation,
                         exception.Message,
                         exception.Source,
                         AppDomain.CurrentDomain.FriendlyName,
-                        exception.StackTrace
+                        exception.StackTrace,
+                        string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
                     );
             }
             else
@@ -110,15 +112,17 @@ namespace Arleen
         {
             if (severe)
             {
+                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
-                    TraceEventType.Error,
-                    "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n",
-                    exception.GetType().Name,
-                    exception.Message,
-                    exception.Source,
-                    AppDomain.CurrentDomain.FriendlyName,
-                    exception.StackTrace
+                        TraceEventType.Error,
+                        "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n\n == Extended Stacktrace == \n\n{5}\n",
+                        exception.GetType().Name,
+                        exception.Message,
+                        exception.Source,
+                        AppDomain.CurrentDomain.FriendlyName,
+                        exception.StackTrace,
+                        string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
                     );
             }
             else

@@ -41,6 +41,8 @@ namespace Articus
                     current = current.InnerException;
                 }
                 while (current != null);
+                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                Engine.LogBook.Trace (TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
             }
             else if (eventArgs.ExceptionObject != null)
             {
