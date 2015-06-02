@@ -19,11 +19,5 @@ namespace Arleen.Rendering
         public Location Location { get; set; }
 
         public ViewingVolume ViewingVolume { get; set; }
-
-        public void Place(Location.Mode mode)
-        {
-            ViewingVolume.Place();
-            Location.PlaceInverted(mode);
-        }
     }
 }
