@@ -21,6 +21,7 @@ namespace Arleen
         private Logbook(SourceLevels level, bool allowDefaultListener)
         {
             var displayName = Engine.InternalName;
+            // TODO: this fails if running from Visaul Studio
             _logSource = new TraceSource(displayName)
             {
                 Switch = new SourceSwitch(displayName)
