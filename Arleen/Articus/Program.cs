@@ -77,7 +77,6 @@ namespace Articus
 
             var permSet = new PermissionSet(PermissionState.None);
             permSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
-            permSet.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
             permSet.AddPermission (new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder));
