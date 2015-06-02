@@ -8,7 +8,8 @@ using System.Security.Permissions;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
-using System.Security.Policy;
+using System.IO;
+using System.Globalization;
 
 namespace Articus
 {
@@ -34,6 +35,7 @@ namespace Articus
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
         {
             var realmComponents = ModuleLoader.Instance.GetComponents(typeof(Realm));
@@ -55,6 +57,7 @@ namespace Articus
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void SandboxInitialize(Resources resources, AppDomain appDomain)
         {
             Resources.Instance = resources;
@@ -70,6 +73,11 @@ namespace Articus
         {
             var path = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
             var folder = System.IO.Path.GetDirectoryName(path);
+			if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+			{
+				// On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
+				folder += Path.DirectorySeparatorChar;
+			}
 
             //---
 
@@ -79,7 +87,11 @@ namespace Articus
             permSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
             permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
-            permSet.AddPermission (new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder));
+
+			var permission = new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder);
+			permission.AddPathList (FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, folder + "Sandbox.log");
+
+            permSet.AddPermission(permission);
 
             var adSetup = new AppDomainSetup { ApplicationBase = folder };
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
@@ -140,6 +152,7 @@ namespace Articus
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         static void Initialize (string purpose, AppDomain appDomain)
         {
             if (Interlocked.CompareExchange (ref _initialized, 1, 0) == 0)
@@ -170,6 +183,7 @@ namespace Articus
                     TraceEventType.Information,
                     _("Hello, my name is {name}.", new { name = Engine.DisplayName })
                 );
+                ModuleLoader.LoadModules();
                 CreateSandbox ();
             }
             else if (args[0] == "discover")
@@ -182,6 +196,8 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
                 Engine.LogBook.Trace(TraceEventType.Information, "Target: {0}", dll);
+
+                ModuleLoader.Initialize(AppDomain.CurrentDomain);
                 var result = new List<Component>(ModuleLoader.Instance.Discover (dll));
                 Engine.LogBook.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
                 Engine.LogBook.Trace(TraceEventType.Information, "Serializing...");

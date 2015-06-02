@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Threading;
 
 namespace Articus
@@ -19,9 +20,9 @@ namespace Articus
         };
 
         private static Dictionary<Type, List<Component>> _components;
-        private static int _status;
         private static ModuleLoader _instance;
-        private AppDomain _targetDomain;
+        private static int _status;
+        private readonly AppDomain _targetDomain;
 
         private ModuleLoader(AppDomain targetDomain)
         {
@@ -51,6 +52,42 @@ namespace Articus
             Interlocked.CompareExchange(ref _instance, new ModuleLoader(targetDomain), null);
         }
 
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust", Unrestricted = false)] // OK
+        public static void LoadModules()
+        {
+            Initialize();
+            var status = Interlocked.CompareExchange(ref _status, 3, 2);
+            if (status == 2)
+            {
+                foreach (var folder in Resources.Instance.GetFolders(new[] { "Modules" }))
+                {
+                    string[] files;
+                    try
+                    {
+                        files = Directory.GetFiles(folder, "*.dll");
+                        Logbook.Instance.Trace(TraceEventType.Information, "Trying to load modules from {0}", folder);
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        Logbook.Instance.Trace(TraceEventType.Warning, " - Unable to access folder {0}", folder);
+                        continue;
+                    }
+                    foreach (var file in files)
+                    {
+                        LoadComponentsFromModule(file);
+                    }
+                }
+                Thread.VolatileWrite(ref _status, 4);
+            }
+            else if (status < 4)
+            {
+                while (Thread.VolatileRead(ref _status) < 4)
+                {
+                    Thread.Sleep(0);
+                }
+            }
+        }
+
         public IEnumerable<Component> Discover(string assemblyFile)
         {
             var assembly = Assembly.LoadFile(assemblyFile);
@@ -72,7 +109,6 @@ namespace Articus
 
         public IEnumerable<Component> GetComponents(Type targetType)
         {
-            LoadModules();
             List<Component> components;
             if (_components.TryGetValue(targetType, out components))
             {
@@ -106,6 +142,7 @@ namespace Articus
             }
         }
 
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust", Unrestricted = false)] // OK
         private static void LoadComponentsFromModule(string assemblyFile)
         {
             Logbook.Instance.Trace(TraceEventType.Information, "Trying to load module {0}", assemblyFile);
@@ -143,41 +180,6 @@ namespace Articus
             catch (IOException)
             {
                 Logbook.Instance.Trace(TraceEventType.Warning, "Discovering failed for module {0}", assemblyFile);
-            }
-        }
-
-        private static void LoadModules()
-        {
-            Initialize();
-            var status = Interlocked.CompareExchange(ref _status, 3, 2);
-            if (status == 2)
-            {
-                foreach (var folder in Resources.Instance.GetFolders(new[] { "Modules" }))
-                {
-                    string[] files;
-                    try
-                    {
-                        files = Directory.GetFiles(folder, "*.dll");
-                        Logbook.Instance.Trace(TraceEventType.Information, "Trying to load modules from {0}", folder);
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        Logbook.Instance.Trace(TraceEventType.Warning, " - Unable to access folder {0}", folder);
-                        continue;
-                    }
-                    foreach (var file in files)
-                    {
-                        LoadComponentsFromModule(file);
-                    }
-                }
-                Thread.VolatileWrite(ref _status, 4);
-            }
-            else if (status < 4)
-            {
-                while (Thread.VolatileRead(ref _status) < 4)
-                {
-                    Thread.Sleep(0);
-                }
             }
         }
     }
