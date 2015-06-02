@@ -1,8 +1,9 @@
-﻿using Arleen.Geometry;
+﻿using System;
+using Arleen.Geometry;
 
 namespace Arleen.Rendering
 {
-    public sealed class Camera : ILocable
+    public sealed class Camera : MarshalByRefObject, ILocable
     {
         public Camera(ViewingVolume volume)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 namespace Arleen.Rendering
@@ -5,7 +6,7 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents the location where to render.
     /// </summary>
-    public class RenderTarget
+    public class RenderTarget : MarshalByRefObject
     {
         internal static RenderTarget Current { get; set; }
 

@@ -3,13 +3,13 @@ using System;
 
 namespace Arleen.Geometry
 {
-    public class Location : ILocable
+    public class Location : MarshalByRefObject, ILocable
     {
         private int _computedVersion;
         private int _currentVersion;
-        private OpenTK.Matrix4d _matrix = OpenTK.Matrix4d.Identity;
-        private OpenTK.Matrix4d _matrixOrientation = OpenTK.Matrix4d.Identity;
-        private OpenTK.Matrix4d _matrixPosition = OpenTK.Matrix4d.Identity;
+        private Matrix4d _matrix = Matrix4d.Identity;
+        private Matrix4d _matrixOrientation = Matrix4d.Identity;
+        private Matrix4d _matrixPosition = Matrix4d.Identity;
         private Quaterniond _orientation;
         private Vector3d _position;
 
@@ -36,7 +36,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public OpenTK.Matrix4d Matrix
+        public Matrix4d Matrix
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public OpenTK.Matrix4d MatrixOrientation
+        public Matrix4d MatrixOrientation
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Arleen.Geometry
             }
         }
 
-        public OpenTK.Matrix4d MatrixPosition
+        public Matrix4d MatrixPosition
         {
             get
             {
@@ -176,8 +176,8 @@ namespace Arleen.Geometry
             var current = _currentVersion;
             if (current != _computedVersion)
             {
-                _matrixPosition = OpenTK.Matrix4d.CreateTranslation(Position);
-                _matrixOrientation = OpenTK.Matrix4d.Rotate(Orientation);
+                _matrixPosition = Matrix4d.CreateTranslation(Position);
+                _matrixOrientation = Matrix4d.Rotate(Orientation);
                 _matrix = _matrixOrientation * _matrixPosition;
                 _computedVersion = current;
             }

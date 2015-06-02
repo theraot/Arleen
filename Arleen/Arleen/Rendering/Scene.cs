@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Arleen.Rendering
 {
-    public class Scene
+    public class Scene : MarshalByRefObject
     {
         private readonly List<RenderTarget> _renderTargets;
 

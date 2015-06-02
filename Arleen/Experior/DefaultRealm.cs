@@ -1,8 +1,8 @@
-﻿using Arleen.Geometry;
+﻿using System.Collections.Generic;
+using Arleen.Geometry;
 using Arleen.Rendering;
 using Arleen.Rendering.Sources;
 using OpenTK;
-using System;
 using System.Drawing;
 using Arleen.Game;
 using Arleen;
@@ -29,20 +29,20 @@ namespace Experior
             };
             _camera1 = new Camera(viewingVolume);
             _camera2 = new Camera(viewingVolume);
-            _textRenderer1 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
-            _textRenderer2 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
+            _textRenderer1 = Engine.Create<TextRenderer>(new Font("Verdana", 12, FontStyle.Regular), true);
+            _textRenderer2 = Engine.Create<TextRenderer>(new Font("Verdana", 12, FontStyle.Regular), true);
             //---
             var scene = new Scene();
             var brickwall = Resources.Instance.LoadStream("brickwall.png");
-            var sources = new AggregateRenderSource
+            var sources = Engine.Create<AggregateRenderSource>
                 (
-                    new IRenderable[]
+                    (IList<IRenderable>)new IRenderable[]
                     {
-                        new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
-                        new SkyboxRenderer(Resources.Instance.LoadStream("skybox.png")),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
+                        Engine.Create<BackgroundColorRenderSource>(Color.LightSkyBlue, 1.0),
+                        Engine.Create<SkyboxRenderer>(Resources.Instance.LoadStream("skybox.png")),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f)),
                     }
                 );
             scene.RenderTargets.Add
@@ -51,9 +51,9 @@ namespace Experior
                         (
                             new RectangleF(0.0f, 0.0f, 1.0f, 0.5f),
                             _camera1,
-                            new AggregateRenderSource
+                            Engine.Create<AggregateRenderSource>
                             (
-                                new IRenderable[]
+                                (IList<IRenderable>)new IRenderable[]
                                 {
                                     sources,
                                     _textRenderer1
@@ -67,9 +67,9 @@ namespace Experior
                         (
                             new RectangleF(0.0f, 0.5f, 1.0f, 0.5f),
                             _camera2,
-                            new AggregateRenderSource
+                            Engine.Create<AggregateRenderSource>
                             (
-                                new IRenderable[]
+                                (IList<IRenderable>)new IRenderable[]
                                 {
                                     sources,
                                     _textRenderer2

@@ -13,13 +13,16 @@ namespace Arleen
     /// </summary>
     public static class Engine
     {
-        private const int INT_NotInitialized = 0;
-        private const int INT_Initializing = 1;
         private const int INT_Initialized = 2;
-
-        private static RealmRunner _realmRunner;
+        private const int INT_Initializing = 1;
+        private const int INT_NotInitialized = 0;
         private static bool _debugMode;
+        private static RealmRunner _realmRunner;
         private static int _status;
+
+        public static AppDomain AppDomain { get; private set; }
+
+        public static string AssemblyName { get; private set; }
 
         /// <summary>
         /// Gets the loaded configuration for the program.
@@ -69,7 +72,7 @@ namespace Arleen
                 if (_realmRunner != null)
                 {
                     _realmRunner.CurrentRealm = null;
-                    _realmRunner.Dispose ();
+                    _realmRunner.Dispose();
                     _realmRunner = null;
                 }
             }
@@ -89,16 +92,68 @@ namespace Arleen
             }
         }
 
+        public static T Create<T>()
+            where T: class
+        {
+            return AppDomain.CreateInstanceAndUnwrap
+            (
+                AssemblyName,
+                typeof(T).FullName,
+                false,
+                System.Reflection.BindingFlags.Default,
+                null,
+                null,
+                null,
+                null,
+                null
+            ) as T;
+        }
+
+        public static T Create<T>(object param)
+            where T : class
+        {
+            return AppDomain.CreateInstanceAndUnwrap
+            (
+                AssemblyName,
+                typeof(T).FullName,
+                false,
+                System.Reflection.BindingFlags.Default,
+                null,
+                new [] {param},
+                null,
+                null,
+                null
+            ) as T;
+        }
+
+        public static T Create<T>(params object[] param)
+            where T : class
+        {
+            return AppDomain.CreateInstanceAndUnwrap
+            (
+                AssemblyName,
+                typeof(T).FullName,
+                false,
+                System.Reflection.BindingFlags.Default,
+                null,
+                param,
+                null,
+                null,
+                null
+            ) as T;
+        }
+
         /// <summary>
         /// Initialized the engine
         /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Initialize(string purpose)
+        public static void Initialize(string purpose, AppDomain appDomain)
         {
             try
             {
                 if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
                 {
+                    AppDomain = appDomain;
                     InitializeExtracted(purpose);
                     Thread.VolatileWrite(ref _status, INT_Initialized);
                 }
@@ -162,6 +217,8 @@ namespace Arleen
             // *********************************
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            AssemblyName = assembly.FullName;
             InternalName = assembly.GetName().Name;
             DisplayName = InternalName;
 
@@ -191,7 +248,7 @@ namespace Arleen
                 var logFile = purpose + ".log";
                 foreach (char character in Path.GetInvalidFileNameChars())
                 {
-                   logFile = logFile.Replace(character.ToString(), ""); 
+                    logFile = logFile.Replace(character.ToString(), "");
                 }
                 var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
                 LogBook.AddListener(new TextWriterTraceListener(logStreamWriter));
