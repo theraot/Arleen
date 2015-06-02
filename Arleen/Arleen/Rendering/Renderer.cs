@@ -16,8 +16,8 @@ namespace Arleen.Rendering
         private FpsCounter _fpsCounter;
         private GameWindow _gameWindow;
         private double _lastTime;
-        private Size _surfaceSize;
         private Realm _realm;
+        private Size _surfaceSize;
         private Thread _thread;
 
         /// <summary>
@@ -135,6 +135,25 @@ namespace Arleen.Rendering
             GL.EnableClientState(ArrayCap.TextureCoordArray);
         }
 
+        private static void Render(RenderTarget target, Size surfaceSize)
+        {
+            if (target.Enabled)
+            {
+                var targetClipArea = target.SetSurfaceSize(surfaceSize);
+                var camera = target.Camera;
+
+                RenderTarget.Current = target;
+
+                camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
+                camera.ViewingVolume.Place();
+
+                GL.Viewport(targetClipArea);
+                GL.Scissor(targetClipArea.X, targetClipArea.Y, targetClipArea.Width, targetClipArea.Height);
+
+                target.Renderable.Render();
+            }
+        }
+
         private void RealmResize(object sender, EventArgs e)
         {
             _surfaceSize.Width = _gameWindow.Width;
@@ -149,7 +168,19 @@ namespace Arleen.Rendering
 
             _fpsCounter.OnRender(elapsedMiliseconds / 1000.0);
 
-            _scene.Render(_surfaceSize, elapsedMiliseconds, _fpsCounter.Fps);
+            var renderTargets = _scene.RenderTargets;
+
+            RenderInfo.Current = new RenderInfo
+            {
+                SurfaceSize = _surfaceSize,
+                ElapsedMilliseconds = elapsedMiliseconds,
+                Fps = _fpsCounter.Fps
+            };
+
+            foreach (var target in renderTargets)
+            {
+                Render(target, _surfaceSize);
+            }
         }
     }
 }
