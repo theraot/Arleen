@@ -17,7 +17,7 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
-		private Stream _stream;
+        private Stream _stream;
         private Action _render;
         private Texture _texture;
         private int dataBuffer = -1;
@@ -25,7 +25,7 @@ namespace Arleen.Rendering.Sources
 
         public SkyboxRenderer(Stream stream)
         {
-			_stream = stream;
+            _stream = stream;
         }
 
         public void Dispose()

@@ -18,21 +18,21 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width3 = FLT_width1 * 3;
 
         private readonly Transformation _transformation;
-		private Stream _stream;
+        private Stream _stream;
         private Mesh _mesh;
         private Action _render;
         private Texture _texture;
 
         public BoxRenderer(Stream stream, Location location, Transformation transformation)
         {
-			_stream = stream;
+            _stream = stream;
             Location = location;
             _transformation = transformation;
         }
 
-		public BoxRenderer(Stream stream, Location location)
+        public BoxRenderer(Stream stream, Location location)
         {
-			_stream = stream;
+            _stream = stream;
             Location = location;
             _transformation = Transformation.Identity;
         }
@@ -70,7 +70,7 @@ namespace Arleen.Rendering.Sources
                 };
             }
             Build();
-			_texture = new Texture(_stream);
+            _texture = new Texture(_stream);
             _stream = null;
         }
 

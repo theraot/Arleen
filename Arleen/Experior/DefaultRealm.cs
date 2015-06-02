@@ -39,7 +39,7 @@ namespace Experior
                     new IRenderable[]
                     {
                         new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
-						new SkyboxRenderer(Resources.Instance.LoadStream("skybox.png")),
+                        new SkyboxRenderer(Resources.Instance.LoadStream("skybox.png")),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
                         new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
