@@ -1,10 +1,12 @@
 ﻿using OpenTK;
+using System;
 
 namespace Arleen.Geometry
 {
     /// <summary>
     /// Represents a transformation of the model geometry
     /// </summary>
+    [Serializable]
     public struct Transformation
     {
         /// <summary>

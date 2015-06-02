@@ -2,6 +2,7 @@ using Arleen.Geometry;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.IO;
 
 namespace Arleen.Rendering.Sources
 {
@@ -17,21 +18,21 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width3 = FLT_width1 * 3;
 
         private readonly Transformation _transformation;
-        private Bitmap _bitmap;
+        private Stream _stream;
         private Mesh _mesh;
         private Action _render;
         private Texture _texture;
 
-        public BoxRenderer(Bitmap bitmap, Location location, Transformation transformation)
+        public BoxRenderer(Stream stream, Location location, Transformation transformation)
         {
-            _bitmap = bitmap;
+            _stream = stream;
             Location = location;
             _transformation = transformation;
         }
 
-        public BoxRenderer(Bitmap bitmap, Location location)
+        public BoxRenderer(Stream stream, Location location)
         {
-            _bitmap = bitmap;
+            _stream = stream;
             Location = location;
             _transformation = Transformation.Identity;
         }
@@ -69,8 +70,8 @@ namespace Arleen.Rendering.Sources
                 };
             }
             Build();
-            _texture = new Texture(_bitmap);
-            _bitmap = null;
+            _texture = new Texture(_stream);
+            _stream = null;
         }
 
         protected override void OnRender()

@@ -14,6 +14,7 @@ namespace Arleen
     /// C) There should be only one Logbook per AppDomain. </remarks>
     public class Logbook
     {
+        private static Logbook _instance;
         private readonly TraceSource _logSource;
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -37,7 +38,17 @@ namespace Arleen
         /// Gets the existing instance of Logbook.
         /// </summary>
         /// <remarks>This may be null during initialization. </remarks>
-        public static Logbook Instance { get; private set; }
+        public static Logbook Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    throw new InvalidOperationException ("Engine initialization is not done");
+                }
+                return _instance;
+            }
+        }
 
         /// <summary>
         /// Adds a new listener to the Logbook.
@@ -64,14 +75,18 @@ namespace Arleen
         {
             if (severe)
             {
+                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
                         TraceEventType.Error,
-                        "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Stack trace == \n\n{3}\n",
+                        "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Source == \n\n{3}\n\n == AppDomain == \n\n{4}\n\n == Stacktrace == \n\n{5}\n\n == Extended Stacktrace == \n\n{6}\n",
                         exception.GetType().Name,
                         situation,
                         exception.Message,
-                        exception.StackTrace
+                        exception.Source,
+                        AppDomain.CurrentDomain.FriendlyName,
+                        exception.StackTrace,
+                        string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
                     );
             }
             else
@@ -97,13 +112,17 @@ namespace Arleen
         {
             if (severe)
             {
+                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
                         TraceEventType.Error,
-                        "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Stacktrace == \n\n{2}\n",
+                        "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n\n == Extended Stacktrace == \n\n{5}\n",
                         exception.GetType().Name,
                         exception.Message,
-                        exception.StackTrace
+                        exception.Source,
+                        AppDomain.CurrentDomain.FriendlyName,
+                        exception.StackTrace,
+                        string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
                     );
             }
             else
@@ -150,11 +169,11 @@ namespace Arleen
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
             // Since that should not happen, let's accept the garbage if somehow that comes to be.
-            if (Instance != null)
+            if (_instance != null)
             {
-                return Instance;
+                return _instance;
             }
-            return Instance = new Logbook(level, allowDefaultListener);
+            return _instance = new Logbook(level, allowDefaultListener);
         }
 
         /// <summary>

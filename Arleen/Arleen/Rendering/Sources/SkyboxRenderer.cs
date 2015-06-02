@@ -2,6 +2,7 @@ using Arleen.Geometry;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.IO;
 
 namespace Arleen.Rendering.Sources
 {
@@ -16,15 +17,15 @@ namespace Arleen.Rendering.Sources
         private const float FLT_width2 = FLT_width1 * 2;
         private const float FLT_width3 = FLT_width1 * 3;
 
-        private Bitmap _bitmap;
+        private Stream _stream;
         private Action _render;
         private Texture _texture;
         private int dataBuffer = -1;
         private int indexBuffer = -1;
 
-        public SkyboxRenderer(Bitmap bitmap)
+        public SkyboxRenderer(Stream stream)
         {
-            _bitmap = bitmap;
+            _stream = stream;
         }
 
         public void Dispose()
@@ -55,8 +56,8 @@ namespace Arleen.Rendering.Sources
                 };
             }
             Build();
-            _texture = new Texture(_bitmap);
-            _bitmap = null;
+            _texture = new Texture(_stream);
+            _stream = null;
         }
 
         protected override void OnRender()
@@ -203,7 +204,7 @@ namespace Arleen.Rendering.Sources
 
         private void Draw()
         {
-            Renderer.Current.RenderInfo.Camera.Location.PlaceInverted(Location.Mode.OrientationOnly);
+            RenderTarget.Current.Camera.Location.PlaceInverted(Location.Mode.OrientationOnly);
             _texture.Bind();
             GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));

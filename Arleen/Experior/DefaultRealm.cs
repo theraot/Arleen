@@ -1,23 +1,24 @@
-﻿using Arleen.Geometry;
+﻿using System.Collections.Generic;
+using Arleen.Geometry;
 using Arleen.Rendering;
 using Arleen.Rendering.Sources;
 using OpenTK;
-using System;
 using System.Drawing;
+using Arleen.Game;
+using Arleen;
 
-namespace Arleen.Game
+namespace Experior
 {
     public class DefaultRealm : Realm
     {
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
-        private Renderer _renderer;
         private Camera _camera1;
         private Camera _camera2;
         private TextRenderer _textRenderer1;
         private TextRenderer _textRenderer2;
 
-        protected override void OnLoad(EventArgs e)
+        protected override Scene Load()
         {
             var viewingVolume = new ViewingVolume.Perspective
             {
@@ -28,31 +29,31 @@ namespace Arleen.Game
             };
             _camera1 = new Camera(viewingVolume);
             _camera2 = new Camera(viewingVolume);
-            _textRenderer1 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
-            _textRenderer2 = new TextRenderer(new Font("Verdana", 12, FontStyle.Regular), true);
+            _textRenderer1 = Engine.Create<TextRenderer>(new Font("Verdana", 12, FontStyle.Regular), true);
+            _textRenderer2 = Engine.Create<TextRenderer>(new Font("Verdana", 12, FontStyle.Regular), true);
             //---
-            _renderer = new Renderer();
-            var brickwall = Resources.LoadBitmap("brickwall.png");
-            var sources = new AggregateRenderSource
+            var scene = new Scene();
+            var brickwall = Resources.Instance.LoadStream("brickwall.png");
+            var sources = Engine.Create<AggregateRenderSource>
                 (
-                    new IRenderable[]
+                    (IList<IRenderable>)new IRenderable[]
                     {
-                        new BackgroundColorRenderSource(Color.LightSkyBlue, 1.0),
-                        new SkyboxRenderer(Resources.LoadBitmap("skybox.png")),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
-                        new BoxRenderer(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
+                        Engine.Create<BackgroundColorRenderSource>(Color.LightSkyBlue, 1.0),
+                        Engine.Create<SkyboxRenderer>(Resources.Instance.LoadStream("skybox.png")),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f)),
                     }
                 );
-            _renderer.RenderTargets.Add
+            scene.RenderTargets.Add
                 (
                     new RenderTarget
                         (
                             new RectangleF(0.0f, 0.0f, 1.0f, 0.5f),
                             _camera1,
-                            new AggregateRenderSource
+                            Engine.Create<AggregateRenderSource>
                             (
-                                new IRenderable[]
+                                (IList<IRenderable>)new IRenderable[]
                                 {
                                     sources,
                                     _textRenderer1
@@ -60,15 +61,15 @@ namespace Arleen.Game
                             )
                         )
                 );
-            _renderer.RenderTargets.Add
+            scene.RenderTargets.Add
                 (
                     new RenderTarget
                         (
                             new RectangleF(0.0f, 0.5f, 1.0f, 0.5f),
                             _camera2,
-                            new AggregateRenderSource
+                            Engine.Create<AggregateRenderSource>
                             (
-                                new IRenderable[]
+                                (IList<IRenderable>)new IRenderable[]
                                 {
                                     sources,
                                     _textRenderer2
@@ -76,13 +77,14 @@ namespace Arleen.Game
                             )
                         )
                 );
-            _renderer.Initialize(this);
+            return scene;
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        protected override void UpdateFrame(RenderInfo renderInfo)
         {
             UpdateCamera
                 (
+                    renderInfo,
                     _camera1,
                     QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
                     new Vector3d(0, 0, -0.001),
@@ -90,6 +92,7 @@ namespace Arleen.Game
                 );
             UpdateCamera
                 (
+                    renderInfo,
                     _camera2,
                     QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
                     new Vector3d(0, 0, -0.001),
@@ -97,14 +100,14 @@ namespace Arleen.Game
                 );
         }
 
-        private void UpdateCamera(Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
+        private void UpdateCamera(RenderInfo renderinfo, Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
         {
             camera.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
             camera.Location.Position = translationPerSecond * TotalTime;
             //---
             double bearing, elevation, roll;
             QuaterniondHelper.ToEulerAngles(camera.Location.Orientation, out bearing, out elevation, out roll);
-            var cameraInfo = "FPS: " + _renderer.Fps + "\n" +
+            var cameraInfo = "FPS: " + renderinfo.Fps + "\n" +
                              "x:" + camera.Location.Position.X + "\n" +
                              "y:" + camera.Location.Position.Y + "\n" +
                              "z:" + camera.Location.Position.Z + "\n" +

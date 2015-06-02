@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 namespace Arleen.Rendering
@@ -5,11 +6,14 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents the location where to render.
     /// </summary>
-    public class RenderTarget
+    public class RenderTarget : MarshalByRefObject
     {
+        internal static RenderTarget Current { get; set; }
+
         private readonly Camera _camera;
         private readonly IRenderable _renderable;
         private readonly RectangleF _virtualClipArea;
+        private Rectangle _clipArea;
 
         /// <summary>
         /// Creates a new RenderTarget
@@ -33,6 +37,14 @@ namespace Arleen.Rendering
             get
             {
                 return _camera;
+            }
+        }
+
+        public Rectangle ClipArea
+        {
+            get
+            {
+                return _clipArea;
             }
         }
 
@@ -63,23 +75,23 @@ namespace Arleen.Rendering
         /// <summary>
         /// Returns the computed target clip area of the RenderTarget.
         /// </summary>
-        /// <param name="realClipArea">The clip area of the graphic context.</param>
+        /// <param name="surfaceSize">The area of the graphic context.</param>
         /// <returns>A rectangle representing the target clip area.</returns>
-        internal Rectangle GetTargetClipArea(Rectangle realClipArea)
+        internal Rectangle SetSurfaceSize(Size surfaceSize)
         {
-            var targetClipArea = ComputeClipArea(realClipArea, _virtualClipArea);
-            _camera.ViewingVolume.Update(targetClipArea.Width, targetClipArea.Height);
-            return targetClipArea;
+            _clipArea = ComputeClipArea(surfaceSize, _virtualClipArea);
+            _camera.ViewingVolume.Update(_clipArea.Width, _clipArea.Height);
+            return _clipArea;
         }
 
-        private static Rectangle ComputeClipArea(Rectangle realClipArea, RectangleF virtualClipArea)
+        private static Rectangle ComputeClipArea(Size surfaceSize, RectangleF virtualClipArea)
         {
             var targetClipArea = new Rectangle
                 (
-                    (int)((virtualClipArea.X * realClipArea.Width) + realClipArea.X),
-                    (int)((virtualClipArea.Y * realClipArea.Height) + realClipArea.Y),
-                    (int)(virtualClipArea.Width * realClipArea.Width),
-                    (int)(virtualClipArea.Height * realClipArea.Height)
+                    (int)((virtualClipArea.X * surfaceSize.Width)),
+                    (int)((virtualClipArea.Y * surfaceSize.Height)),
+                    (int)(virtualClipArea.Width * surfaceSize.Width),
+                    (int)(virtualClipArea.Height * surfaceSize.Height)
                 );
             return targetClipArea;
         }

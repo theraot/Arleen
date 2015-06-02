@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Security.Permissions;
+using System.Threading;
 
 namespace Arleen
 {
@@ -12,14 +13,25 @@ namespace Arleen
     /// </summary>
     public static class Engine
     {
-        private static Realm _currentRealm;
+        private const int INT_Initialized = 2;
+        private const int INT_Initializing = 1;
+        private const int INT_NotInitialized = 0;
         private static bool _debugMode;
+        private static RealmRunner _realmRunner;
+        private static int _status;
+
+        public static AppDomain AppDomain { get; private set; }
+
+        public static string AssemblyName { get; private set; }
 
         /// <summary>
         /// Gets the loaded configuration for the program.
         /// </summary>
         public static Configuration Configuration { get; private set; }
 
+        /// <summary>
+        /// Gets the currently configured langauge.
+        /// </summary>
         public static string CurrentLanguage { get; private set; }
 
         /// <summary>
@@ -39,7 +51,15 @@ namespace Arleen
         /// <remarks>The internal name is the simple name of the assembly, that is "Arleen"</remarks>
         public static string InternalName { get; private set; }
 
+        /// <summary>
+        /// Gets the LogBook used to write log entries.
+        /// </summary>
         public static Logbook LogBook { get; private set; }
+
+        /// <summary>
+        /// Gets the text localization 
+        /// </summary>
+        public static TextLocalization TextLocalization { get; private set; }
 
         /// <summary>
         /// Changes the current Realm.
@@ -47,20 +67,96 @@ namespace Arleen
         /// <param name="realm">The new realm.</param>
         public static void ChangeRealm(Realm realm)
         {
-            _currentRealm.Dispose();
-            _currentRealm = realm;
-            if (_currentRealm != null)
+            if (realm == null)
             {
-                _currentRealm.Run();
+                if (_realmRunner != null)
+                {
+                    _realmRunner.CurrentRealm = null;
+                    _realmRunner.Dispose();
+                    _realmRunner = null;
+                }
+            }
+            else
+            {
+                if (_realmRunner == null || _realmRunner.IsClosed)
+                {
+                    _realmRunner = new RealmRunner
+                    {
+                        CurrentRealm = realm
+                    };
+                }
+                else
+                {
+                    _realmRunner.CurrentRealm = realm;
+                }
             }
         }
 
+        public static T Create<T>()
+            where T: class
+        {
+            return AppDomain.CreateInstanceAndUnwrap
+            (
+                AssemblyName,
+                typeof(T).FullName,
+                false,
+                System.Reflection.BindingFlags.Default,
+                null,
+                null,
+                null,
+                null,
+                null
+            ) as T;
+        }
+
+        public static T Create<T>(object param)
+            where T : class
+        {
+            return AppDomain.CreateInstanceAndUnwrap
+            (
+                AssemblyName,
+                typeof(T).FullName,
+                false,
+                System.Reflection.BindingFlags.Default,
+                null,
+                new [] {param},
+                null,
+                null,
+                null
+            ) as T;
+        }
+
+        public static T Create<T>(params object[] param)
+            where T : class
+        {
+            return AppDomain.CreateInstanceAndUnwrap
+            (
+                AssemblyName,
+                typeof(T).FullName,
+                false,
+                System.Reflection.BindingFlags.Default,
+                null,
+                param,
+                null,
+                null,
+                null
+            ) as T;
+        }
+
+        /// <summary>
+        /// Initialized the engine
+        /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Initialize()
+        public static void Initialize(string purpose, AppDomain appDomain)
         {
             try
             {
-                InitializeExtracted();
+                if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
+                {
+                    AppDomain = appDomain;
+                    InitializeExtracted(purpose);
+                    Thread.VolatileWrite(ref _status, INT_Initialized);
+                }
             }
             catch (Exception exception)
             {
@@ -75,21 +171,30 @@ namespace Arleen
             }
         }
 
+        /// <summary>
+        /// Runs the specified realm.
+        /// </summary>
+        /// <param name="realm">The realm to run.</param>
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Run(Realm realm)
         {
+            if (Thread.VolatileRead(ref _status) != INT_Initialized)
+            {
+                throw new InvalidOperationException("The Engine has not been initialized");
+            }
             try
             {
                 try
                 {
-                    _currentRealm = realm;
-                    _currentRealm.Run();
+                    ChangeRealm(realm);
+                }
+                catch (Exception exception)
+                {
+                    LogBook.ReportException(exception, true);
                 }
                 finally
                 {
-                    if (_currentRealm != null)
-                    {
-                        _currentRealm.Dispose();
-                    }
+                    ChangeRealm(null);
                     Terminate();
                 }
             }
@@ -102,28 +207,23 @@ namespace Arleen
             }
         }
 
-        private static string GetApplicationDataFolder()
-        {
-            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
-                + System.IO.Path.DirectorySeparatorChar
-                + InternalName;
-            Directory.CreateDirectory(folder);
-            return folder;
-        }
-
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        private static void InitializeExtracted()
+        private static void InitializeExtracted(string purpose)
         {
+            // Note: this method is not thread safe.
+
             // *********************************
             // Getting folder and display name
             // *********************************
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            AssemblyName = assembly.FullName;
             InternalName = assembly.GetName().Name;
             DisplayName = InternalName;
 
             var location = assembly.Location;
-            Folder = Path.GetDirectoryName(location) ?? GetApplicationDataFolder();
+            Folder = Path.GetDirectoryName(location);
             if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
@@ -137,18 +237,6 @@ namespace Arleen
             _debugMode = false;
             SetDebugMode();
 
-            if (_debugMode)
-            {
-                try
-                {
-                    Console.Clear();
-                }
-                catch (IOException)
-                {
-                    // Ignore.
-                }
-            }
-
             // *********************************
             // Creating the logbook
             // *********************************
@@ -157,7 +245,12 @@ namespace Arleen
 
             try
             {
-                var logStreamWriter = new StreamWriter(Folder + "log.txt") { AutoFlush = true };
+                var logFile = purpose + ".log";
+                foreach (char character in Path.GetInvalidFileNameChars())
+                {
+                    logFile = logFile.Replace(character.ToString(), "");
+                }
+                var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
                 LogBook.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
             catch (Exception exception)
@@ -185,7 +278,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                LogBook.ReportException(exception, "trying to access the Console.", false);
+                LogBook.ReportException(exception, "trying to access the Console", false);
             }
 
             if (_debugMode)
@@ -208,7 +301,7 @@ namespace Arleen
             // Reading main configuration
             // *********************************
 
-            Configuration = Resources.LoadConfig<Configuration>();
+            Configuration = ResourcesInternal.LoadConfig<Configuration>();
             if (Configuration == null)
             {
                 return;
@@ -233,6 +326,14 @@ namespace Arleen
             {
                 CurrentLanguage = Configuration.Language;
             }
+
+            LogBook.Trace(TraceEventType.Information, "Current Language: {0}", CurrentLanguage);
+
+            // *********************************
+            // Load localized texts
+            // *********************************
+
+            TextLocalization = ResourcesInternal.LoadTexts(CurrentLanguage);
         }
 
         private static void Panic()
@@ -242,11 +343,6 @@ namespace Arleen
                 "Alternatively, if this hasn't been good to you so far,\n" +
                 "consider yourself lucky that it won't be troubling you much longer.";
             LogBook.Trace(TraceEventType.Critical, STR_PanicMessage);
-            if (_debugMode)
-            {
-                Console.WriteLine("[Press a key to exit]");
-                Console.ReadKey();
-            }
         }
 
         [Conditional("DEBUG")]
@@ -261,7 +357,7 @@ namespace Arleen
             {
                 // Save configuration
 
-                if (!Resources.SaveConfig(Configuration))
+                if (!ResourcesInternal.SaveConfig(Configuration))
                 {
                     LogBook.Trace(TraceEventType.Error, "Failed to save configuration.");
                 }
@@ -271,8 +367,18 @@ namespace Arleen
 
                 if (_debugMode)
                 {
-                    Console.WriteLine("[Press a key to exit]");
-                    Console.ReadKey();
+                    try
+                    {
+                        // Test for Console
+                        GC.KeepAlive(Console.WindowHeight);
+                        Console.WriteLine("[Press a key to exit]");
+                        Console.ReadKey();
+                    }
+                    catch (IOException exception)
+                    {
+                        GC.KeepAlive(exception);
+                        // Running without console
+                    }
                 }
             }
             catch (Exception exception)

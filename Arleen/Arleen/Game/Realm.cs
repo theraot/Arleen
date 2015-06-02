@@ -1,37 +1,12 @@
-﻿using OpenTK;
-using System;
+﻿using System;
 using System.Diagnostics;
+using Arleen.Rendering;
 
 namespace Arleen.Game
 {
-    public abstract class Realm : GameWindow
+    public abstract class Realm : MarshalByRefObject
     {
         private readonly Stopwatch _time = new Stopwatch();
-
-        protected Realm()
-            : this(Engine.Configuration)
-        {
-            // Empty
-        }
-
-        // ===
-        // TODO: world
-        // ===
-        // ---
-        // TODO: Input
-        // ---
-        // TODO: User Interface
-        // ---
-        // TODO: Audio
-        // ---
-        // TODO: Physics
-        // ---
-        protected Realm(Configuration configuration)
-            : base(configuration.Resolution.Width, configuration.Resolution.Height)
-        {
-            Title = configuration.DisplayName;
-            _time.Start();
-        }
 
         public double TotalTime
         {
@@ -39,6 +14,37 @@ namespace Arleen.Game
             {
                 return _time.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
             }
+        }
+
+        internal void RestartTime()
+        {
+            _time.Stop ();
+            _time.Start ();
+        }
+
+        protected internal virtual bool Closing()
+        {
+            return true;
+        }
+
+        protected internal virtual Scene Load ()
+        {
+            return null;
+        }
+
+        protected internal virtual void Resize ()
+        {
+            // Empty
+        }
+
+        protected internal virtual void Unload ()
+        {
+            // Empty
+        }
+
+        protected internal virtual void UpdateFrame (RenderInfo renderInfo)
+        {
+            // Empty
         }
     }
 }

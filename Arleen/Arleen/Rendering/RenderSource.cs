@@ -1,3 +1,4 @@
+using System;
 using Arleen.Geometry;
 using Arleen.Rendering.Sources;
 using OpenTK.Graphics.OpenGL;
@@ -8,7 +9,7 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents something that will be systematically rendered.
     /// </summary>
-    public abstract class RenderSource : IRenderable
+    public abstract class RenderSource : MarshalByRefObject, IRenderable
     {
         private bool _enabled;
         private bool _initialized;
@@ -18,6 +19,10 @@ namespace Arleen.Rendering
         /// </summary>
         protected RenderSource()
         {
+            if (Engine.AppDomain != AppDomain.CurrentDomain)
+            {
+                throw new InvalidOperationException(string.Format("Invalid AppDomain {0} - should be {1}", AppDomain.CurrentDomain.FriendlyName, Engine.AppDomain.FriendlyName));
+            }
             _enabled = true;
         }
 
@@ -55,7 +60,7 @@ namespace Arleen.Rendering
                 }
                 else
                 {
-                    Renderer.Current.RenderInfo.Camera.Place(Location.Mode.All);
+                    RenderTarget.Current.Camera.Place(Location.Mode.All);
                 }
                 var locable = this as ILocable;
                 if (locable != null)

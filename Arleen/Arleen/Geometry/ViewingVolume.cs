@@ -7,7 +7,7 @@ namespace Arleen.Geometry
     /// Represents a viewing volume.
     /// </summary>
     /// <remarks>The viewing volume can be understood as the space of things that may be visible to the camera.</remarks>
-    public abstract partial class ViewingVolume
+    public abstract partial class ViewingVolume : MarshalByRefObject
     {
         private double _farPlane;
         private double _nearPlane;

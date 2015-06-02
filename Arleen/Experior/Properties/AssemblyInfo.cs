@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -7,11 +8,11 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 
-[assembly: AssemblyTitle("Articus")]
+[assembly: AssemblyTitle("Experior")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Articus")]
+[assembly: AssemblyProduct("Experior")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +23,7 @@ using System.Security;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("15c9685d-ce01-4812-b8c5-449ebee747d6")]
+[assembly: Guid("eaaf18bc-3f1b-441c-ac10-4148e36a9786")]
 
 // Version information for an assembly consists of the following four values:
 //
