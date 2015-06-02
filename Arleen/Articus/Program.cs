@@ -185,6 +185,8 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
                 Engine.LogBook.Trace(TraceEventType.Information, "Target: {0}", dll);
+
+                ModuleLoader.Initialize(AppDomain.CurrentDomain);
                 var result = new List<Component>(ModuleLoader.Instance.Discover (dll));
                 Engine.LogBook.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
                 Engine.LogBook.Trace(TraceEventType.Information, "Serializing...");
