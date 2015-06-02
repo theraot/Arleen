@@ -8,6 +8,8 @@ using System.Security.Permissions;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
+using System.IO;
+using System.Globalization;
 
 namespace Articus
 {
@@ -71,6 +73,11 @@ namespace Articus
         {
             var path = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
             var folder = System.IO.Path.GetDirectoryName(path);
+			if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+			{
+				// On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
+				folder += Path.DirectorySeparatorChar;
+			}
 
             //---
 
@@ -80,7 +87,11 @@ namespace Articus
             permSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
             permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
-            permSet.AddPermission (new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder));
+
+			var permission = new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder);
+			permission.AddPathList (FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, folder + "Sandbox.log");
+
+            permSet.AddPermission(permission);
 
             var adSetup = new AppDomainSetup { ApplicationBase = folder };
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
