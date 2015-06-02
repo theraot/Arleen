@@ -8,7 +8,6 @@ using System.Security.Permissions;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
-using System.Security.Policy;
 
 namespace Articus
 {
@@ -34,6 +33,7 @@ namespace Articus
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
         {
             var realmComponents = ModuleLoader.Instance.GetComponents(typeof(Realm));
@@ -55,6 +55,7 @@ namespace Articus
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void SandboxInitialize(Resources resources, AppDomain appDomain)
         {
             Resources.Instance = resources;
@@ -140,6 +141,7 @@ namespace Articus
             }
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         static void Initialize (string purpose, AppDomain appDomain)
         {
             if (Interlocked.CompareExchange (ref _initialized, 1, 0) == 0)
@@ -170,6 +172,7 @@ namespace Articus
                     TraceEventType.Information,
                     _("Hello, my name is {name}.", new { name = Engine.DisplayName })
                 );
+                ModuleLoader.LoadModules();
                 CreateSandbox ();
             }
             else if (args[0] == "discover")
