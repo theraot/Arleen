@@ -70,30 +70,38 @@ namespace Arleen.Rendering
                 (
                     () =>
                     {
-                        _gameWindow.Context.MakeCurrent(_gameWindow.WindowInfo);
-                        InitializeOpenGl();
-                        while (true)
+                        Logbook.Instance.Trace(System.Diagnostics.TraceEventType.Information, "Renderer Thread started with Id {0}.", Thread.CurrentThread.ManagedThreadId);
+                        try
                         {
-                            Render();
-                            try
+                            _gameWindow.Context.MakeCurrent(_gameWindow.WindowInfo);
+                            InitializeOpenGl();
+                            while (true)
                             {
-                                if (_gameWindow.IsExiting)
+                                Render();
+                                try
+                                {
+                                    if (_gameWindow.IsExiting)
+                                    {
+                                        break;
+                                    }
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    break;
+                                }
+                                try
+                                {
+                                    _gameWindow.SwapBuffers();
+                                }
+                                catch (NullReferenceException)
                                 {
                                     break;
                                 }
                             }
-                            catch (ObjectDisposedException)
-                            {
-                                break;
-                            }
-                            try
-                            {
-                                _gameWindow.SwapBuffers();
-                            }
-                            catch (NullReferenceException)
-                            {
-                                break;
-                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Logbook.Instance.ReportException(exception, "running Renderer Thread", true);
                         }
                     }
                 )
