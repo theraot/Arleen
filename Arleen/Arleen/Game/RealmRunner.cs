@@ -33,6 +33,7 @@ namespace Arleen.Game
             : base(configuration.Resolution.Width, configuration.Resolution.Height)
         {
             Title = configuration.DisplayName;
+            Logbook.Instance.Trace (System.Diagnostics.TraceEventType.Information, "New RealmRunner created in {0}", AppDomain.CurrentDomain.FriendlyName);
         }
 
         public Realm CurrentRealm
