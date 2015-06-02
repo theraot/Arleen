@@ -74,7 +74,14 @@ namespace Articus
             //---
 
             Engine.LogBook.Trace(TraceEventType.Information, "Migrating to Sandbox.");
-            var permSet = new PermissionSet(PermissionState.Unrestricted);
+
+            var permSet = new PermissionSet(PermissionState.None);
+            permSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
+            permSet.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
+            permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
+            permSet.AddPermission(new FileIOPermission(PermissionState.Unrestricted));
+            permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
+
             var adSetup = new AppDomainSetup { ApplicationBase = folder };
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
 
