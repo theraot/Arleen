@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Arleen
+namespace Articus
 {
     [Serializable]
     public struct CrossCaller
