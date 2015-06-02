@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
+using System.Security.Policy;
 
 namespace Articus
 {
@@ -30,10 +31,11 @@ namespace Articus
                     Engine.LogBook.Trace
                     (
                         TraceEventType.Critical,
-                        "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n{1}\n == Source == \n{2}\n == Stacktrace == \n{3}",
+                        "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n",
                         current.GetType().Name,
                         current.Message,
                         current.Source,
+                        AppDomain.CurrentDomain.FriendlyName,
                         current.StackTrace
                     );
                     current = current.InnerException;
