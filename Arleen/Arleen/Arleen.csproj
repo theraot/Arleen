@@ -44,13 +44,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net35\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\Lyncee.OpenTK.1.1.1173.43181\lib\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
@@ -59,7 +59,6 @@
     <Compile Include="Geometry\Vector3dHelper.cs" />
     <Compile Include="Geometry\Vector3Helper.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="netfx\System\StringFormatWith.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Geometry\Location.cs" />
     <Compile Include="Geometry\QuaterniondHelper.cs" />
@@ -107,6 +106,7 @@
     <Compile Include="TextLocalization.cs" />
     <Compile Include="Game\RealmRunner.cs" />
     <Compile Include="Rendering\CameraHelper.cs" />
+    <Compile Include="netfx\System\StringFormatWith.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
