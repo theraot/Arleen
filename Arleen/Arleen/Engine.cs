@@ -301,7 +301,14 @@ namespace Arleen
             // Reading main configuration
             // *********************************
 
-            Configuration = ResourcesInternal.LoadConfig<Configuration>();
+            try
+            {
+                Configuration = ResourcesInternal.LoadConfig<Configuration>();
+            }
+            catch (Exception exception)
+            {
+                LogBook.ReportException (exception, true);
+            }
             if (Configuration == null)
             {
                 return;
