@@ -3,7 +3,7 @@ using System;
 namespace Articus
 {
     [Serializable]
-	public sealed class Component
+    public sealed class Component
     {
         private readonly Type _targetType;
         private readonly string _assamblyFile;
