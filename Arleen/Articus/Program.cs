@@ -53,17 +53,6 @@ namespace Articus
 
         private static void CreateSandbox()
         {
-            var path = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
-            var folder = Path.GetDirectoryName(path);
-            // Let this method throw if folder is null
-            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
-            {
-                // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
-                folder += Path.DirectorySeparatorChar;
-            }
-
-            //---
-
             Engine.LogBook.Trace(TraceEventType.Information, "Migrating to Sandbox.");
 
             var permSet = new PermissionSet(PermissionState.None);
@@ -71,11 +60,11 @@ namespace Articus
             permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
 
-            var permission = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder);
-            permission.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, folder + "Sandbox.log");
+            var permission = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Articus.Folder);
+            permission.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, Articus.Folder + "Sandbox.log");
             permSet.AddPermission(permission);
 
-            var appDomainSetup = new AppDomainSetup { ApplicationBase = folder };
+            var appDomainSetup = new AppDomainSetup { ApplicationBase = Articus.Folder };
             AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, appDomainSetup, permSet);
 
             Logbook.Instance.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, newDomain.FriendlyName);
@@ -85,7 +74,7 @@ namespace Articus
                 AppDomain.CurrentDomain
             };
 
-            newDomain.DoCallBack(new CrossCaller(path, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
+            newDomain.DoCallBack(new CrossCaller(Articus.Location, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
 
             ModuleLoader.Initialize(newDomain);
 
