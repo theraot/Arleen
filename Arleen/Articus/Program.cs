@@ -135,7 +135,7 @@ namespace Articus
             Engine.Initialize(purpose, appDomain);
             if (Engine.Configuration == null)
             {
-                Engine.LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
+                Engine.LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded...");
             }
         }
 
