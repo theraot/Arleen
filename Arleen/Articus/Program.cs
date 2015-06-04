@@ -16,24 +16,9 @@ namespace Articus
     /// <summary>
     /// The Program class contains the entry point
     /// </summary>
-    public class Program : MarshalByRefObject
+    public static class Program
     {
         private static int _initialized;
-
-        public Program()
-        {
-            if (AppDomain.CurrentDomain.FriendlyName == "Sandbox")
-            {
-                if (Thread.VolatileRead(ref _initialized) != 0)
-                {
-                    throw new InvalidOperationException("Initialization already done.");
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException("Wrong AppDomain.");
-            }
-        }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
