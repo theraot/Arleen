@@ -16,7 +16,6 @@ namespace Arleen
     /// C) There will be only one main Logbook per AppDomain. </remarks>
     public class Logbook : MarshalByRefObject
     {
-        private static Logbook _instance;
         private readonly TraceSource _logSource;
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -32,68 +31,6 @@ namespace Arleen
             {
                 _logSource.Listeners.Clear();
             }
-        }
-
-        /// <summary>
-        /// Gets the existing instance of Logbook.
-        /// </summary>
-        /// <remarks>This may be null during initialization. </remarks>
-        public static Logbook Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    throw new InvalidOperationException("Engine initialization is not done");
-                }
-                return _instance;
-            }
-            set
-            {
-                // Allow to write only if _instance is null
-                Interlocked.CompareExchange(ref _instance, value, null);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new instance of Logbook if no previous instance is available. Returns the existing (newly created or not) instance.
-        /// </summary>
-        /// <param name="level">The level for the messages that will be recorded.</param>
-        /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
-        /// <param name = "name">The name of the resource to log to.</param>
-        public static Logbook Create(SourceLevels level, bool allowDefaultListener, string name)
-        {
-            // This should be called during initialization.
-            // Double initialization is posible if multiple threads attemps to create the logbook...
-            // Since that should not happen, let's accept the garbage if somehow that comes to be.
-            var result = new Logbook(level, allowDefaultListener);
-            try
-            {
-                var logFile = name + ".log";
-                foreach (char character in Path.GetInvalidFileNameChars())
-                {
-                    logFile = logFile.Replace(character.ToString(), string.Empty);
-                }
-                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) { AutoFlush = true };
-                result.AddListener(new TextWriterTraceListener(logStreamWriter));
-            }
-            catch (Exception exception)
-            {
-                Instance.ReportException(exception, "trying to create the log file.", true);
-                try
-                {
-                    Console.WriteLine("Unable to create log file.");
-                    Console.WriteLine("== Exception Report ==");
-                    Console.WriteLine(exception.Message);
-                    Console.WriteLine("== Stacktrace ==");
-                    Console.WriteLine(exception.StackTrace);
-                }
-                catch (IOException)
-                {
-                    // Ignore.
-                }
-            }
-            return result;
         }
 
         /// <summary>
@@ -197,16 +134,58 @@ namespace Arleen
         /// <param name="message">The message to write.</param>
         public void Trace(TraceEventType eventType, string message)
         {
-            // TODO: Visaul Studio now complains here
             _logSource.TraceEvent(eventType, 0, UtcNowIsoFormat() + " " + message);
         }
 
-        internal static void Initialize(SourceLevels level, bool allowDefaultListener, string name)
+        /// <summary>
+        /// Creates a new instance of Logbook if no previous instance is available. Returns the existing (newly created or not) instance.
+        /// </summary>
+        /// <param name="level">The level for the messages that will be recorded.</param>
+        /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
+        /// <param name = "name">The name of the resource to log to.</param>
+        internal static Logbook Create(SourceLevels level, bool allowDefaultListener, string name)
         {
-            if (_instance == null)
+            // This should be called during initialization.
+            // Double initialization is posible if multiple threads attemps to create the logbook...
+            // Since that should not happen, let's accept the garbage if somehow that comes to be.
+            var result = new Logbook(level, allowDefaultListener);
+            try
             {
-                Instance = Create(level, allowDefaultListener, name);
+                var logFile = name + ".log";
+                foreach (char character in Path.GetInvalidFileNameChars())
+                {
+                    logFile = logFile.Replace(character.ToString(), string.Empty);
+                }
+                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) { AutoFlush = true };
+                result.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
+            catch (Exception exception)
+            {
+                result.ReportException(exception, "trying to create the log file.", true);
+                try
+                {
+                    Console.WriteLine("Unable to create log file.");
+                    Console.WriteLine("== Exception Report ==");
+                    Console.WriteLine(exception.Message);
+                    Console.WriteLine("== Stacktrace ==");
+                    Console.WriteLine(exception.StackTrace);
+                }
+                catch (IOException)
+                {
+                    // Ignore.
+                }
+            }
+            try
+            {
+                // Test for Console
+                GC.KeepAlive(Console.WindowHeight);
+                result.AddListener(new ConsoleTraceListener());
+            }
+            catch (Exception exception)
+            {
+                result.ReportException(exception, "trying to access the Console", false);
+            }
+            return result;
         }
 
         /// <summary>

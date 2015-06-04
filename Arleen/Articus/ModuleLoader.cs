@@ -59,17 +59,17 @@ namespace Articus
             var status = Interlocked.CompareExchange(ref _status, 3, 2);
             if (status == 2)
             {
-                foreach (var folder in Resources.Instance.GetFolders(new[] { "Modules" }))
+                foreach (var folder in Facade.Resources.GetFolders(new[] { "Modules" }))
                 {
                     string[] files;
                     try
                     {
                         files = Directory.GetFiles(folder, "*.dll");
-                        Logbook.Instance.Trace(TraceEventType.Information, "Trying to load modules from {0}", folder);
+                        Facade.Logbook.Trace(TraceEventType.Information, "Trying to load modules from {0}", folder);
                     }
                     catch (DirectoryNotFoundException)
                     {
-                        Logbook.Instance.Trace(TraceEventType.Warning, " - Unable to access folder {0}", folder);
+                        Facade.Logbook.Trace(TraceEventType.Warning, " - Unable to access folder {0}", folder);
                         continue;
                     }
                     foreach (var file in files)
@@ -99,7 +99,7 @@ namespace Articus
                     {
                         if (type.IsSubclassOf(targetType) && !type.IsAbstract)
                         {
-                            Logbook.Instance.Trace(TraceEventType.Information, "Found component {0} of type {1} in module {2}", type, targetType, assembly);
+                            Facade.Logbook.Trace(TraceEventType.Information, "Found component {0} of type {1} in module {2}", type, targetType, assembly);
                             yield return new Component(targetType, assemblyFile, type.FullName);
                         }
                     }
@@ -121,7 +121,7 @@ namespace Articus
         {
             Initialize();
             var result = _targetDomain.CreateInstanceFromAndUnwrap(component.AssamblyFile, component.TypeName);
-            Logbook.Instance.Trace(TraceEventType.Information, "Created Instance of {0}", component.TypeName);
+            Facade.Logbook.Trace(TraceEventType.Information, "Created Instance of {0}", component.TypeName);
             return result;
         }
 
@@ -145,11 +145,11 @@ namespace Articus
         [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust", Unrestricted = false)] // OK
         private static void LoadComponentsFromModule(string assemblyFile)
         {
-            Logbook.Instance.Trace(TraceEventType.Information, "Trying to load module {0}", assemblyFile);
+            Facade.Logbook.Trace(TraceEventType.Information, "Trying to load module {0}", assemblyFile);
             var module = assemblyFile.Substring(0, assemblyFile.Length - 3) + STR_Module_Extension;
             if (!File.Exists(module))
             {
-                Logbook.Instance.Trace(TraceEventType.Information, "Discovering types for module {0}", assemblyFile);
+                Facade.Logbook.Trace(TraceEventType.Information, "Discovering types for module {0}", assemblyFile);
                 var process = new Process {
                     StartInfo = {
                         FileName = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath,
@@ -177,7 +177,7 @@ namespace Articus
             }
             catch (IOException)
             {
-                Logbook.Instance.Trace(TraceEventType.Warning, "Discovering failed for module {0}", assemblyFile);
+                Facade.Logbook.Trace(TraceEventType.Warning, "Discovering failed for module {0}", assemblyFile);
             }
         }
     }

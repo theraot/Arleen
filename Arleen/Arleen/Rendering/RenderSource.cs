@@ -19,9 +19,9 @@ namespace Arleen.Rendering
         /// </summary>
         protected RenderSource()
         {
-            if (Engine.AppDomain != AppDomain.CurrentDomain)
+            if (Facade.AppDomain != AppDomain.CurrentDomain)
             {
-                throw new InvalidOperationException(string.Format("Invalid AppDomain {0} - should be {1}", AppDomain.CurrentDomain.FriendlyName, Engine.AppDomain.FriendlyName));
+                throw new InvalidOperationException(string.Format("Invalid AppDomain {0} - should be {1}", AppDomain.CurrentDomain.FriendlyName, Facade.AppDomain.FriendlyName));
             }
             _enabled = true;
         }

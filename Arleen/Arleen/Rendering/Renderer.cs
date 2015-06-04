@@ -68,7 +68,7 @@ namespace Arleen.Rendering
 
             ThreadStart render = () =>
             {
-                Logbook.Instance.Trace(System.Diagnostics.TraceEventType.Information, "Renderer Thread started with Id {0}.", Thread.CurrentThread.ManagedThreadId);
+                Facade.Logbook.Trace(System.Diagnostics.TraceEventType.Information, "Renderer Thread started with Id {0}.", Thread.CurrentThread.ManagedThreadId);
                 try
                 {
                     _gameWindow.Context.MakeCurrent(_gameWindow.WindowInfo);
@@ -99,7 +99,7 @@ namespace Arleen.Rendering
                 }
                 catch (Exception exception)
                 {
-                    Logbook.Instance.ReportException(exception, "running Renderer Thread", true);
+                    Facade.Logbook.ReportException(exception, "running Renderer Thread", true);
                 }
             };
 

@@ -32,7 +32,7 @@ namespace Arleen.Rendering
             }
             catch (Exception exception)
             {
-                Logbook.Instance.ReportException
+                Facade.Logbook.ReportException
                 (
                     exception,
                     "trying to load texture",
@@ -57,7 +57,7 @@ namespace Arleen.Rendering
             }
             catch (Exception exception)
             {
-                Logbook.Instance.ReportException
+                Facade.Logbook.ReportException
                 (
                     exception,
                     "trying to load texture",
@@ -83,7 +83,7 @@ namespace Arleen.Rendering
             }
             catch (Exception exception)
             {
-                Logbook.Instance.ReportException
+                Facade.Logbook.ReportException
                 (
                     exception,
                     "trying to load texture",
@@ -110,7 +110,7 @@ namespace Arleen.Rendering
             }
             catch (Exception exception)
             {
-                Logbook.Instance.ReportException
+                Facade.Logbook.ReportException
                 (
                     exception,
                     "trying to load texture",

@@ -25,13 +25,14 @@ namespace Articus
             foreach (var realmComponent in realmComponents)
             {
                 var tmp = ModuleLoader.Instance.Load(realmComponent);
-                Logbook.Instance.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
+                Facade.Logbook.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
+                // TODO Visual Studio Complains here - BindingFailure - yet it works correctly
                 realm = tmp as Realm;
                 break;
             }
             if (realm == null)
             {
-                Logbook.Instance.Trace(TraceEventType.Critical, "No realm found.");
+                Facade.Logbook.Trace(TraceEventType.Critical, "No realm found.");
             }
             else
             {
@@ -40,21 +41,22 @@ namespace Articus
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void SandboxInitialize(Resources resources, AppDomain appDomain, Logbook logbook)
+        public static void SandboxInitialize(FacadeCore facadeCore)
         {
-            Resources.Instance = resources;
-            Logbook.Instance = logbook;
-            Initialize(STR_SandboxName, appDomain);
-            Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
-            Logbook.Instance.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
-            Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
-            Logbook.Instance.Trace(TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
-            Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
+            #pragma warning disable 618 // This is intended internal use
+            Facade.Set(facadeCore);
+            #pragma warning restore 618
+            Engine.Initialize(STR_SandboxName);
+            Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
+            Facade.Logbook.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
+            Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
+            Facade.Logbook.Trace(TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
+            Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
         }
 
         private static void CreateSandbox()
         {
-            Logbook.Instance.Trace(TraceEventType.Information, "Creating Sandbox.");
+            Facade.Logbook.Trace(TraceEventType.Information, "Creating Sandbox.");
 
             var permissionSet = new PermissionSet(PermissionState.None);
             permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
@@ -65,12 +67,12 @@ namespace Articus
             var appDomainSetup = new AppDomainSetup { ApplicationBase = Articus.Folder };
             AppDomain sandboxDomain = AppDomain.CreateDomain(STR_SandboxName, null, appDomainSetup, permissionSet);
 
-            Logbook.Instance.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, sandboxDomain.FriendlyName);
+            Facade.Logbook.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, sandboxDomain.FriendlyName);
 
             var parameters = new object[] {
-                Resources.Instance,
-                AppDomain.CurrentDomain,
-                Logbook.Create(Engine.DebugMode ? SourceLevels.All : SourceLevels.Information, true, STR_SandboxName)
+                #pragma warning disable 618 // This is intended internal use
+                FacadeCore.Initialize(STR_SandboxName, false)
+                #pragma warning restore 618
             };
 
             sandboxDomain.DoCallBack(new CrossCaller(Articus.Location, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
@@ -89,7 +91,7 @@ namespace Articus
                 var current = exception;
                 do
                 {
-                    Logbook.Instance.Trace
+                    Facade.Logbook.Trace
                     (
                         TraceEventType.Critical,
                         "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n",
@@ -102,16 +104,16 @@ namespace Articus
                     current = current.InnerException;
                 } while (current != null);
                 var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                Logbook.Instance.Trace(TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
+                Facade.Logbook.Trace(TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
             }
             else if (eventArgs.ExceptionObject != null)
             {
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Critical,
                     "Help me..."
                 );
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Critical,
                     eventArgs.ExceptionObject.ToString()
@@ -119,22 +121,11 @@ namespace Articus
             }
             else
             {
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Critical,
                     "It is all darkness..."
                 );
-            }
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        private static void Initialize(string purpose, AppDomain appDomain)
-        {
-            // This methos should run only once, no check is perfomed to ensure this
-            Engine.Initialize(purpose, appDomain);
-            if (Engine.Configuration == null)
-            {
-                Logbook.Instance.Trace(TraceEventType.Critical, "There was no configuration lodaded...");
             }
         }
 
@@ -144,35 +135,35 @@ namespace Articus
 
             if (args.Length == 0)
             {
-                Initialize("Default", AppDomain.CurrentDomain);
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
+                Engine.Initialize("Default");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
                 ModuleLoader.LoadModules();
                 CreateSandbox();
             }
             else if (args[0] == "discover")
             {
                 var dll = args[1];
-                Initialize("Discovery - " + Path.GetFileName(dll), AppDomain.CurrentDomain);
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
-                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
-                Logbook.Instance.Trace(TraceEventType.Information, "Target: {0}", dll);
+                Engine.Initialize("Discovery - " + Path.GetFileName(dll));
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
+                Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
+                Facade.Logbook.Trace(TraceEventType.Information, "Target: {0}", dll);
 
                 ModuleLoader.Initialize(AppDomain.CurrentDomain);
                 var result = new List<Component>(ModuleLoader.Instance.Discover(dll));
-                Logbook.Instance.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
-                Logbook.Instance.Trace(TraceEventType.Information, "Serializing...");
+                Facade.Logbook.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
+                Facade.Logbook.Trace(TraceEventType.Information, "Serializing...");
                 var data = JsonConvert.SerializeObject(result);
                 var file = args[1].Substring(0, args[1].Length - 3) + ModuleLoader.STR_Module_Extension;
-                Logbook.Instance.Trace(TraceEventType.Information, "Attempting to store in: {0}", file);
+                Facade.Logbook.Trace(TraceEventType.Information, "Attempting to store in: {0}", file);
                 File.WriteAllText(file, data);
-                Logbook.Instance.Trace(TraceEventType.Information, "Done.");
+                Facade.Logbook.Trace(TraceEventType.Information, "Done.");
             }
         }
     }

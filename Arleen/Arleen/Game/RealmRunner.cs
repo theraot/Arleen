@@ -17,7 +17,7 @@ namespace Arleen.Game
         /// Initializes a new instance of the <see cref="Arleen.Game.RealmRunner"/> class.
         /// </summary>
         public RealmRunner()
-            : this(Engine.Configuration)
+            : this(Facade.Configuration)
         {
             // Empty
         }
@@ -43,7 +43,7 @@ namespace Arleen.Game
             : base(configuration.Resolution.Width, configuration.Resolution.Height)
         {
             Title = configuration.DisplayName;
-            Logbook.Instance.Trace(System.Diagnostics.TraceEventType.Information, "New RealmRunner created in {0}", AppDomain.CurrentDomain.FriendlyName);
+            Facade.Logbook.Trace(System.Diagnostics.TraceEventType.Information, "New RealmRunner created in {0}", AppDomain.CurrentDomain.FriendlyName);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Arleen.Game
             }
             catch (SecurityException exception)
             {
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
                 Close();
             }
         }
@@ -139,7 +139,7 @@ namespace Arleen.Game
             }
             catch (SecurityException exception)
             {
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
                 Close();
             }
         }
@@ -157,7 +157,7 @@ namespace Arleen.Game
             }
             catch (SecurityException exception)
             {
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
                 Close();
             }
         }
@@ -175,7 +175,7 @@ namespace Arleen.Game
             }
             catch (SecurityException exception)
             {
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
                 Close();
             }
         }
@@ -193,7 +193,7 @@ namespace Arleen.Game
             }
             catch (SecurityException exception)
             {
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
                 Close();
             }
         }

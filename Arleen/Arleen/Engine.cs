@@ -19,25 +19,7 @@ namespace Arleen
         private static RealmRunner _realmRunner;
         private static int _status;
 
-        public static AppDomain AppDomain { get; private set; }
-
-        /// <summary>
-        /// Gets the loaded configuration for the program.
-        /// </summary>
-        public static Configuration Configuration { get; private set; }
-
-        /// <summary>
-        /// Gets the currently configured language.
-        /// </summary>
-        public static string CurrentLanguage { get; private set; }
-
         public static bool DebugMode { get; private set; }
-
-        /// <summary>
-        /// Returns the display name for the Program.
-        /// </summary>
-        /// <remarks>By default this is equal to InternalName</remarks>
-        public static string DisplayName { get; private set; }
 
         /// <summary>
         /// Gets the path to the folder from where Arleen is loaded
@@ -49,11 +31,6 @@ namespace Arleen
         /// </summary>
         /// <remarks>The internal name is the simple name of the assembly, that is "Arleen"</remarks>
         public static string InternalName { get; private set; }
-
-        /// <summary>
-        /// Gets the text localization
-        /// </summary>
-        public static TextLocalization TextLocalization { get; private set; }
 
         /// <summary>
         /// Changes the current Realm.
@@ -85,67 +62,15 @@ namespace Arleen
             }
         }
 
-        public static T Create<T>()
-            where T : class
-        {
-            return AppDomain.CreateInstanceAndUnwrap
-            (
-                typeof(T).Assembly.FullName,
-                typeof(T).FullName,
-                false,
-                System.Reflection.BindingFlags.Default,
-                null,
-                null,
-                null,
-                null,
-                null
-            ) as T;
-        }
-
-        public static T Create<T>(object param)
-            where T : class
-        {
-            return AppDomain.CreateInstanceAndUnwrap
-            (
-                typeof(T).Assembly.FullName,
-                typeof(T).FullName,
-                false,
-                System.Reflection.BindingFlags.Default,
-                null,
-                new[] { param },
-                null,
-                null,
-                null
-            ) as T;
-        }
-
-        public static T Create<T>(params object[] param)
-            where T : class
-        {
-            return AppDomain.CreateInstanceAndUnwrap
-            (
-                typeof(T).Assembly.FullName,
-                typeof(T).FullName,
-                false,
-                System.Reflection.BindingFlags.Default,
-                null,
-                param,
-                null,
-                null,
-                null
-            ) as T;
-        }
-
         /// <summary>
         /// Initialized the engine
         /// </summary>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Initialize(string purpose, AppDomain appDomain)
+        public static void Initialize(string name)
         {
             if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
             {
-                AppDomain = appDomain;
-                InitializeExtracted(purpose);
+                InitializeExtracted(name);
                 Thread.VolatileWrite(ref _status, INT_Initialized);
             }
         }
@@ -169,7 +94,7 @@ namespace Arleen
                 }
                 catch (Exception exception)
                 {
-                    Logbook.Instance.ReportException(exception, true);
+                    Facade.Logbook.ReportException(exception, true);
                 }
                 finally
                 {
@@ -181,13 +106,13 @@ namespace Arleen
             {
                 // Pokémon
                 // Gotta catch'em all!
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
                 Panic();
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        private static void InitializeExtracted(string purpose)
+        private static void InitializeExtracted(string name)
         {
             // Note: this method is not thread safe.
 
@@ -198,7 +123,6 @@ namespace Arleen
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             InternalName = assembly.GetName().Name;
-            DisplayName = InternalName;
 
             var location = assembly.Location;
             Folder = Path.GetDirectoryName(location);
@@ -217,82 +141,38 @@ namespace Arleen
             SetDebugMode();
 
             // *********************************
-            // Creating the logbook
+            // Creating the Facade
             // *********************************
 
-            Logbook.Initialize(DebugMode ? SourceLevels.All : SourceLevels.Information, true, purpose);
+            #pragma warning disable 618 // This is intended internal use
+            FacadeCore.Initialize(name, true);
+            #pragma warning restore 618
 
-            try
+            if (Facade.Configuration.ForceDebugMode)
             {
-                // Test for Console
-                GC.KeepAlive(Console.WindowHeight);
-                Logbook.Instance.AddListener(new ConsoleTraceListener());
+                if (!Engine.DebugMode)
+                {
+                    Facade.Logbook.ChangeLevel(SourceLevels.All);
+                    Facade.Logbook.Trace(TraceEventType.Information, "[Forced debug mode]");
+                }
             }
-            catch (Exception exception)
-            {
-                Logbook.Instance.ReportException(exception, "trying to access the Console", false);
-            }
+
+            // *********************************
+            // Reporting
+            // *********************************
 
             if (DebugMode)
             {
-                Logbook.Instance.Trace(TraceEventType.Information, "[Running debug build]");
+                Facade.Logbook.Trace(TraceEventType.Information, "[Running debug build]");
             }
 
-            Logbook.Instance.Trace(TraceEventType.Information, "Internal name: {0}", assembly.FullName);
-
-            // *********************************
-            // Detecting Language
-            // *********************************
-
-            // We get the culture name via TextInfo because it always includes the region.
-            // If we get the name of the culture directly it will only have the region if it is not the default one.
-
-            CurrentLanguage = CultureInfo.CurrentCulture.TextInfo.CultureName;
+            Facade.Logbook.Trace(TraceEventType.Information, "Internal name: {0}", assembly.FullName);
 
             // *********************************
             // Reading main configuration
             // *********************************
 
-            try
-            {
-                Configuration = ResourcesInternal.LoadConfig<Configuration>();
-            }
-            catch (Exception exception)
-            {
-                Logbook.Instance.ReportException(exception, true);
-            }
-            if (Configuration == null)
-            {
-                return;
-            }
-            if (Configuration.ForceDebugMode)
-            {
-                if (!DebugMode)
-                {
-                    Logbook.Instance.ChangeLevel(SourceLevels.All);
-                    Logbook.Instance.Trace(TraceEventType.Information, "[Forced debug mode]");
-                }
-            }
-            if (string.IsNullOrEmpty(Configuration.DisplayName))
-            {
-                Configuration.DisplayName = DisplayName;
-            }
-            else
-            {
-                DisplayName = Configuration.DisplayName;
-            }
-            if (!string.IsNullOrEmpty(Configuration.Language))
-            {
-                CurrentLanguage = Configuration.Language;
-            }
-
-            Logbook.Instance.Trace(TraceEventType.Information, "Current Language: {0}", CurrentLanguage);
-
-            // *********************************
-            // Load localized texts
-            // *********************************
-
-            TextLocalization = ResourcesInternal.LoadTexts(CurrentLanguage);
+            Facade.Logbook.Trace(TraceEventType.Information, "Current Language: {0}", Facade.Configuration.Language);
         }
 
         private static void Panic()
@@ -301,7 +181,7 @@ namespace Arleen
                 "Consider yourself lucky that this has been good to you so far.\n" +
                 "Alternatively, if this hasn't been good to you so far,\n" +
                 "consider yourself lucky that it won't be troubling you much longer.";
-            Logbook.Instance.Trace(TraceEventType.Critical, STR_PanicMessage);
+            Facade.Logbook.Trace(TraceEventType.Critical, STR_PanicMessage);
         }
 
         [Conditional("DEBUG")]
@@ -316,13 +196,13 @@ namespace Arleen
             {
                 // Save configuration
 
-                if (!ResourcesInternal.SaveConfig(Configuration))
+                if (!ResourcesInternal.SaveConfig(Facade.Configuration))
                 {
-                    Logbook.Instance.Trace(TraceEventType.Error, "Failed to save configuration.");
+                    Facade.Logbook.Trace(TraceEventType.Error, "Failed to save configuration.");
                 }
 
                 // Exit
-                Logbook.Instance.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
+                Facade.Logbook.Trace(TraceEventType.Information, "Goodbye, see you soon.");
 
                 if (DebugMode)
                 {
@@ -344,7 +224,7 @@ namespace Arleen
             {
                 // Pokémon
                 // Gotta catch'em all!
-                Logbook.Instance.ReportException(exception, true);
+                Facade.Logbook.ReportException(exception, true);
             }
         }
     }

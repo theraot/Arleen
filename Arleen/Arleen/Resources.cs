@@ -13,37 +13,9 @@ namespace Arleen
     /// </summary>
     public class Resources : MarshalByRefObject
     {
-        private static Resources _instance;
-
-        private Resources()
+        internal Resources()
         {
             // Empty
-        }
-
-        public static Resources Instance
-        {
-            get
-            {
-                var found = _instance;
-                if (found == null)
-                {
-                    // if didn't find an instance try to create one
-                    // let any waste be garbage collected
-                    var created = new Resources();
-                    found = Interlocked.CompareExchange(ref _instance, created, null);
-                    if (found == null)
-                    {
-                        return created;
-                    }
-                }
-                // if found an instance just return it
-                return found;
-            }
-            set
-            {
-                // Allow to write only if _instance is null
-                Interlocked.CompareExchange(ref _instance, value, null);
-            }
         }
 
         public List<string> GetFolders(string[] prefixes)
@@ -74,8 +46,8 @@ namespace Arleen
                     }
                     catch (Exception exception)
                     {
-                        Logbook.Instance.Trace(TraceEventType.Error, "Unable to create folder: {0}", result);
-                        Logbook.Instance.ReportException(exception, false);
+                        Facade.Logbook.Trace(TraceEventType.Error, "Unable to create folder: {0}", result);
+                        Facade.Logbook.ReportException(exception, false);
                     }
                 }
                 if (Directory.Exists(folder))
@@ -98,7 +70,7 @@ namespace Arleen
             var stream = Read(assembly, Path.DirectorySeparatorChar + resourceName, new[] { "Images" }, resourceName);
             if (stream == null)
             {
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Error,
                     " - Unable to load Bitmap {0}.",
@@ -192,7 +164,7 @@ namespace Arleen
                 {
                     if (TryProcessResource(assembly, resource, out stream))
                     {
-                        Logbook.Instance.Trace
+                        Facade.Logbook.Trace
                         (
                             TraceEventType.Information,
                             " - Loaded internal resource {0}",
@@ -214,14 +186,14 @@ namespace Arleen
             var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + extension;
             try
             {
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Information,
                     " - Attempting to read from {0}",
                     path
                 );
                 stream = File.OpenRead(path);
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Information,
                     " - Succeed to read from {0}",
@@ -231,7 +203,7 @@ namespace Arleen
             }
             catch (IOException exception)
             {
-                Logbook.Instance.ReportException(exception, "trying to read resource", false);
+                Facade.Logbook.ReportException(exception, "trying to read resource", false);
                 stream = null;
                 return false;
             }
@@ -242,7 +214,7 @@ namespace Arleen
             var path = basepath + Path.DirectorySeparatorChar + assembly.GetName().Name + resourceName;
             try
             {
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Information,
                     " - Attempting to write to {0}",
@@ -253,7 +225,7 @@ namespace Arleen
                 {
                     CopyStream(stream, file);
                 }
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                 (
                     TraceEventType.Information,
                     " - Succeed to write to {0}",
@@ -263,7 +235,7 @@ namespace Arleen
             }
             catch (IOException exception)
             {
-                Logbook.Instance.ReportException(exception, "trying to write resource", false);
+                Facade.Logbook.ReportException(exception, "trying to write resource", false);
                 return false;
             }
         }

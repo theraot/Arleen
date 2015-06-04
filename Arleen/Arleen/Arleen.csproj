@@ -106,6 +106,8 @@
     <Compile Include="Game\RealmRunner.cs" />
     <Compile Include="Rendering\CameraHelper.cs" />
     <Compile Include="netfx\System\StringFormatWith.cs" />
+    <Compile Include="Facade.cs" />
+    <Compile Include="FacadeCore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

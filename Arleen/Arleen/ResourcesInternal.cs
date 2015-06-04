@@ -22,17 +22,17 @@ namespace Arleen
         public static T LoadConfig<T>()
         {
             var assembly = Assembly.GetCallingAssembly();
-            Logbook.Instance.Trace
+            Facade.Logbook.Trace
                 (
-                    TraceEventType.Information,
-                    "Requested to read configuration for {0}",
-                    assembly.GetName().Name
-                );
+                TraceEventType.Information,
+                "Requested to read configuration for {0}",
+                assembly.GetName().Name
+            );
             // Will try to read:
             // - ~\Config\AssemblyName.json
             // - %AppData%\InternalName\Config\AssemblyName.json
             // - Assembly!Namespace.Config.default.json
-            using (var reader = new StreamReader(Resources.Instance.Read(assembly, ".json", new[] { "Config" }, "default.json"), Encoding.UTF8))
+            using (var reader = new StreamReader(Facade.Resources.Read(assembly, ".json", new[] { "Config" }, "default.json"), Encoding.UTF8))
             {
                 var str = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<T>(str);
@@ -65,38 +65,37 @@ namespace Arleen
         /// <summary>
         /// Saves the configuration for the calling assembly.
         /// </summary>
-        /// <typeparam name="T">The type of the object to be populated with the configuration.</typeparam>
         /// <param name="target">The object containing the configuration to be stored.</param>
         /// <returns>true if the configuration was stored, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static bool SaveConfig<T>(T target)
         {
             var assembly = Assembly.GetCallingAssembly();
-            Logbook.Instance.Trace
+            Facade.Logbook.Trace
                 (
-                    TraceEventType.Information,
-                    "Requested to write configuration for {0}",
-                    assembly.GetName().Name
-                );
+                TraceEventType.Information,
+                "Requested to write configuration for {0}",
+                assembly.GetName().Name
+            );
             var str = JsonConvert.SerializeObject(target);
             // Will try to write:
             // - ~\Config\AssemblyName.json
             // - %AppData%\InternalName\Config\AssemblyName.json
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
             {
-                return Resources.Instance.Write(assembly, "Config", ".json", stream);
+                return Facade.Resources.Write(assembly, "Config", ".json", stream);
             }
         }
 
         private static Dictionary<string, string> GetLocalizedTexts(string language)
         {
             var assembly = Assembly.GetCallingAssembly();
-            Logbook.Instance.Trace
+            Facade.Logbook.Trace
                 (
-                    TraceEventType.Information,
-                    "Requested to read localized texts for {0}",
-                    assembly.GetName().Name
-                );
+                TraceEventType.Information,
+                "Requested to read localized texts for {0}",
+                assembly.GetName().Name
+            );
             // Will try to read:
             // - ~\Lang\langcode\AssemblyName.json
             // - %AppData%\InternalName\Lang\langcode\AssemblyName.json
@@ -120,15 +119,15 @@ namespace Arleen
 
             prefixes.Reverse();
 
-            var stream = Resources.Instance.Read(assembly, ".json", prefixes.ToArray(), "json");
+            var stream = Facade.Resources.Read(assembly, ".json", prefixes.ToArray(), "json");
             if (stream == null)
             {
-                Logbook.Instance.Trace
+                Facade.Logbook.Trace
                     (
-                        TraceEventType.Information,
-                        "No localized texts for {0}",
-                        assembly.GetName().Name
-                    );
+                    TraceEventType.Information,
+                    "No localized texts for {0}",
+                    assembly.GetName().Name
+                );
                 return null;
             }
             using (var reader = new StreamReader(stream, Encoding.UTF8))

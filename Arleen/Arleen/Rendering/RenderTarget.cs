@@ -42,7 +42,7 @@ namespace Arleen.Rendering
         {
             _virtualClipArea = virtualClipArea;
             _camera = camera;
-            _renderSource = Engine.Create<AggregateRenderSource>((IList<RenderSource>)renderSource);
+            _renderSource = Facade.Create<AggregateRenderSource>((IList<RenderSource>)renderSource);
             Enabled = true;
         }
 

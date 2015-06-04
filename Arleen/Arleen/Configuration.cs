@@ -1,11 +1,13 @@
-﻿namespace Arleen
+﻿using System;
+
+namespace Arleen
 {
     /// <summary>
     /// Represents the loaded configuration
     /// </summary>
     /// <remarks>Changing the values in Configuration does not reflect in the running program.
     /// Note: Instances of this class are created via Resources.LoadConfig</remarks>
-    public class Configuration
+    public class Configuration : MarshalByRefObject
     {
         /// <summary>
         /// Sets or gets the display name for this program.
