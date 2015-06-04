@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Arleen.Rendering.Sources;
 
 namespace Arleen.Rendering
 {
@@ -27,6 +28,20 @@ namespace Arleen.Rendering
             _virtualClipArea = virtualClipArea;
             _camera = camera;
             _renderable = renderable;
+            Enabled = true;
+        }
+
+        /// <summary>
+        /// Creates a new RenderTarget
+        /// </summary>
+        /// <param name="virtualClipArea">The rectangle in which to render, in screen = 1.</param>
+        /// <param name="camera">The camera associated with this target.</param>
+        /// <param name="renderable">The render source that will be rendered to this target.</param>
+        public RenderTarget(RectangleF virtualClipArea, Camera camera, params IRenderable[] renderable)
+        {
+            _virtualClipArea = virtualClipArea;
+            _camera = camera;
+            _renderable = Engine.Create<AggregateRenderSource>(renderable);
             Enabled = true;
         }
 
@@ -89,13 +104,12 @@ namespace Arleen.Rendering
 
         private static Rectangle ComputeClipArea(Size surfaceSize, RectangleF virtualClipArea)
         {
-            var targetClipArea = new Rectangle
-                (
-                    (int)(virtualClipArea.X * surfaceSize.Width),
-                    (int)(virtualClipArea.Y * surfaceSize.Height),
-                    (int)(virtualClipArea.Width * surfaceSize.Width),
-                    (int)(virtualClipArea.Height * surfaceSize.Height)
-                );
+            var targetClipArea = new Rectangle(
+                                     (int)(virtualClipArea.X * surfaceSize.Width),
+                                     (int)(virtualClipArea.Y * surfaceSize.Height),
+                                     (int)(virtualClipArea.Width * surfaceSize.Width),
+                                     (int)(virtualClipArea.Height * surfaceSize.Height)
+                                 );
             return targetClipArea;
         }
     }

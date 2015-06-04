@@ -20,8 +20,7 @@ namespace Experior
 
         protected override Scene Load()
         {
-            var viewingVolume = new ViewingVolume.Perspective
-            {
+            var viewingVolume = new ViewingVolume.Perspective {
                 FieldOfView = 45,
                 FarPlane = FLT_FarPlane,
                 NearPlane = FLT_NearPlane,
@@ -34,70 +33,36 @@ namespace Experior
             //---
             var scene = new Scene();
             var brickwall = Resources.Instance.LoadStream("brickwall.png");
-            var sources = Engine.Create<AggregateRenderSource>
-                (
-                    (IList<IRenderable>)new IRenderable[]
-                    {
-                        Engine.Create<BackgroundColorRenderSource>(Color.LightSkyBlue, 1.0),
-                        Engine.Create<SkyboxRenderer>(Resources.Instance.LoadStream("skybox.png")),
-                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
-                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
-                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
-                    }
-                );
-            scene.RenderTargets.Add
-                (
-                    new RenderTarget
-                        (
-                            new RectangleF(0.0f, 0.0f, 1.0f, 0.5f),
-                            _camera1,
-                            Engine.Create<AggregateRenderSource>
-                            (
-                                (IList<IRenderable>)new IRenderable[]
-                                {
-                                    sources,
-                                    _textRenderer1
-                                }
-                            )
-                        )
-                );
-            scene.RenderTargets.Add
-                (
-                    new RenderTarget
-                        (
-                            new RectangleF(0.0f, 0.5f, 1.0f, 0.5f),
-                            _camera2,
-                            Engine.Create<AggregateRenderSource>
-                            (
-                                (IList<IRenderable>)new IRenderable[]
-                                {
-                                    sources,
-                                    _textRenderer2
-                                }
-                            )
-                        )
-                );
+            var sources = Engine.Create<AggregateRenderSource>((IList<IRenderable>)new IRenderable[] {
+                Engine.Create<BackgroundColorRenderSource>(Color.LightSkyBlue, 1.0),
+                Engine.Create<SkyboxRenderer>(Resources.Instance.LoadStream("skybox.png")),
+                Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
+                Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
+                Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
+            });
+            scene.RenderTargets.Add(new RenderTarget(new RectangleF(0.0f, 0.0f, 1.0f, 0.5f), _camera1, sources, _textRenderer1));
+            scene.RenderTargets.Add(new RenderTarget(new RectangleF(0.0f, 0.5f, 1.0f, 0.5f), _camera2, sources, _textRenderer2));
             return scene;
         }
 
         protected override void UpdateFrame(RenderInfo renderInfo)
         {
             UpdateCamera
-                (
-                    renderInfo,
-                    _camera1,
-                    QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
-                    new Vector3d(0, 0, -0.001),
-                    _textRenderer1
-                );
+            (
+                renderInfo,
+                _camera1,
+                QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
+                new Vector3d(0, 0, -0.001),
+                _textRenderer1
+            );
             UpdateCamera
-                (
-                    renderInfo,
-                    _camera2,
-                    QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
-                    new Vector3d(0, 0, -0.001),
-                    _textRenderer2
-                );
+            (
+                renderInfo,
+                _camera2,
+                QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
+                new Vector3d(0, 0, -0.001),
+                _textRenderer2
+            );
         }
 
         private void UpdateCamera(RenderInfo renderinfo, Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
