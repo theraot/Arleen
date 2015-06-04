@@ -22,8 +22,6 @@ namespace Arleen
 
         public static AppDomain AppDomain { get; private set; }
 
-        public static string AssemblyName { get; private set; }
-
         /// <summary>
         /// Gets the loaded configuration for the program.
         /// </summary>
@@ -80,8 +78,7 @@ namespace Arleen
             {
                 if (_realmRunner == null || _realmRunner.IsClosed)
                 {
-                    _realmRunner = new RealmRunner
-                    {
+                    _realmRunner = new RealmRunner {
                         CurrentRealm = realm
                     };
                 }
@@ -97,7 +94,7 @@ namespace Arleen
         {
             return AppDomain.CreateInstanceAndUnwrap
             (
-                AssemblyName,
+                typeof(T).Assembly.FullName,
                 typeof(T).FullName,
                 false,
                 System.Reflection.BindingFlags.Default,
@@ -114,7 +111,7 @@ namespace Arleen
         {
             return AppDomain.CreateInstanceAndUnwrap
             (
-                AssemblyName,
+                typeof(T).Assembly.FullName,
                 typeof(T).FullName,
                 false,
                 System.Reflection.BindingFlags.Default,
@@ -131,7 +128,7 @@ namespace Arleen
         {
             return AppDomain.CreateInstanceAndUnwrap
             (
-                AssemblyName,
+                typeof(T).Assembly.FullName,
                 typeof(T).FullName,
                 false,
                 System.Reflection.BindingFlags.Default,
@@ -218,7 +215,6 @@ namespace Arleen
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-            AssemblyName = assembly.FullName;
             InternalName = assembly.GetName().Name;
             DisplayName = InternalName;
 
