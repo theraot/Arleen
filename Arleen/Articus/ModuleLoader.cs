@@ -14,6 +14,7 @@ namespace Articus
     public class ModuleLoader : MarshalByRefObject
     {
         public const string STR_Module_Extension = "mod";
+        public const string STR_Module_Folder = "Modules";
 
         private static readonly Type[] TargetTypes = {
             typeof(Realm)
@@ -59,7 +60,7 @@ namespace Articus
             var status = Interlocked.CompareExchange(ref _status, 3, 2);
             if (status == 2)
             {
-                foreach (var folder in Facade.Resources.GetFolders(new[] { "Modules" }))
+                foreach (var folder in Facade.Resources.GetFolders(new[] { STR_Module_Folder }))
                 {
                     string[] files;
                     try
