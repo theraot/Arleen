@@ -33,7 +33,7 @@ namespace Experior
             //---
             var scene = new Scene();
             var brickwall = Resources.Instance.LoadStream("brickwall.png");
-            var sources = Engine.Create<AggregateRenderSource>((IList<IRenderable>)new IRenderable[] {
+            var sources = Engine.Create<AggregateRenderSource>((IList<RenderSource>)new RenderSource[] {
                 Engine.Create<BackgroundColorRenderSource>(Color.LightSkyBlue, 1.0),
                 Engine.Create<SkyboxRenderer>(Resources.Instance.LoadStream("skybox.png")),
                 Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),

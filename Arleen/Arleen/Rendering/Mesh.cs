@@ -7,7 +7,7 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents a 3D structure.
     /// </summary>
-    public sealed class Mesh : IDisposable, IRenderable
+    public sealed class Mesh : IDisposable
     {
         private const int INT_ColorSize = 4;
         private const int INT_NormalSize = 3;

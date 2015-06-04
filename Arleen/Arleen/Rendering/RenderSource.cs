@@ -9,7 +9,7 @@ namespace Arleen.Rendering
     /// <summary>
     /// Represents something that will be systematically rendered.
     /// </summary>
-    public abstract class RenderSource : MarshalByRefObject, IRenderable
+    public abstract class RenderSource : MarshalByRefObject
     {
         private bool _enabled;
         private bool _initialized;

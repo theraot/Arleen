@@ -12,7 +12,7 @@ namespace Arleen.Rendering
     {
         private readonly Camera _camera;
 
-        private readonly IRenderable _renderable;
+        private readonly RenderSource _renderSource;
 
         private readonly RectangleF _virtualClipArea;
 
@@ -23,12 +23,12 @@ namespace Arleen.Rendering
         /// </summary>
         /// <param name="virtualClipArea">The rectangle in which to render, in screen = 1.</param>
         /// <param name="camera">The camera associated with this target.</param>
-        /// <param name="renderable">The render source that will be rendered to this target.</param>
-        public RenderTarget(RectangleF virtualClipArea, Camera camera, IRenderable renderable)
+        /// <param name="renderSource">The render source that will be rendered to this target.</param>
+        public RenderTarget(RectangleF virtualClipArea, Camera camera, RenderSource renderSource)
         {
             _virtualClipArea = virtualClipArea;
             _camera = camera;
-            _renderable = renderable;
+            _renderSource = renderSource;
             Enabled = true;
         }
 
@@ -37,12 +37,12 @@ namespace Arleen.Rendering
         /// </summary>
         /// <param name="virtualClipArea">The rectangle in which to render, in screen = 1.</param>
         /// <param name="camera">The camera associated with this target.</param>
-        /// <param name="renderable">The render source that will be rendered to this target.</param>
-        public RenderTarget(RectangleF virtualClipArea, Camera camera, params IRenderable[] renderable)
+        /// <param name="renderSource">The render source that will be rendered to this target.</param>
+        public RenderTarget(RectangleF virtualClipArea, Camera camera, params RenderSource[] renderSource)
         {
             _virtualClipArea = virtualClipArea;
             _camera = camera;
-            _renderable = Engine.Create<AggregateRenderSource>((IList<IRenderable>)renderable);
+            _renderSource = Engine.Create<AggregateRenderSource>((IList<RenderSource>)renderSource);
             Enabled = true;
         }
 
@@ -70,11 +70,11 @@ namespace Arleen.Rendering
         /// </summary>
         public bool Enabled { get; private set; }
 
-        public IRenderable Renderable
+        public RenderSource RenderSource
         {
             get
             {
-                return _renderable;
+                return _renderSource;
             }
         }
 

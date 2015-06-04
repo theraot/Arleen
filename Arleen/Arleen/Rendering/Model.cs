@@ -3,7 +3,7 @@ using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {
-    public sealed class Model : IDisposable, IRenderable
+    public sealed class Model : IDisposable
     {
         // TODO: Multiple mesh per model
         private readonly Mesh _mesh;

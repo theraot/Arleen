@@ -6,20 +6,20 @@ namespace Arleen.Rendering.Sources
 {
     public sealed class AggregateRenderSource : RenderSource, IDisposable
     {
-        private readonly IList<IRenderable> _renderSources;
+        private readonly IList<RenderSource> _renderSources;
 
         public AggregateRenderSource()
         {
-            _renderSources = new List<IRenderable>();
+            _renderSources = new List<RenderSource>();
         }
 
         public AggregateRenderSource(bool enabled)
         {
             Enabled = enabled;
-            _renderSources = new List<IRenderable>();
+            _renderSources = new List<RenderSource>();
         }
 
-        public AggregateRenderSource(IList<IRenderable> renderSources)
+        public AggregateRenderSource(IList<RenderSource> renderSources)
         {
             if (renderSources == null)
             {
@@ -28,7 +28,7 @@ namespace Arleen.Rendering.Sources
             _renderSources = renderSources;
         }
 
-        public AggregateRenderSource(bool enabled, IList<IRenderable> renderSources)
+        public AggregateRenderSource(bool enabled, IList<RenderSource> renderSources)
         {
             if (renderSources == null)
             {
@@ -38,7 +38,7 @@ namespace Arleen.Rendering.Sources
             _renderSources = renderSources;
         }
 
-        public IList<IRenderable> RenderSources
+        public IList<RenderSource> RenderSources
         {
             get
             {
