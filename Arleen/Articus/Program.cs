@@ -25,13 +25,13 @@ namespace Articus
             foreach (var realmComponent in realmComponents)
             {
                 var tmp = ModuleLoader.Instance.Load(realmComponent);
-                Engine.LogBook.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
+                Logbook.Instance.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
                 realm = tmp as Realm;
                 break;
             }
             if (realm == null)
             {
-                Engine.LogBook.Trace(TraceEventType.Critical, "No realm found.");
+                Logbook.Instance.Trace(TraceEventType.Critical, "No realm found.");
             }
             else
             {
@@ -44,16 +44,16 @@ namespace Articus
         {
             Resources.Instance = resources;
             Initialize(STR_SandboxName, appDomain);
-            Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
-            Engine.LogBook.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
-            Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
-            Engine.LogBook.Trace(TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
-            Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
+            Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
+            Logbook.Instance.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
+            Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
+            Logbook.Instance.Trace(TraceEventType.Verbose, "  ■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■");
+            Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
         }
 
         private static void CreateSandbox()
         {
-            Engine.LogBook.Trace(TraceEventType.Information, "Creating Sandbox.");
+            Logbook.Instance.Trace(TraceEventType.Information, "Creating Sandbox.");
 
             var permissionSet = new PermissionSet(PermissionState.None);
             permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
@@ -90,7 +90,7 @@ namespace Articus
                 var current = exception;
                 do
                 {
-                    Engine.LogBook.Trace
+                    Logbook.Instance.Trace
                     (
                         TraceEventType.Critical,
                         "And suddently something went wrong, really wrong...\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n",
@@ -103,16 +103,16 @@ namespace Articus
                     current = current.InnerException;
                 } while (current != null);
                 var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                Engine.LogBook.Trace(TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
+                Logbook.Instance.Trace(TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
             }
             else if (eventArgs.ExceptionObject != null)
             {
-                Engine.LogBook.Trace
+                Logbook.Instance.Trace
                 (
                     TraceEventType.Critical,
                     "Help me..."
                 );
-                Engine.LogBook.Trace
+                Logbook.Instance.Trace
                 (
                     TraceEventType.Critical,
                     eventArgs.ExceptionObject.ToString()
@@ -120,7 +120,7 @@ namespace Articus
             }
             else
             {
-                Engine.LogBook.Trace
+                Logbook.Instance.Trace
                 (
                     TraceEventType.Critical,
                     "It is all darkness..."
@@ -135,7 +135,7 @@ namespace Articus
             Engine.Initialize(purpose, appDomain);
             if (Engine.Configuration == null)
             {
-                Engine.LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded...");
+                Logbook.Instance.Trace(TraceEventType.Critical, "There was no configuration lodaded...");
             }
         }
 
@@ -146,11 +146,11 @@ namespace Articus
             if (args.Length == 0)
             {
                 Initialize("Default", AppDomain.CurrentDomain);
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
                 ModuleLoader.LoadModules();
                 CreateSandbox();
             }
@@ -158,22 +158,22 @@ namespace Articus
             {
                 var dll = args[1];
                 Initialize("Discovery - " + Path.GetFileName(dll), AppDomain.CurrentDomain);
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
-                Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
-                Engine.LogBook.Trace(TraceEventType.Information, "Target: {0}", dll);
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■ ■  ■    ■ ■   ■ ■ ■ ■ ■   ■■   ■ ");
+                Logbook.Instance.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■  ■  ■■■ ■ ■  ■ ");
+                Logbook.Instance.Trace(TraceEventType.Information, "Target: {0}", dll);
 
                 ModuleLoader.Initialize(AppDomain.CurrentDomain);
                 var result = new List<Component>(ModuleLoader.Instance.Discover(dll));
-                Engine.LogBook.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
-                Engine.LogBook.Trace(TraceEventType.Information, "Serializing...");
+                Logbook.Instance.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
+                Logbook.Instance.Trace(TraceEventType.Information, "Serializing...");
                 var data = JsonConvert.SerializeObject(result);
                 var file = args[1].Substring(0, args[1].Length - 3) + ModuleLoader.STR_Module_Extension;
-                Engine.LogBook.Trace(TraceEventType.Information, "Attempting to store in: {0}", file);
+                Logbook.Instance.Trace(TraceEventType.Information, "Attempting to store in: {0}", file);
                 File.WriteAllText(file, data);
-                Engine.LogBook.Trace(TraceEventType.Information, "Done.");
+                Logbook.Instance.Trace(TraceEventType.Information, "Done.");
             }
         }
     }

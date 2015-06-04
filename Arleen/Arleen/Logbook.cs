@@ -22,10 +22,8 @@ namespace Arleen
         {
             var displayName = Engine.InternalName;
             // TODO: this fails if running from Visaul Studio
-            _logSource = new TraceSource(displayName)
-            {
-                Switch = new SourceSwitch(displayName)
-                {
+            _logSource = new TraceSource(displayName) {
+                Switch = new SourceSwitch(displayName) {
                     Level = level
                 }
             };
@@ -58,11 +56,7 @@ namespace Arleen
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void AddListener(TraceListener listener)
         {
-            if (Instance == null)
-            {
-                return;
-            }
-            Instance._logSource.Listeners.Add(listener);
+            _logSource.Listeners.Add(listener);
         }
 
         /// <summary>
@@ -79,16 +73,16 @@ namespace Arleen
                 var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
-                        TraceEventType.Error,
-                        "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Source == \n\n{3}\n\n == AppDomain == \n\n{4}\n\n == Stacktrace == \n\n{5}\n\n == Extended Stacktrace == \n\n{6}\n",
-                        exception.GetType().Name,
-                        situation,
-                        exception.Message,
-                        exception.Source,
-                        AppDomain.CurrentDomain.FriendlyName,
-                        exception.StackTrace,
-                        string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
-                    );
+                    TraceEventType.Error,
+                    "\n\n{0} ocurred while {1}. \n\n == Exception Report == \n\n{2}\n\n == Source == \n\n{3}\n\n == AppDomain == \n\n{4}\n\n == Stacktrace == \n\n{5}\n\n == Extended Stacktrace == \n\n{6}\n",
+                    exception.GetType().Name,
+                    situation,
+                    exception.Message,
+                    exception.Source,
+                    AppDomain.CurrentDomain.FriendlyName,
+                    exception.StackTrace,
+                    string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
+                );
             }
             else
             {
@@ -116,25 +110,25 @@ namespace Arleen
                 var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
-                        TraceEventType.Error,
-                        "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n\n == Extended Stacktrace == \n\n{5}\n",
-                        exception.GetType().Name,
-                        exception.Message,
-                        exception.Source,
-                        AppDomain.CurrentDomain.FriendlyName,
-                        exception.StackTrace,
-                        string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
-                    );
+                    TraceEventType.Error,
+                    "\n\n{0} ocurred. \n\n == Exception Report == \n\n{1}\n\n == Source == \n\n{2}\n\n == AppDomain == \n\n{3}\n\n == Stacktrace == \n\n{4}\n\n == Extended Stacktrace == \n\n{5}\n",
+                    exception.GetType().Name,
+                    exception.Message,
+                    exception.Source,
+                    AppDomain.CurrentDomain.FriendlyName,
+                    exception.StackTrace,
+                    string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4)
+                );
             }
             else
             {
                 Trace
                     (
-                        TraceEventType.Error,
-                        "\n\n{0}: {1}\n",
-                        exception.GetType().Name,
-                        exception.Message
-                    );
+                    TraceEventType.Error,
+                    "\n\n{0}: {1}\n",
+                    exception.GetType().Name,
+                    exception.Message
+                );
             }
         }
 
@@ -164,17 +158,12 @@ namespace Arleen
         /// </summary>
         /// <param name="level">The level for the messages that will be recorded.</param>
         /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
-        /// <returns>The working instance of Logbook.</returns>
-        internal static Logbook Initialize(SourceLevels level, bool allowDefaultListener)
+        internal static void Initialize(SourceLevels level, bool allowDefaultListener)
         {
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
             // Since that should not happen, let's accept the garbage if somehow that comes to be.
-            if (_instance != null)
-            {
-                return _instance;
-            }
-            return _instance = new Logbook(level, allowDefaultListener);
+            _instance = new Logbook(level, allowDefaultListener);
         }
 
         /// <summary>
