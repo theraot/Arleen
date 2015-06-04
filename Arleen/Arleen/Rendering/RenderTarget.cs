@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Arleen.Rendering.Sources;
-using System.Collections.Generic;
 
 namespace Arleen.Rendering
 {
