@@ -153,9 +153,6 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
-                var _ = Engine.TextLocalization;
-                Engine.LogBook.Trace
-                (TraceEventType.Information, _("Hello, my name is {name}.", new { name = Engine.DisplayName }));
                 ModuleLoader.LoadModules();
                 CreateSandbox();
             }
