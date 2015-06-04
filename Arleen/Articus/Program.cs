@@ -17,6 +17,8 @@ namespace Articus
     /// </summary>
     public static class Program
     {
+        private const string STR_SandboxName = "Sandbox";
+
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
         {
@@ -43,7 +45,7 @@ namespace Articus
         public static void SandboxInitialize(Resources resources, AppDomain appDomain)
         {
             Resources.Instance = resources;
-            Initialize("Sandbox", appDomain);
+            Initialize(STR_SandboxName, appDomain);
             Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
             Engine.LogBook.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
             Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
@@ -53,30 +55,30 @@ namespace Articus
 
         private static void CreateSandbox()
         {
-            Engine.LogBook.Trace(TraceEventType.Information, "Migrating to Sandbox.");
+            Engine.LogBook.Trace(TraceEventType.Information, "Creating Sandbox.");
 
-            var permSet = new PermissionSet(PermissionState.None);
-            permSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
-            permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
-            permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
+            var permissionSet = new PermissionSet(PermissionState.None);
+            permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
+            permissionSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
+            permissionSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
 
-            var permission = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Articus.Folder);
-            permission.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, Articus.Folder + "Sandbox.log");
-            permSet.AddPermission(permission);
+            var fileIOPermission = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Articus.Folder);
+            fileIOPermission.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, Articus.Folder + STR_SandboxName + ".log");
+            permissionSet.AddPermission(fileIOPermission);
 
             var appDomainSetup = new AppDomainSetup { ApplicationBase = Articus.Folder };
-            AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, appDomainSetup, permSet);
+            AppDomain sandboxDomain = AppDomain.CreateDomain(STR_SandboxName, null, appDomainSetup, permissionSet);
 
-            Logbook.Instance.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, newDomain.FriendlyName);
+            Logbook.Instance.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, sandboxDomain.FriendlyName);
 
             var parameters = new object[] {
                 Resources.Instance,
                 AppDomain.CurrentDomain
             };
 
-            newDomain.DoCallBack(new CrossCaller(Articus.Location, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
+            sandboxDomain.DoCallBack(new CrossCaller(Articus.Location, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
 
-            ModuleLoader.Initialize(newDomain);
+            ModuleLoader.Initialize(sandboxDomain);
 
             Launch();
         }
