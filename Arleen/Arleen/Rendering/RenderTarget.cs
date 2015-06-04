@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Arleen.Rendering.Sources;
+using System.Collections.Generic;
 
 namespace Arleen.Rendering
 {
@@ -41,7 +42,7 @@ namespace Arleen.Rendering
         {
             _virtualClipArea = virtualClipArea;
             _camera = camera;
-            _renderable = Engine.Create<AggregateRenderSource>(renderable);
+            _renderable = Engine.Create<AggregateRenderSource>((IList<IRenderable>)renderable);
             Enabled = true;
         }
 
