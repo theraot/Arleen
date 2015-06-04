@@ -36,14 +36,14 @@ namespace Articus
                 var found = _instance;
                 if (found == null)
                 {
-                    throw new InvalidOperationException ("ModuleLoader not initialized");
+                    throw new InvalidOperationException("ModuleLoader not initialized");
                 }
                 // if found an instance just return it
                 return found;
             }
             set
             {
-                Interlocked.CompareExchange (ref _instance, value, null);
+                Interlocked.CompareExchange(ref _instance, value, null);
             }
         }
 

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Arleen.Rendering;
+using System;
 using System.Diagnostics;
-using Arleen.Rendering;
 
 namespace Arleen.Game
 {
@@ -18,8 +18,8 @@ namespace Arleen.Game
 
         internal void RestartTime()
         {
-            _time.Stop ();
-            _time.Start ();
+            _time.Stop();
+            _time.Start();
         }
 
         protected internal virtual bool Closing()
@@ -27,22 +27,22 @@ namespace Arleen.Game
             return true;
         }
 
-        protected internal virtual Scene Load ()
+        protected internal virtual Scene Load()
         {
             return null;
         }
 
-        protected internal virtual void Resize ()
+        protected internal virtual void Resize()
         {
             // Empty
         }
 
-        protected internal virtual void Unload ()
+        protected internal virtual void Unload()
         {
             // Empty
         }
 
-        protected internal virtual void UpdateFrame (RenderInfo renderInfo)
+        protected internal virtual void UpdateFrame(RenderInfo renderInfo)
         {
             // Empty
         }

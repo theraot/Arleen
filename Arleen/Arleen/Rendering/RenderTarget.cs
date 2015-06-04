@@ -8,11 +8,12 @@ namespace Arleen.Rendering
     /// </summary>
     public class RenderTarget : MarshalByRefObject
     {
-        internal static RenderTarget Current { get; set; }
-
         private readonly Camera _camera;
+
         private readonly IRenderable _renderable;
+
         private readonly RectangleF _virtualClipArea;
+
         private Rectangle _clipArea;
 
         /// <summary>
@@ -72,6 +73,8 @@ namespace Arleen.Rendering
             }
         }
 
+        internal static RenderTarget Current { get; set; }
+
         /// <summary>
         /// Returns the computed target clip area of the RenderTarget.
         /// </summary>
@@ -88,8 +91,8 @@ namespace Arleen.Rendering
         {
             var targetClipArea = new Rectangle
                 (
-                    (int)((virtualClipArea.X * surfaceSize.Width)),
-                    (int)((virtualClipArea.Y * surfaceSize.Height)),
+                    (int)(virtualClipArea.X * surfaceSize.Width),
+                    (int)(virtualClipArea.Y * surfaceSize.Height),
                     (int)(virtualClipArea.Width * surfaceSize.Width),
                     (int)(virtualClipArea.Height * surfaceSize.Height)
                 );

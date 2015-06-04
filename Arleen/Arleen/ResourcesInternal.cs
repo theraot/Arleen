@@ -1,10 +1,10 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace Arleen
 {
@@ -62,6 +62,32 @@ namespace Arleen
             };
         }
 
+        /// <summary>
+        /// Saves the configuration for the calling assembly.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to be populated with the configuration.</typeparam>
+        /// <param name="target">The object containing the configuration to be stored.</param>
+        /// <returns>true if the configuration was stored, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static bool SaveConfig<T>(T target)
+        {
+            var assembly = Assembly.GetCallingAssembly();
+            Logbook.Instance.Trace
+                (
+                    TraceEventType.Information,
+                    "Requested to write configuration for {0}",
+                    assembly.GetName().Name
+                );
+            var str = JsonConvert.SerializeObject(target);
+            // Will try to write:
+            // - ~\Config\AssemblyName.json
+            // - %AppData%\InternalName\Config\AssemblyName.json
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
+            {
+                return Resources.Instance.Write(assembly, "Config", ".json", stream);
+            }
+        }
+
         private static Dictionary<string, string> GetLocalizedTexts(string language)
         {
             var assembly = Assembly.GetCallingAssembly();
@@ -109,32 +135,6 @@ namespace Arleen
             {
                 var str = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<Dictionary<string, string>>(str);
-            }
-        }
-
-        /// <summary>
-        /// Saves the configuration for the calling assembly.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to be populated with the configuration.</typeparam>
-        /// <param name="target">The object containing the configuration to be stored.</param>
-        /// <returns>true if the configuration was stored, false otherwise.</returns>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static bool SaveConfig<T>(T target)
-        {
-            var assembly = Assembly.GetCallingAssembly();
-            Logbook.Instance.Trace
-                (
-                    TraceEventType.Information,
-                    "Requested to write configuration for {0}",
-                    assembly.GetName().Name
-                );
-            var str = JsonConvert.SerializeObject(target);
-            // Will try to write:
-            // - ~\Config\AssemblyName.json
-            // - %AppData%\InternalName\Config\AssemblyName.json
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
-            {
-                return Resources.Instance.Write(assembly, "Config", ".json", stream);
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Arleen;
+using Arleen.Game;
 using Arleen.Geometry;
 using Arleen.Rendering;
 using Arleen.Rendering.Sources;
 using OpenTK;
+using System.Collections.Generic;
 using System.Drawing;
-using Arleen.Game;
-using Arleen;
 
 namespace Experior
 {
@@ -42,7 +42,7 @@ namespace Experior
                         Engine.Create<SkyboxRenderer>(Resources.Instance.LoadStream("skybox.png")),
                         Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
                         Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
-                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f)),
+                        Engine.Create<BoxRenderer>(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
                     }
                 );
             scene.RenderTargets.Add

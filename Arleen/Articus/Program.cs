@@ -2,14 +2,14 @@
 using Arleen.Game;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
-using System.Reflection;
-using System.Collections.Generic;
 using System.Threading;
-using System.IO;
-using System.Globalization;
 
 namespace Articus
 {
@@ -69,10 +69,11 @@ namespace Articus
             Engine.LogBook.Trace(TraceEventType.Verbose, "■■■ ■ ■ ■  ■ ■■  ■■  ■■■ ■ ■");
         }
 
-        static void CreateSandbox()
+        private static void CreateSandbox()
         {
             var path = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
-            var folder = System.IO.Path.GetDirectoryName(path);
+            var folder = Path.GetDirectoryName(path);
+            // Let this method throw if folder is null
             if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
@@ -88,16 +89,21 @@ namespace Articus
             permSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
             permSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
 
-            var permission = new FileIOPermission (FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder);
-            permission.AddPathList (FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, folder + "Sandbox.log");
-
+            var permission = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, folder);
+            permission.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, folder + "Sandbox.log");
             permSet.AddPermission(permission);
 
-            var adSetup = new AppDomainSetup { ApplicationBase = folder };
-            AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, adSetup, permSet);
+            var appDomainSetup = new AppDomainSetup { ApplicationBase = folder };
+            AppDomain newDomain = AppDomain.CreateDomain("Sandbox", null, appDomainSetup, permSet);
 
             Logbook.Instance.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, newDomain.FriendlyName);
-            newDomain.DoCallBack((new CrossCaller(path, "Articus.Program", "SandboxInitialize", new object[] { Resources.Instance, AppDomain.CurrentDomain })).LoadAndCall);
+
+            var parameters = new object[] {
+                Resources.Instance,
+                AppDomain.CurrentDomain
+            };
+
+            newDomain.DoCallBack(new CrossCaller(path, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
 
             ModuleLoader.Initialize(newDomain);
 
@@ -124,10 +130,9 @@ namespace Articus
                         current.StackTrace
                     );
                     current = current.InnerException;
-                }
-                while (current != null);
-                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                Engine.LogBook.Trace (TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
+                } while (current != null);
+                var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                Engine.LogBook.Trace(TraceEventType.Error, " == Extended StackTrace == \n\n{0}\n\n", string.Join("\r\n", extendedStackTrace, 4, extendedStackTrace.Length - 4));
             }
             else if (eventArgs.ExceptionObject != null)
             {
@@ -153,14 +158,14 @@ namespace Articus
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        static void Initialize (string purpose, AppDomain appDomain)
+        private static void Initialize(string purpose, AppDomain appDomain)
         {
-            if (Interlocked.CompareExchange (ref _initialized, 1, 0) == 0)
+            if (Interlocked.CompareExchange(ref _initialized, 1, 0) == 0)
             {
-                Engine.Initialize (purpose, appDomain);
+                Engine.Initialize(purpose, appDomain);
                 if (Engine.Configuration == null)
                 {
-                    Engine.LogBook.Trace (TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
+                    Engine.LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
                 }
             }
         }
@@ -171,7 +176,7 @@ namespace Articus
 
             if (args.Length == 0)
             {
-                Initialize ("Default", AppDomain.CurrentDomain);
+                Initialize("Default", AppDomain.CurrentDomain);
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
@@ -179,17 +184,14 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■   ■ ■ ■■■ ■■■  ■ ");
                 var _ = Engine.TextLocalization;
                 Engine.LogBook.Trace
-                (
-                    TraceEventType.Information,
-                    _("Hello, my name is {name}.", new { name = Engine.DisplayName })
-                );
+                (TraceEventType.Information, _("Hello, my name is {name}.", new { name = Engine.DisplayName }));
                 ModuleLoader.LoadModules();
-                CreateSandbox ();
+                CreateSandbox();
             }
             else if (args[0] == "discover")
             {
-                var dll = args [1];
-                Initialize ("Discovery - " + System.IO.Path.GetFileName(dll), AppDomain.CurrentDomain);
+                var dll = args[1];
+                Initialize("Discovery - " + Path.GetFileName(dll), AppDomain.CurrentDomain);
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
                 Engine.LogBook.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");
@@ -198,13 +200,13 @@ namespace Articus
                 Engine.LogBook.Trace(TraceEventType.Information, "Target: {0}", dll);
 
                 ModuleLoader.Initialize(AppDomain.CurrentDomain);
-                var result = new List<Component>(ModuleLoader.Instance.Discover (dll));
+                var result = new List<Component>(ModuleLoader.Instance.Discover(dll));
                 Engine.LogBook.Trace(TraceEventType.Information, "Components found: {0}", result.Count);
                 Engine.LogBook.Trace(TraceEventType.Information, "Serializing...");
                 var data = JsonConvert.SerializeObject(result);
                 var file = args[1].Substring(0, args[1].Length - 3) + ModuleLoader.STR_Module_Extension;
                 Engine.LogBook.Trace(TraceEventType.Information, "Attempting to store in: {0}", file);
-                System.IO.File.WriteAllText(file, data);
+                File.WriteAllText(file, data);
                 Engine.LogBook.Trace(TraceEventType.Information, "Done.");
             }
         }

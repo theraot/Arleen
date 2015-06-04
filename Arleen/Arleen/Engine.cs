@@ -30,7 +30,7 @@ namespace Arleen
         public static Configuration Configuration { get; private set; }
 
         /// <summary>
-        /// Gets the currently configured langauge.
+        /// Gets the currently configured language.
         /// </summary>
         public static string CurrentLanguage { get; private set; }
 
@@ -57,7 +57,7 @@ namespace Arleen
         public static Logbook LogBook { get; private set; }
 
         /// <summary>
-        /// Gets the text localization 
+        /// Gets the text localization
         /// </summary>
         public static TextLocalization TextLocalization { get; private set; }
 
@@ -93,7 +93,7 @@ namespace Arleen
         }
 
         public static T Create<T>()
-            where T: class
+            where T : class
         {
             return AppDomain.CreateInstanceAndUnwrap
             (
@@ -119,7 +119,7 @@ namespace Arleen
                 false,
                 System.Reflection.BindingFlags.Default,
                 null,
-                new [] {param},
+                new[] { param },
                 null,
                 null,
                 null
@@ -224,6 +224,7 @@ namespace Arleen
 
             var location = assembly.Location;
             Folder = Path.GetDirectoryName(location);
+            // Let this method throw if Folder is null
             if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
@@ -248,7 +249,7 @@ namespace Arleen
                 var logFile = purpose + ".log";
                 foreach (char character in Path.GetInvalidFileNameChars())
                 {
-                    logFile = logFile.Replace(character.ToString(), "");
+                    logFile = logFile.Replace(character.ToString(), string.Empty);
                 }
                 var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
                 LogBook.AddListener(new TextWriterTraceListener(logStreamWriter));
@@ -307,7 +308,7 @@ namespace Arleen
             }
             catch (Exception exception)
             {
-                LogBook.ReportException (exception, true);
+                LogBook.ReportException(exception, true);
             }
             if (Configuration == null)
             {

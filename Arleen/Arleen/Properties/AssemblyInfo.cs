@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 using System.Security;
 
-
 [assembly: AssemblyTitle("Arleen")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -36,4 +35,4 @@ using System.Security;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly:AllowPartiallyTrustedCallers]
+[assembly: AllowPartiallyTrustedCallers]

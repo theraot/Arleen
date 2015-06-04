@@ -1,5 +1,5 @@
-﻿using System;
-using Arleen.Geometry;
+﻿using Arleen.Geometry;
+using System;
 
 namespace Arleen.Rendering
 {

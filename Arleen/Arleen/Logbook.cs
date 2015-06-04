@@ -45,7 +45,7 @@ namespace Arleen
             {
                 if (_instance == null)
                 {
-                    throw new InvalidOperationException ("Engine initialization is not done");
+                    throw new InvalidOperationException("Engine initialization is not done");
                 }
                 return _instance;
             }
@@ -76,7 +76,7 @@ namespace Arleen
         {
             if (severe)
             {
-                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
                         TraceEventType.Error,
@@ -113,7 +113,7 @@ namespace Arleen
         {
             if (severe)
             {
-                var extendedStackTrace = Environment.StackTrace.Split (new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var extendedStackTrace = Environment.StackTrace.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Trace
                     (
                         TraceEventType.Error,

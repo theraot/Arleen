@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -49,7 +48,7 @@ namespace Arleen
 
         public List<string> GetFolders(string[] prefixes)
         {
-            var result = new List<string> ();
+            var result = new List<string>();
             foreach (var prefix in prefixes)
             {
                 var folder = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
@@ -63,11 +62,11 @@ namespace Arleen
 
         public List<string> GetFolders(string[] prefixes, bool create)
         {
-            var result = new List<string> ();
+            var result = new List<string>();
             foreach (var prefix in prefixes)
             {
                 var folder = Engine.Folder + prefix.Replace('.', Path.DirectorySeparatorChar);
-                if (create && !Directory.Exists (folder))
+                if (create && !Directory.Exists(folder))
                 {
                     try
                     {
@@ -75,8 +74,8 @@ namespace Arleen
                     }
                     catch (Exception exception)
                     {
-                        Logbook.Instance.Trace (TraceEventType.Error, "Unable to create folder: {0}", result);
-                        Logbook.Instance.ReportException (exception, false);
+                        Logbook.Instance.Trace(TraceEventType.Error, "Unable to create folder: {0}", result);
+                        Logbook.Instance.ReportException(exception, false);
                     }
                 }
                 if (Directory.Exists(folder))
@@ -143,7 +142,7 @@ namespace Arleen
         /// <returns>true if the resource was written, false otherwise.</returns>
         internal bool Write(Assembly assembly, string prefix, string resourceName, Stream stream)
         {
-            foreach (var create in new []{false, true})
+            foreach (var create in new[] { false, true })
             {
                 foreach (var folder in GetFolders(new[] { prefix }, create))
                 {
@@ -165,7 +164,7 @@ namespace Arleen
                 output.Write(buffer, 0, index);
             }
         }
-        
+
         private static bool TryProcessResource(Assembly assembly, string resource, out Stream stream)
         {
             stream = assembly.GetManifestResourceStream(resource);

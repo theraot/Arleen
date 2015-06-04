@@ -89,7 +89,7 @@ namespace Articus
             // Let this method throw if unable to load the assembly
             var assembly = Assembly.LoadFrom(_path);
             // Let this method throw if the type is null
-            var methodInfo = assembly.GetType (_type).GetMethod (_method);
+            var methodInfo = assembly.GetType(_type).GetMethod(_method);
             methodInfo.Invoke
             (
                 _that,
@@ -100,7 +100,7 @@ namespace Articus
         public void Call()
         {
             // Let this method throw if the type is null
-            var methodInfo = Type.GetType (_type).GetMethod(_method);
+            var methodInfo = Type.GetType(_type).GetMethod(_method);
             methodInfo.Invoke
             (
                 _that,

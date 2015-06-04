@@ -73,7 +73,7 @@ namespace Arleen.Geometry
         /// <param name="height">The new height of the viewport.</param>
         public virtual void Update(int width, int height)
         {
-            //Empty
+            // Empty
         }
 
         internal void UpdateProjectionMatrices()

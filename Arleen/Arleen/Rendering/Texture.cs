@@ -1,10 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Security.Permissions;
 using System.IO;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {

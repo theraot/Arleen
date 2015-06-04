@@ -19,18 +19,16 @@ namespace Arleen.Rendering.Utility
 
                 const float A = 0.0f;
                 const float B = 1.0f;
-                var data = new[]
-                {
-                    //VEXTEX    //TEXTURES
-                    //0
+                var data = new[] {
+                    // VEXTEX   // TEXTURES
+                    // 0
                     A, A, A,    A, A,
                     B, A, A,    B, A,
-                    //2
+                    // 2
                     B, B, A,    B, B,
                     A, B, A,    A, B
                 };
-                var indexes = new byte[]
-                {
+                var indexes = new byte[] {
                     0, 1, 2, 3
                 };
                 using (var mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, BeginMode.Quads, indexes))

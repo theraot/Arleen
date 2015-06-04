@@ -77,7 +77,7 @@ namespace Arleen.Rendering.Sources
             const float A = -FLT_Length;
             const float B = FLT_Length;
 
-            //    3-------6
+            /*    3-------6
             //   /|      /|
             //  0-------4 |
             //  | |     | |
@@ -121,70 +121,69 @@ namespace Arleen.Rendering.Sources
             //  | __!
             //  |/
             //  0----!__
+            */
 
-            var data = new[]
-            {
-                //VEXTEX
-                //0
+            var data = new[] {
+                // VEXTEX
+                // 0
                 A, A, A,
                 A, B, A,
-                //2
+                // 2
                 A, B, B,
                 A, A, B,
-                //4
+                // 4
                 B, A, A,
                 B, B, A,
-                //6
+                // 6
                 B, A, B,
                 B, B, B,
-                //8
+                // 8
                 A, A, B,
                 A, B, B,
-                //10
+                // 10
                 A, A, A,
                 A, A, B,
-                //12
+                // 12
                 B, A, B,
                 B, A, A,
-                //14
+                // 14
                 A, B, A,
                 B, B, A,
-                //16
+                // 16
                 B, B, B,
                 A, B, B,
 
-                //TEXTURES
-                //0
+                // TEXTURES
+                // 0
                 left.Right, left.Bottom,
                 left.Right, left.Top,
-                //2
+                // 2
                 left.Left, left.Top,
                 left.Left, left.Bottom,
-                //4
+                // 4
                 front.Right, front.Bottom,
                 front.Right, front.Top,
-                //6
+                // 6
                 right.Right, right.Bottom,
                 right.Right, right.Top,
-                //8
+                // 8
                 back.Right, back.Bottom,
                 back.Right, back.Top,
-                //10
+                // 10
                 down.Left, down.Top,
                 down.Left, down.Bottom,
-                //12
+                // 12
                 down.Right, down.Bottom,
                 down.Right, down.Top,
-                //14
+                // 14
                 up.Left, up.Bottom,
                 up.Right, up.Bottom,
-                //16
+                // 16
                 up.Right, up.Top,
                 up.Left, up.Top
             };
 
-            var indexes = new byte[]
-            {
+            var indexes = new byte[] {
                 0, 1, 2, 3,
                 4, 5, 1, 0,
                 6, 7, 5, 4,

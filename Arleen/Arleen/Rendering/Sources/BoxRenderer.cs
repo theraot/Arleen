@@ -91,7 +91,7 @@ namespace Arleen.Rendering.Sources
             const float A = -FLT_Length;
             const float B = FLT_Length;
 
-            //    3-------6
+            /*    3-------6
             //   /|      /|
             //  0-------4 |
             //  | |     | |
@@ -135,41 +135,40 @@ namespace Arleen.Rendering.Sources
             //  | __!
             //  |/
             //  0----!__
+            */
 
-            var data = new[]
-            {
-                //VEXTEX    //TEXTURES
-                //0
+            var data = new[] {
+                // VEXTEX   // TEXTURES
+                // 0
                 A, A, A,    left.Right, left.Bottom,
                 A, B, A,    left.Right, left.Top,
-                //2
+                // 2
                 A, B, B,    left.Left, left.Top,
                 A, A, B,    left.Left, left.Bottom,
-                //4
+                // 4
                 B, A, A,    front.Right, front.Bottom,
                 B, B, A,    front.Right, front.Top,
-                //6
+                // 6
                 B, A, B,    right.Right, right.Bottom,
                 B, B, B,    right.Right, right.Top,
-                //8
+                // 8
                 A, A, B,    back.Right, back.Bottom,
                 A, B, B,    back.Right, back.Top,
-                //10
+                // 10
                 A, A, A,    down.Left, down.Top,
                 A, A, B,    down.Left, down.Bottom,
-                //12
+                // 12
                 B, A, B,    down.Right, down.Bottom,
                 B, A, A,    down.Right, down.Top,
-                //14
+                // 14
                 A, B, A,    up.Left, up.Bottom,
                 B, B, A,    up.Right, up.Bottom,
-                //16
+                // 16
                 B, B, B,    up.Right, up.Top,
                 A, B, B,    up.Left, up.Top
             };
 
-            var indexes = new byte[]
-            {
+            var indexes = new byte[] {
                 3, 2, 1, 0,
                 0, 1, 5, 4,
                 4, 5, 7, 6,

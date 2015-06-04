@@ -1,9 +1,9 @@
 ﻿using Arleen.Game;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
 using System.Threading;
-using OpenTK;
 
 namespace Arleen.Rendering
 {
@@ -66,46 +66,44 @@ namespace Arleen.Rendering
 
             _gameWindow.Context.MakeCurrent(null);
 
-            _thread = new Thread
-                (
-                    () =>
+            ThreadStart render = () =>
+            {
+                Logbook.Instance.Trace(System.Diagnostics.TraceEventType.Information, "Renderer Thread started with Id {0}.", Thread.CurrentThread.ManagedThreadId);
+                try
+                {
+                    _gameWindow.Context.MakeCurrent(_gameWindow.WindowInfo);
+                    InitializeOpenGl();
+                    while (true)
                     {
-                        Logbook.Instance.Trace(System.Diagnostics.TraceEventType.Information, "Renderer Thread started with Id {0}.", Thread.CurrentThread.ManagedThreadId);
+                        Render();
                         try
                         {
-                            _gameWindow.Context.MakeCurrent(_gameWindow.WindowInfo);
-                            InitializeOpenGl();
-                            while (true)
+                            if (_gameWindow.IsExiting)
                             {
-                                Render();
-                                try
-                                {
-                                    if (_gameWindow.IsExiting)
-                                    {
-                                        break;
-                                    }
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    break;
-                                }
-                                try
-                                {
-                                    _gameWindow.SwapBuffers();
-                                }
-                                catch (NullReferenceException)
-                                {
-                                    break;
-                                }
+                                break;
                             }
                         }
-                        catch (Exception exception)
+                        catch (ObjectDisposedException)
                         {
-                            Logbook.Instance.ReportException(exception, "running Renderer Thread", true);
+                            break;
+                        }
+                        try
+                        {
+                            _gameWindow.SwapBuffers();
+                        }
+                        catch (NullReferenceException)
+                        {
+                            break;
                         }
                     }
-                )
-            {
+                }
+                catch (Exception exception)
+                {
+                    Logbook.Instance.ReportException(exception, "running Renderer Thread", true);
+                }
+            };
+
+            _thread = new Thread(render) {
                 Name = "Renderer Thread"
             };
             _thread.Start();
@@ -170,8 +168,7 @@ namespace Arleen.Rendering
 
             var renderTargets = _scene.RenderTargets;
 
-            RenderInfo.Current = new RenderInfo
-            {
+            RenderInfo.Current = new RenderInfo {
                 SurfaceSize = _surfaceSize,
                 ElapsedMilliseconds = elapsedMiliseconds,
                 Fps = _fpsCounter.Fps
