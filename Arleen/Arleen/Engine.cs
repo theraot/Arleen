@@ -220,34 +220,7 @@ namespace Arleen
             // Creating the logbook
             // *********************************
 
-            Logbook.Initialize(DebugMode ? SourceLevels.All : SourceLevels.Information, true);
-
-            try
-            {
-                var logFile = purpose + ".log";
-                foreach (char character in Path.GetInvalidFileNameChars())
-                {
-                    logFile = logFile.Replace(character.ToString(), string.Empty);
-                }
-                var logStreamWriter = new StreamWriter(Folder + logFile) { AutoFlush = true };
-                Logbook.Instance.AddListener(new TextWriterTraceListener(logStreamWriter));
-            }
-            catch (Exception exception)
-            {
-                Logbook.Instance.ReportException(exception, "trying to create the log file.", true);
-                try
-                {
-                    Console.WriteLine("Unable to create log file.");
-                    Console.WriteLine("== Exception Report ==");
-                    Console.WriteLine(exception.Message);
-                    Console.WriteLine("== Stacktrace ==");
-                    Console.WriteLine(exception.StackTrace);
-                }
-                catch (IOException)
-                {
-                    // Ignore.
-                }
-            }
+            Logbook.Initialize(DebugMode ? SourceLevels.All : SourceLevels.Information, true, purpose);
 
             try
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Security.Permissions;
+using System.IO;
 
 namespace Arleen
 {
@@ -158,12 +159,39 @@ namespace Arleen
         /// </summary>
         /// <param name="level">The level for the messages that will be recorded.</param>
         /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
-        internal static void Initialize(SourceLevels level, bool allowDefaultListener)
+        /// <param name = "name">The name of the resource to log to.</param>
+        internal static void Initialize(SourceLevels level, bool allowDefaultListener, string name)
         {
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
             // Since that should not happen, let's accept the garbage if somehow that comes to be.
             _instance = new Logbook(level, allowDefaultListener);
+            try
+            {
+                var logFile = name + ".log";
+                foreach (char character in Path.GetInvalidFileNameChars())
+                {
+                    logFile = logFile.Replace(character.ToString(), string.Empty);
+                }
+                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) { AutoFlush = true };
+                Logbook.Instance.AddListener(new TextWriterTraceListener(logStreamWriter));
+            }
+            catch (Exception exception)
+            {
+                Logbook.Instance.ReportException(exception, "trying to create the log file.", true);
+                try
+                {
+                    Console.WriteLine("Unable to create log file.");
+                    Console.WriteLine("== Exception Report ==");
+                    Console.WriteLine(exception.Message);
+                    Console.WriteLine("== Stacktrace ==");
+                    Console.WriteLine(exception.StackTrace);
+                }
+                catch (IOException)
+                {
+                    // Ignore.
+                }
+            }
         }
 
         /// <summary>
