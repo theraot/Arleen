@@ -16,7 +16,6 @@ namespace Arleen
         private const int INT_Initialized = 2;
         private const int INT_Initializing = 1;
         private const int INT_NotInitialized = 0;
-        private static bool _debugMode;
         private static RealmRunner _realmRunner;
         private static int _status;
 
@@ -31,6 +30,8 @@ namespace Arleen
         /// Gets the currently configured language.
         /// </summary>
         public static string CurrentLanguage { get; private set; }
+
+        public static bool DebugMode { get; private set; }
 
         /// <summary>
         /// Returns the display name for the Program.
@@ -212,14 +213,14 @@ namespace Arleen
             // Setting debug mode
             // *********************************
 
-            _debugMode = false;
+            DebugMode = false;
             SetDebugMode();
 
             // *********************************
             // Creating the logbook
             // *********************************
 
-            Logbook.Initialize(_debugMode ? SourceLevels.All : SourceLevels.Information, true);
+            Logbook.Initialize(DebugMode ? SourceLevels.All : SourceLevels.Information, true);
 
             try
             {
@@ -259,7 +260,7 @@ namespace Arleen
                 Logbook.Instance.ReportException(exception, "trying to access the Console", false);
             }
 
-            if (_debugMode)
+            if (DebugMode)
             {
                 Logbook.Instance.Trace(TraceEventType.Information, "[Running debug build]");
             }
@@ -293,7 +294,7 @@ namespace Arleen
             }
             if (Configuration.ForceDebugMode)
             {
-                if (!_debugMode)
+                if (!DebugMode)
                 {
                     Logbook.Instance.ChangeLevel(SourceLevels.All);
                     Logbook.Instance.Trace(TraceEventType.Information, "[Forced debug mode]");
@@ -333,7 +334,7 @@ namespace Arleen
         [Conditional("DEBUG")]
         private static void SetDebugMode()
         {
-            _debugMode = true;
+            DebugMode = true;
         }
 
         private static void Terminate()
@@ -350,7 +351,7 @@ namespace Arleen
                 // Exit
                 Logbook.Instance.Trace(TraceEventType.Information, "Goodbye, see you soon.", DisplayName);
 
-                if (_debugMode)
+                if (DebugMode)
                 {
                     try
                     {
