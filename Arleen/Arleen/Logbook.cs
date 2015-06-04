@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Security.Permissions;
 using System.IO;
+using System.Security.Permissions;
+using System.Threading;
 
 namespace Arleen
 {
@@ -12,8 +13,8 @@ namespace Arleen
     /// These are the reasons for this:
     /// A) the responsibility of creating Logbook belongs to Program
     /// B) Logbook should not be responsible of getting the configuration to create itself.
-    /// C) There should be only one Logbook per AppDomain. </remarks>
-    public class Logbook
+    /// C) There will be only one main Logbook per AppDomain. </remarks>
+    public class Logbook : MarshalByRefObject
     {
         private static Logbook _instance;
         private readonly TraceSource _logSource;
@@ -22,7 +23,6 @@ namespace Arleen
         private Logbook(SourceLevels level, bool allowDefaultListener)
         {
             var displayName = Engine.InternalName;
-            // TODO: this fails if running from Visaul Studio
             _logSource = new TraceSource(displayName) {
                 Switch = new SourceSwitch(displayName) {
                     Level = level
@@ -48,6 +48,52 @@ namespace Arleen
                 }
                 return _instance;
             }
+            set
+            {
+                // Allow to write only if _instance is null
+                Interlocked.CompareExchange(ref _instance, value, null);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new instance of Logbook if no previous instance is available. Returns the existing (newly created or not) instance.
+        /// </summary>
+        /// <param name="level">The level for the messages that will be recorded.</param>
+        /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
+        /// <param name = "name">The name of the resource to log to.</param>
+        public static Logbook Create(SourceLevels level, bool allowDefaultListener, string name)
+        {
+            // This should be called during initialization.
+            // Double initialization is posible if multiple threads attemps to create the logbook...
+            // Since that should not happen, let's accept the garbage if somehow that comes to be.
+            var result = new Logbook(level, allowDefaultListener);
+            try
+            {
+                var logFile = name + ".log";
+                foreach (char character in Path.GetInvalidFileNameChars())
+                {
+                    logFile = logFile.Replace(character.ToString(), string.Empty);
+                }
+                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) { AutoFlush = true };
+                result.AddListener(new TextWriterTraceListener(logStreamWriter));
+            }
+            catch (Exception exception)
+            {
+                Instance.ReportException(exception, "trying to create the log file.", true);
+                try
+                {
+                    Console.WriteLine("Unable to create log file.");
+                    Console.WriteLine("== Exception Report ==");
+                    Console.WriteLine(exception.Message);
+                    Console.WriteLine("== Stacktrace ==");
+                    Console.WriteLine(exception.StackTrace);
+                }
+                catch (IOException)
+                {
+                    // Ignore.
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -151,46 +197,15 @@ namespace Arleen
         /// <param name="message">The message to write.</param>
         public void Trace(TraceEventType eventType, string message)
         {
+            // TODO: Visaul Studio now complains here
             _logSource.TraceEvent(eventType, 0, UtcNowIsoFormat() + " " + message);
         }
 
-        /// <summary>
-        /// Creates a new instance of Logbook if no previous instance is available. Returns the existing (newly created or not) instance.
-        /// </summary>
-        /// <param name="level">The level for the messages that will be recorded.</param>
-        /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
-        /// <param name = "name">The name of the resource to log to.</param>
         internal static void Initialize(SourceLevels level, bool allowDefaultListener, string name)
         {
-            // This should be called during initialization.
-            // Double initialization is posible if multiple threads attemps to create the logbook...
-            // Since that should not happen, let's accept the garbage if somehow that comes to be.
-            _instance = new Logbook(level, allowDefaultListener);
-            try
+            if (_instance == null)
             {
-                var logFile = name + ".log";
-                foreach (char character in Path.GetInvalidFileNameChars())
-                {
-                    logFile = logFile.Replace(character.ToString(), string.Empty);
-                }
-                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) { AutoFlush = true };
-                Logbook.Instance.AddListener(new TextWriterTraceListener(logStreamWriter));
-            }
-            catch (Exception exception)
-            {
-                Logbook.Instance.ReportException(exception, "trying to create the log file.", true);
-                try
-                {
-                    Console.WriteLine("Unable to create log file.");
-                    Console.WriteLine("== Exception Report ==");
-                    Console.WriteLine(exception.Message);
-                    Console.WriteLine("== Stacktrace ==");
-                    Console.WriteLine(exception.StackTrace);
-                }
-                catch (IOException)
-                {
-                    // Ignore.
-                }
+                Instance = Create(level, allowDefaultListener, name);
             }
         }
 

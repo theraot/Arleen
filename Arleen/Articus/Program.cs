@@ -40,9 +40,10 @@ namespace Articus
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void SandboxInitialize(Resources resources, AppDomain appDomain)
+        public static void SandboxInitialize(Resources resources, AppDomain appDomain, Logbook logbook)
         {
             Resources.Instance = resources;
+            Logbook.Instance = logbook;
             Initialize(STR_SandboxName, appDomain);
             Logbook.Instance.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
             Logbook.Instance.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
@@ -59,10 +60,7 @@ namespace Articus
             permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
             permissionSet.AddPermission(new UIPermission(PermissionState.Unrestricted));
             permissionSet.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
-
-            var fileIOPermission = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Articus.Folder);
-            fileIOPermission.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write | FileIOPermissionAccess.PathDiscovery, Articus.Folder + STR_SandboxName + ".log");
-            permissionSet.AddPermission(fileIOPermission);
+            permissionSet.AddPermission(new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Articus.Folder));
 
             var appDomainSetup = new AppDomainSetup { ApplicationBase = Articus.Folder };
             AppDomain sandboxDomain = AppDomain.CreateDomain(STR_SandboxName, null, appDomainSetup, permissionSet);
@@ -71,7 +69,8 @@ namespace Articus
 
             var parameters = new object[] {
                 Resources.Instance,
-                AppDomain.CurrentDomain
+                AppDomain.CurrentDomain,
+                Logbook.Create(Engine.DebugMode ? SourceLevels.All : SourceLevels.Information, true, STR_SandboxName)
             };
 
             sandboxDomain.DoCallBack(new CrossCaller(Articus.Location, "Articus.Program", "SandboxInitialize", parameters).LoadAndCall);
