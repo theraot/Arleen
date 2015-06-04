@@ -9,7 +9,6 @@ using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
-using System.Threading;
 
 namespace Articus
 {
@@ -18,8 +17,6 @@ namespace Articus
     /// </summary>
     public static class Program
     {
-        private static int _initialized;
-
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
         {
@@ -145,13 +142,11 @@ namespace Articus
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private static void Initialize(string purpose, AppDomain appDomain)
         {
-            if (Interlocked.CompareExchange(ref _initialized, 1, 0) == 0)
+            // This methos should run only once, no check is perfomed to ensure this
+            Engine.Initialize(purpose, appDomain);
+            if (Engine.Configuration == null)
             {
-                Engine.Initialize(purpose, appDomain);
-                if (Engine.Configuration == null)
-                {
-                    Engine.LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
-                }
+                Engine.LogBook.Trace(TraceEventType.Critical, "There was no configuration lodaded... will not proceed.");
             }
         }
 
