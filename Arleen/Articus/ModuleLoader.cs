@@ -111,6 +111,7 @@ namespace Articus
         public IEnumerable<Component> GetComponents(Type targetType)
         {
             List<Component> components;
+            // Do not compact if to return (type conversion problem)
             if (_components.TryGetValue(targetType, out components))
             {
                 return components;

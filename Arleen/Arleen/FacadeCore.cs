@@ -66,7 +66,7 @@ namespace Arleen
             {
                 Logbook.Trace(TraceEventType.Critical, "No configuration lodaded.");
                 result = new Configuration {
-                    ForceDebugMode = Engine.DebugMode,
+                    ForceDebugMode = Engine.DebugMode
                 };
             }
             if (string.IsNullOrEmpty(result.DisplayName))

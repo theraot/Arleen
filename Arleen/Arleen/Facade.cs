@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 
 namespace Arleen
@@ -124,39 +123,6 @@ namespace Arleen
                 null,
                 null
             ) as T;
-        }
-
-        private static Configuration GetConfiguration()
-        {
-            Configuration result = null;
-            try
-            {
-                result = ResourcesInternal.LoadConfig<Configuration>();
-            }
-            catch (Exception exception)
-            {
-                Logbook.ReportException(exception, true);
-            }
-            if (result == null)
-            {
-                Logbook.Trace(TraceEventType.Critical, "No configuration lodaded.");
-                result = new Configuration {
-                    ForceDebugMode = Engine.DebugMode,
-                };
-            }
-            if (string.IsNullOrEmpty(result.DisplayName))
-            {
-                result.DisplayName = Engine.InternalName;
-            }
-            if (string.IsNullOrEmpty(result.Language))
-            {
-                result.Language = SystemLanguage;
-            }
-            if (result.Resolution.IsEmpty)
-            {
-                result.Resolution = new System.Drawing.Size(800, 600); // VGA
-            }
-            return result;
         }
     }
 }

@@ -150,7 +150,7 @@ namespace Arleen
 
             if (Facade.Configuration.ForceDebugMode)
             {
-                if (!Engine.DebugMode)
+                if (!DebugMode)
                 {
                     Facade.Logbook.ChangeLevel(SourceLevels.All);
                     Facade.Logbook.Trace(TraceEventType.Information, "[Forced debug mode]");

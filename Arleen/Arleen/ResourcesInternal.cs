@@ -49,16 +49,13 @@ namespace Arleen
             var dictionary = GetLocalizedTexts(language);
             if (dictionary == null)
             {
+                // Keep the lambda notation - it is tempting to try to simplify this line... don't.
                 return (format, source) => format.FormatWith(source);
             }
             return (format, source) =>
             {
                 string result;
-                if (dictionary.TryGetValue(format, out result))
-                {
-                    return result.FormatWith(source);
-                }
-                return format;
+                return dictionary.TryGetValue(format, out result) ? result.FormatWith(source) : format;
             };
         }
 
@@ -72,7 +69,7 @@ namespace Arleen
         {
             var assembly = Assembly.GetCallingAssembly();
             Facade.Logbook.Trace
-                (
+            (
                 TraceEventType.Information,
                 "Requested to write configuration for {0}",
                 assembly.GetName().Name

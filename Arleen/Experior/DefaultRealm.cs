@@ -65,17 +65,17 @@ namespace Experior
             );
         }
 
-        private void UpdateCamera(RenderInfo renderinfo, Camera camera, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
+        private void UpdateCamera(RenderInfo renderinfo, ILocable locable, Quaterniond rotationPerSecond, Vector3d translationPerSecond, TextRenderer textRenderer)
         {
-            camera.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
-            camera.Location.Position = translationPerSecond * TotalTime;
+            locable.Location.Orientation = QuaterniondHelper.Extrapolate(Quaterniond.Identity, rotationPerSecond, TotalTime);
+            locable.Location.Position = translationPerSecond * TotalTime;
             //---
             double bearing, elevation, roll;
-            QuaterniondHelper.ToEulerAngles(camera.Location.Orientation, out bearing, out elevation, out roll);
+            QuaterniondHelper.ToEulerAngles(locable.Location.Orientation, out bearing, out elevation, out roll);
             var cameraInfo = "FPS: " + renderinfo.Fps + "\n" +
-                             "x:" + camera.Location.Position.X + "\n" +
-                             "y:" + camera.Location.Position.Y + "\n" +
-                             "z:" + camera.Location.Position.Z + "\n" +
+                             "x:" + locable.Location.Position.X + "\n" +
+                             "y:" + locable.Location.Position.Y + "\n" +
+                             "z:" + locable.Location.Position.Z + "\n" +
                              "Bearing: " + MathHelper.RadiansToDegrees(bearing).ToString("0.000") + "\n" +
                              "Elevation: " + MathHelper.RadiansToDegrees(elevation).ToString("0.000") + "\n" +
                              "Roll: " + MathHelper.RadiansToDegrees(roll).ToString("0.000") + "\n";

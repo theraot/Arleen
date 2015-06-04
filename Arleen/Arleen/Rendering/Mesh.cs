@@ -38,9 +38,9 @@ namespace Arleen.Rendering
             {
                 CoreSupport = true;
             }
-            else if (exts.Contains(ARB))
+            else
             {
-                CoreSupport = false;
+                CoreSupport &= !exts.Contains(ARB);
             }
         }
 

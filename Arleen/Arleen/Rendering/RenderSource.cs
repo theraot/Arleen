@@ -11,7 +11,6 @@ namespace Arleen.Rendering
     /// </summary>
     public abstract class RenderSource : MarshalByRefObject
     {
-        private bool _enabled;
         private bool _initialized;
 
         /// <summary>
@@ -23,23 +22,13 @@ namespace Arleen.Rendering
             {
                 throw new InvalidOperationException(string.Format("Invalid AppDomain {0} - should be {1}", AppDomain.CurrentDomain.FriendlyName, Facade.AppDomain.FriendlyName));
             }
-            _enabled = true;
+            Enabled = true;
         }
 
         /// <summary>
         /// Gets or set whatever this RenderSource will produce output.
         /// </summary>
-        public bool Enabled
-        {
-            get
-            {
-                return _enabled;
-            }
-            set
-            {
-                _enabled = value;
-            }
-        }
+        public bool Enabled { get; set; }
 
         /// <summary>
         /// Request this render source to produce its output.
@@ -47,7 +36,7 @@ namespace Arleen.Rendering
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Render()
         {
-            if (_enabled)
+            if (Enabled)
             {
                 if (!_initialized)
                 {

@@ -11,7 +11,7 @@ namespace Arleen.Geometry
     {
         private double _farPlane;
         private double _nearPlane;
-        private OpenTK.Matrix4d _projectionMatrix = OpenTK.Matrix4d.Identity;
+        private Matrix4d _projectionMatrix = Matrix4d.Identity;
 
         /// <summary>
         /// Gets or sets the distance to the far plane of the viewing volume.

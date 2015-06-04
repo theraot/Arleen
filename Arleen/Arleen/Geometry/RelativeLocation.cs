@@ -24,11 +24,7 @@ namespace Arleen.Geometry
         {
             get
             {
-                if (_anchor == null)
-                {
-                    return null;
-                }
-                return _anchor.Location;
+                return _anchor == null ? null : _anchor.Location;
             }
         }
 
@@ -136,6 +132,7 @@ namespace Arleen.Geometry
         {
             if ((mode == Mode.None) == (anchor == null))
             {
+                // Keep null
                 Location location = null;
                 var check = anchor != null && (location = anchor.Location) != null;
                 {

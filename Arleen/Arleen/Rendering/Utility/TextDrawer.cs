@@ -179,12 +179,12 @@ namespace Arleen.Rendering.Utility
                         {
                             var maxsize = _maxSize.Value;
                             stringSize = graphics.MeasureString
-                                (
-                                    _text,
-                                    _font,
-                                    new SizeF(maxsize.Width, maxsize.Height),
-                                    GetFormat()
-                                );
+                            (
+                                _text,
+                                _font,
+                                new SizeF(maxsize.Width, maxsize.Height),
+                                GetFormat()
+                            );
                         }
                         var size = new Size((int)Math.Ceiling(stringSize.Width), (int)Math.Ceiling(stringSize.Height));
                         _size = size;
@@ -209,16 +209,16 @@ namespace Arleen.Rendering.Utility
             {
                 using (var bitmap = new Bitmap(textureWidth, textureHeight))
                 {
-                    DrawTextToBitmap(bitmap, size);
+                    DrawTextToImage(bitmap, size);
                     return new Texture(bitmap, TextureMinFilter.Nearest, TextureMagFilter.Nearest);
                 }
             }
             return null;
         }
 
-        private void DrawTextToBitmap(Bitmap bitmap, SizeF size)
+        private void DrawTextToImage(Image image, SizeF size)
         {
-            using (var graphics = Graphics.FromImage(bitmap))
+            using (var graphics = Graphics.FromImage(image))
             {
                 if (_antialias)
                 {
@@ -230,7 +230,7 @@ namespace Arleen.Rendering.Utility
                 graphics.DrawString(_text, _font, Brushes.White, new RectangleF(0f, 0f, size.Width, size.Height), stringFormat);
             }
 
-            bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            image.RotateFlip(RotateFlipType.RotateNoneFlipY);
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Arleen.Rendering.Utility
             {
                 using (var bitmap = new Bitmap(_texture.Width, _texture.Height))
                 {
-                    DrawTextToBitmap(bitmap, size);
+                    DrawTextToImage(bitmap, size);
                     // We use update, that's why we mark SecurityPermission
                     _texture.Update(bitmap, new Rectangle(0, 0, _texture.Width, _texture.Height));
                 }

@@ -12,7 +12,7 @@ namespace Arleen.Geometry
         /// <summary>
         /// Represents the identity transformation.
         /// </summary>
-        public static Transformation Identity = new Transformation(OpenTK.Matrix4d.Identity);
+        public static Transformation Identity = new Transformation(Matrix4d.Identity);
 
         private readonly Matrix4d _matrix;
 
@@ -28,7 +28,7 @@ namespace Arleen.Geometry
         /// <summary>
         /// Gets the transformation matrix.
         /// </summary>
-        public OpenTK.Matrix4d Matrix
+        public Matrix4d Matrix
         {
             get
             {
