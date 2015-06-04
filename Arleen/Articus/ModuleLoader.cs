@@ -15,7 +15,7 @@ namespace Articus
     {
         public const string STR_Module_Extension = "mod";
 
-        private readonly static Type[] _targetTypes = {
+        private static readonly Type[] TargetTypes = {
             typeof(Realm)
         };
 
@@ -95,7 +95,7 @@ namespace Articus
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    foreach (var targetType in _targetTypes)
+                    foreach (var targetType in TargetTypes)
                     {
                         if (type.IsSubclassOf(targetType) && !type.IsAbstract)
                         {
@@ -150,10 +150,8 @@ namespace Articus
             if (!File.Exists(module))
             {
                 Logbook.Instance.Trace(TraceEventType.Information, "Discovering types for module {0}", assemblyFile);
-                var process = new Process
-                {
-                    StartInfo =
-                    {
+                var process = new Process {
+                    StartInfo = {
                         FileName = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath,
                         Arguments = "discover \"" + assemblyFile + "\""
                     }
