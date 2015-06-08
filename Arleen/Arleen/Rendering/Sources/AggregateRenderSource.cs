@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Arleen.Rendering.Sources
@@ -8,17 +9,23 @@ namespace Arleen.Rendering.Sources
     {
         private readonly IList<RenderSource> _renderSources;
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public AggregateRenderSource()
         {
             _renderSources = new List<RenderSource>();
         }
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public AggregateRenderSource(bool enabled)
         {
             Enabled = enabled;
             _renderSources = new List<RenderSource>();
         }
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public AggregateRenderSource(IList<RenderSource> renderSources)
         {
             if (renderSources == null)
@@ -28,6 +35,8 @@ namespace Arleen.Rendering.Sources
             _renderSources = renderSources;
         }
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public AggregateRenderSource(bool enabled, IList<RenderSource> renderSources)
         {
             if (renderSources == null)
@@ -44,6 +53,26 @@ namespace Arleen.Rendering.Sources
             {
                 return _renderSources;
             }
+        }
+
+        public static AggregateRenderSource Create()
+        {
+            return Facade.Create<AggregateRenderSource>();
+        }
+
+        public static AggregateRenderSource Create(bool enabled)
+        {
+            return Facade.Create<AggregateRenderSource>(enabled);
+        }
+
+        public static AggregateRenderSource Create(IList<RenderSource> renderSources)
+        {
+            return Facade.Create<AggregateRenderSource>(renderSources);
+        }
+
+        public static AggregateRenderSource Create(bool enabled, IList<RenderSource> renderSources)
+        {
+            return Facade.Create<AggregateRenderSource>(enabled, renderSources);
         }
 
         public void Dispose()

@@ -1,8 +1,9 @@
-using Arleen.Geometry;
-using OpenTK.Graphics.OpenGL;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using Arleen.Geometry;
+using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
@@ -23,9 +24,16 @@ namespace Arleen.Rendering.Sources
         private int dataBuffer = -1;
         private int indexBuffer = -1;
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public SkyboxRenderer(Stream stream)
         {
             _stream = stream;
+        }
+
+        public static SkyboxRenderer Create(Stream stream)
+        {
+            return Facade.Create<SkyboxRenderer>(stream);
         }
 
         public void Dispose()

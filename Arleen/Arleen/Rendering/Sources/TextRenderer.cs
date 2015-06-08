@@ -1,9 +1,11 @@
-﻿using Arleen.Geometry;
-using Arleen.Rendering.Utility;
-using OpenTK.Graphics.OpenGL;
-using System;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Security.Permissions;
+using Arleen.Geometry;
+using Arleen.Rendering.Utility;
+using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
@@ -11,13 +13,17 @@ namespace Arleen.Rendering.Sources
     {
         private readonly TextDrawer _drawer;
 
-        public TextRenderer(Font font, bool antialias)
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
+        public TextRenderer(string text, Font font)
         {
-            _drawer = new TextDrawer(string.Empty, font, antialias);
+            _drawer = new TextDrawer(text, font, false);
             Color = Color.White;
             Location = new Location();
         }
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public TextRenderer(string text, Font font, bool antialias)
         {
             _drawer = new TextDrawer(text, font, antialias);
@@ -25,14 +31,8 @@ namespace Arleen.Rendering.Sources
             Location = new Location();
         }
 
-        public TextRenderer(Font font, bool antialias, TextWrap wrap, Size maxSize)
-        {
-            _drawer = new TextDrawer(string.Empty, font, antialias);
-            _drawer.EnableWrapping(wrap, maxSize);
-            Color = Color.White;
-            Location = new Location();
-        }
-
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public TextRenderer(string text, Font font, bool antialias, TextWrap wrap, Size maxSize)
         {
             _drawer = new TextDrawer(text, font, antialias);
@@ -41,28 +41,8 @@ namespace Arleen.Rendering.Sources
             Location = new Location();
         }
 
-        public TextRenderer(Font font)
-        {
-            _drawer = new TextDrawer(string.Empty, font, false);
-            Color = Color.White;
-            Location = new Location();
-        }
-
-        public TextRenderer(string text, Font font)
-        {
-            _drawer = new TextDrawer(text, font, false);
-            Color = Color.White;
-            Location = new Location();
-        }
-
-        public TextRenderer(Font font, TextWrap wrap, Size maxSize)
-        {
-            _drawer = new TextDrawer(string.Empty, font, false);
-            _drawer.EnableWrapping(wrap, maxSize);
-            Color = Color.White;
-            Location = new Location();
-        }
-
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public TextRenderer(string text, Font font, TextWrap wrap, Size maxSize)
         {
             _drawer = new TextDrawer(text, font, false);
@@ -114,6 +94,26 @@ namespace Arleen.Rendering.Sources
         }
 
         public TextAlign VerticalTextAlign { get; set; }
+
+        public static TextRenderer Create(string text, Font font)
+        {
+            return Facade.Create<TextRenderer>(text, font);
+        }
+
+        public static TextRenderer Create(string text, Font font, bool antialias)
+        {
+            return Facade.Create<TextRenderer>(text, font, antialias);
+        }
+
+        public static TextRenderer Create(string text, Font font, bool antialias, TextWrap wrap, Size maxSize)
+        {
+            return Facade.Create<TextRenderer>(text, font, antialias, wrap, maxSize);
+        }
+
+        public static TextRenderer Create(string text, Font font, TextWrap wrap, Size maxSize)
+        {
+            return Facade.Create<TextRenderer>(text, font, wrap, maxSize);
+        }
 
         public void DisableWrapping()
         {

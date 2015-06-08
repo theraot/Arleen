@@ -1,6 +1,8 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Security.Permissions;
+using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
@@ -12,15 +14,17 @@ namespace Arleen.Rendering.Sources
         private readonly Color _color;
         private readonly double _depth;
 
-        /// <summary>
-        /// Creates a new instance of BackgroundColorRenderSource.
-        /// </summary>
-        /// <param name="color">The background color to use.</param>
-        /// <param name="depth">The depth value of the background.</param>
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public BackgroundColorRenderSource(Color color, double depth)
         {
             _color = color;
             _depth = depth;
+        }
+
+        public static BackgroundColorRenderSource Create(Color color, double depth)
+        {
+            return Facade.Create<BackgroundColorRenderSource>(color, depth);
         }
 
         protected override void OnInitilaize()

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Reflection;
+using System.Threading;
 
 namespace Arleen
 {
@@ -83,7 +83,7 @@ namespace Arleen
             return Interlocked.CompareExchange(ref _instance, instance, null);
         }
 
-        public static T Create<T>()
+        internal static T Create<T>()
             where T : class
         {
             // Ussing Assembly to prevent the creation of third party classes
@@ -101,7 +101,7 @@ namespace Arleen
             ) as T;
         }
 
-        public static T Create<T>(object param)
+        internal static T Create<T>(object param)
             where T : class
         {
             // Ussing Assembly to prevent the creation of third party classes
@@ -119,7 +119,7 @@ namespace Arleen
             ) as T;
         }
 
-        public static T Create<T>(params object[] param)
+        internal static T Create<T>(params object[] param)
             where T : class
         {
             // Ussing Assembly to prevent the creation of third party classes

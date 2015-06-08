@@ -1,8 +1,9 @@
-using Arleen.Geometry;
-using OpenTK.Graphics.OpenGL;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using Arleen.Geometry;
+using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
@@ -23,6 +24,8 @@ namespace Arleen.Rendering.Sources
         private Action _render;
         private Texture _texture;
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public BoxRenderer(Stream stream, Location location, Transformation transformation)
         {
             _stream = stream;
@@ -30,6 +33,8 @@ namespace Arleen.Rendering.Sources
             _transformation = transformation;
         }
 
+        [Obsolete("Use the Create method instead")]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
         public BoxRenderer(Stream stream, Location location)
         {
             _stream = stream;
@@ -38,6 +43,16 @@ namespace Arleen.Rendering.Sources
         }
 
         public Location Location { get; set; }
+
+        public static BoxRenderer Create(Stream stream, Location location, Transformation transformation)
+        {
+            return Facade.Create<BoxRenderer>(stream, location, transformation);
+        }
+
+        public static BoxRenderer Create(Stream stream, Location location)
+        {
+            return Facade.Create<BoxRenderer>(stream, location);
+        }
 
         public void Dispose()
         {
