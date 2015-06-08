@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Reflection;
 
 namespace Arleen
 {
@@ -12,6 +13,14 @@ namespace Arleen
             get
             {
                 return Instance.AppDomain;
+            }
+        }
+
+        public static Assembly Assembly
+        {
+            get
+            {
+                return Instance.Assembly;
             }
         }
 
@@ -77,12 +86,13 @@ namespace Arleen
         public static T Create<T>()
             where T : class
         {
+            // Ussing Assembly to prevent the creation of third party classes
             return AppDomain.CreateInstanceAndUnwrap
                 (
-                typeof(T).Assembly.FullName,
+                Assembly.FullName,
                 typeof(T).FullName,
                 false,
-                System.Reflection.BindingFlags.Default,
+                BindingFlags.Default,
                 null,
                 null,
                 null,
@@ -94,12 +104,13 @@ namespace Arleen
         public static T Create<T>(object param)
             where T : class
         {
+            // Ussing Assembly to prevent the creation of third party classes
             return AppDomain.CreateInstanceAndUnwrap
                 (
-                typeof(T).Assembly.FullName,
+                Assembly.FullName,
                 typeof(T).FullName,
                 false,
-                System.Reflection.BindingFlags.Default,
+                BindingFlags.Default,
                 null,
                 new[] { param },
                 null,
@@ -111,12 +122,13 @@ namespace Arleen
         public static T Create<T>(params object[] param)
             where T : class
         {
+            // Ussing Assembly to prevent the creation of third party classes
             return AppDomain.CreateInstanceAndUnwrap
                 (
-                typeof(T).Assembly.FullName,
+                Assembly.FullName,
                 typeof(T).FullName,
                 false,
-                System.Reflection.BindingFlags.Default,
+                BindingFlags.Default,
                 null,
                 param,
                 null,

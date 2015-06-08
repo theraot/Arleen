@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 
 namespace Arleen
 {
@@ -12,6 +13,8 @@ namespace Arleen
         }
 
         public AppDomain AppDomain { get; private set; }
+
+        public Assembly Assembly { get; private set; }
 
         public Configuration Configuration { get; private set; }
 
@@ -37,7 +40,9 @@ namespace Arleen
             }
             // Take the AppDomain first
             result.AppDomain = AppDomain.CurrentDomain;
-            // Always create logbook first
+            // Take the Assembly second
+            result.Assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            // Always create logbook before creating Resources
             result.Logbook = Logbook.Create(Engine.DebugMode ? SourceLevels.All : SourceLevels.Information, true, name);
             // We get the culture name via TextInfo because it always includes the region.
             // If we get the name of the culture directly it will only have the region if it is not the default one.
@@ -51,6 +56,7 @@ namespace Arleen
             result.TextLocalization = ResourcesInternal.LoadTexts(result.Configuration.Language);
             return result;
         }
+
         private Configuration GetConfiguration()
         {
             Configuration result = null;
