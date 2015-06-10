@@ -202,22 +202,6 @@ namespace Arleen
 
                 // Exit
                 Facade.Logbook.Trace(TraceEventType.Information, "Goodbye, see you soon.");
-
-                if (DebugMode)
-                {
-                    try
-                    {
-                        // Test for Console
-                        GC.KeepAlive(Console.WindowHeight);
-                        Console.WriteLine("[Press a key to exit]");
-                        Console.ReadKey();
-                    }
-                    catch (IOException exception)
-                    {
-                        GC.KeepAlive(exception);
-                        // Running without console
-                    }
-                }
             }
             catch (Exception exception)
             {
