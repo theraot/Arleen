@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Security.Permissions;
 
 namespace Arleen
@@ -17,7 +18,7 @@ namespace Arleen
     {
         private readonly TraceSource _logSource;
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         private Logbook(SourceLevels level, bool allowDefaultListener)
         {
             var displayName = Engine.InternalName;
@@ -36,7 +37,7 @@ namespace Arleen
         /// Adds a new listener to the Logbook.
         /// </summary>
         /// <param name="listener">The new listener to be added.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         public void AddListener(TraceListener listener)
         {
             _logSource.Listeners.Add(listener);
@@ -191,7 +192,7 @@ namespace Arleen
         /// Changes the level for the messages that will be recorded.
         /// </summary>
         /// <param name="level"></param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         internal void ChangeLevel(SourceLevels level)
         {
             _logSource.Switch.Level = level;

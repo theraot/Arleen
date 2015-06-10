@@ -145,7 +145,6 @@ namespace Arleen.Rendering
         /// <summary>
         /// Renders the current Mesh.
         /// </summary>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Render()
         {
             _render();

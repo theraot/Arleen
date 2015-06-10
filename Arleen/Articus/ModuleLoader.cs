@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security;
 using System.Security.Permissions;
 using System.Threading;
 
@@ -53,7 +54,6 @@ namespace Articus
             Interlocked.CompareExchange(ref _instance, new ModuleLoader(targetDomain), null);
         }
 
-        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust", Unrestricted = false)] // OK
         public static void LoadModules()
         {
             Initialize();
@@ -144,7 +144,7 @@ namespace Articus
             }
         }
 
-        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust", Unrestricted = false)] // OK
+        [SecuritySafeCritical]
         private static void LoadComponentsFromModule(string assemblyFile)
         {
             Facade.Logbook.Trace(TraceEventType.Information, "Trying to load module {0}", assemblyFile);

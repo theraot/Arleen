@@ -17,7 +17,6 @@ namespace Articus
     {
         private const string STR_SandboxName = "Sandbox";
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
         {
             var realmComponents = ModuleLoader.Instance.GetComponents(typeof(Realm));
@@ -129,6 +128,7 @@ namespace Articus
             }
         }
 
+        [SecuritySafeCritical]
         private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

@@ -33,7 +33,6 @@ namespace Arleen.Rendering
         /// <summary>
         /// Request this render source to produce its output.
         /// </summary>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Render()
         {
             if (Enabled)
@@ -71,7 +70,6 @@ namespace Arleen.Rendering
         /// <summary>
         /// Performs the output of the current RenderSource.
         /// </summary>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected abstract void OnRender();
     }
 }

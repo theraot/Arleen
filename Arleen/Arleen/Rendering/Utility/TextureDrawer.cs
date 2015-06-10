@@ -6,7 +6,6 @@ namespace Arleen.Rendering.Utility
 {
     public static class TextureDrawer
     {
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void DrawTexture(Texture texture, Color color)
         {
             if (texture != null)

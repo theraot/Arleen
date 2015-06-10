@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Security;
 using System.Security.Permissions;
 using System.Threading;
 
@@ -65,7 +66,6 @@ namespace Arleen
         /// <summary>
         /// Initialized the engine
         /// </summary>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Initialize(string name)
         {
             if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
@@ -79,7 +79,6 @@ namespace Arleen
         /// Runs the specified realm.
         /// </summary>
         /// <param name="realm">The realm to run.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Run(Realm realm)
         {
             if (Thread.VolatileRead(ref _status) != INT_Initialized)
@@ -111,7 +110,7 @@ namespace Arleen
             }
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         private static void InitializeExtracted(string name)
         {
             // Note: this method is not thread safe.

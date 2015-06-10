@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Security.Permissions;
 using Arleen.Geometry;
+using System.Security;
 
 namespace Arleen.Rendering.Sources
 {
@@ -54,7 +54,7 @@ namespace Arleen.Rendering.Sources
             _initialize();
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         protected override void OnRender()
         {
             _render();
