@@ -1,7 +1,7 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL;
+using System;
 using System.ComponentModel;
 using System.Drawing;
-using OpenTK.Graphics.OpenGL;
 using System.Security;
 
 namespace Arleen.Rendering.Sources

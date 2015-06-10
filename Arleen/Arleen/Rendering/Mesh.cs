@@ -1,6 +1,5 @@
 using OpenTK.Graphics.OpenGL;
 using System;
-using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {
@@ -16,7 +15,7 @@ namespace Arleen.Rendering
 
         private static readonly bool? CoreSupport;
 
-        private readonly BeginMode _beginMode;
+        private readonly PrimitiveType _beginMode;
         private readonly int _bufferData;
         private readonly int _bufferIndexes;
 
@@ -51,7 +50,7 @@ namespace Arleen.Rendering
         /// <param name="data">The vertexes data.</param>
         /// <param name="beginMode">The way the vertexes are organized.</param>
         /// <param name="indexes">The order of the vertexes.</param>
-        public Mesh(VextexInfo vextexInfo, float[] data, BeginMode beginMode, byte[] indexes)
+        public Mesh(VextexInfo vextexInfo, float[] data, PrimitiveType beginMode, byte[] indexes)
         {
             _stride = INT_PositionSize;
             if ((int)(vextexInfo & VextexInfo.Color) != 0)

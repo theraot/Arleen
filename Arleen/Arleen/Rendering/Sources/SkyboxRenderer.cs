@@ -1,9 +1,9 @@
+using Arleen.Geometry;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using Arleen.Geometry;
-using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
@@ -217,7 +217,7 @@ namespace Arleen.Rendering.Sources
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));
             GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, new IntPtr(sizeof(float) * 3 * 18));
             GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
-            GL.DrawElements(BeginMode.Quads, 24, DrawElementsType.UnsignedByte, new IntPtr(0));
+            GL.DrawElements(PrimitiveType.Quads, 24, DrawElementsType.UnsignedByte, new IntPtr(0));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System.Drawing;
-using System.Security.Permissions;
 
 namespace Arleen.Rendering.Utility
 {
@@ -30,7 +29,7 @@ namespace Arleen.Rendering.Utility
                 var indexes = new byte[] {
                     0, 1, 2, 3
                 };
-                using (var mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, BeginMode.Quads, indexes))
+                using (var mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, PrimitiveType.Quads, indexes))
                 {
                     mesh.Render();
                 }

@@ -1,9 +1,9 @@
+using Arleen.Geometry;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using Arleen.Geometry;
-using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
@@ -192,7 +192,7 @@ namespace Arleen.Rendering.Sources
                 17, 16, 15, 14
             };
 
-            _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, BeginMode.Quads, indexes);
+            _mesh = new Mesh(Mesh.VextexInfo.Position | Mesh.VextexInfo.Texture, data, PrimitiveType.Quads, indexes);
         }
 
         private void Draw()

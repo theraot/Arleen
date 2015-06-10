@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Arleen.Geometry;
+using System;
 using System.ComponentModel;
-using Arleen.Geometry;
 using System.Security;
 
 namespace Arleen.Rendering.Sources

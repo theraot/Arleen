@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Security.Permissions;
-using Arleen.Geometry;
+﻿using Arleen.Geometry;
 using Arleen.Rendering.Utility;
 using OpenTK.Graphics.OpenGL;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Security.Permissions;
 
 namespace Arleen.Rendering.Sources
 {

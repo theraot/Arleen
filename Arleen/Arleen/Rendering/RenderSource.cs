@@ -2,7 +2,6 @@ using Arleen.Geometry;
 using Arleen.Rendering.Sources;
 using OpenTK.Graphics.OpenGL;
 using System;
-using System.Security.Permissions;
 
 namespace Arleen.Rendering
 {
