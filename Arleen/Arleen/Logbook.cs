@@ -15,8 +15,6 @@ namespace Arleen
     /// C) There will be only one main Logbook per AppDomain. </remarks>
     public class Logbook : MarshalByRefObject
     {
-        private const string STR_DefaultLogFileExtension = ".log";
-
         // NOTE: the listeners are leaked. Listeners are meant to exist for the execution of the process.
         private readonly TraceSource _logSource;
 
@@ -157,10 +155,6 @@ namespace Arleen
             var result = new Logbook(level, allowDefaultListener);
             try
             {
-                if (!logFile.Contains("."))
-                {
-                    logFile = logFile + STR_DefaultLogFileExtension;
-                }
                 // Do not convert to LINQ, foreach is more readable and means less instantiations.
                 foreach (char character in Path.GetInvalidFileNameChars())
                 {

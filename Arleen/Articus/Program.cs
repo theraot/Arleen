@@ -45,7 +45,7 @@ namespace Articus
             #pragma warning disable 618 // This is intended internal use
             Facade.Set(facadeCore);
             #pragma warning restore 618
-            Engine.Initialize(STR_SandboxName);
+            Engine.Initialize(STR_SandboxName + ".log");
             Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
             Facade.Logbook.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
             Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
@@ -135,7 +135,7 @@ namespace Articus
 
             if (args.Length == 0)
             {
-                Engine.Initialize("Default");
+                Engine.Initialize("Default.log");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
@@ -147,7 +147,7 @@ namespace Articus
             else if (args[0] == "discover")
             {
                 var dll = args[1];
-                Engine.Initialize("Discovery - " + Path.GetFileName(dll));
+                Engine.Initialize("Discovery - " + Path.GetFileName(dll) + ".log");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");
