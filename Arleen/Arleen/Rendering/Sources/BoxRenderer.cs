@@ -9,14 +9,14 @@ namespace Arleen.Rendering.Sources
 {
     public sealed class BoxRenderer : RenderSource, IDisposable, ILocable
     {
-        private const float FLT_height0 = 0.0f;
-        private const float FLT_height1 = 1.0f / 3.0f;
-        private const float FLT_height2 = FLT_height1 * 2;
+        private const float FLT_Height0 = 0.0f;
+        private const float FLT_Height1 = 1.0f / 3.0f;
+        private const float FLT_Height2 = FLT_Height1 * 2;
         private const float FLT_Length = 0.5f;
-        private const float FLT_width0 = 0.0f;
-        private const float FLT_width1 = 1.0f / 4.0f;
-        private const float FLT_width2 = FLT_width1 * 2;
-        private const float FLT_width3 = FLT_width1 * 3;
+        private const float FLT_Width0 = 0.0f;
+        private const float FLT_Width1 = 1.0f / 4.0f;
+        private const float FLT_Width2 = FLT_Width1 * 2;
+        private const float FLT_Width3 = FLT_Width1 * 3;
 
         private readonly Transformation _transformation;
         private Stream _stream;
@@ -97,12 +97,12 @@ namespace Arleen.Rendering.Sources
 
         private void Build()
         {
-            var back = new RectangleF(FLT_width3, FLT_height1, FLT_width1, FLT_height1);
-            var up = new RectangleF(FLT_width1, FLT_height0, FLT_width1, FLT_height1);
-            var front = new RectangleF(FLT_width1, FLT_height1, FLT_width1, FLT_height1);
-            var left = new RectangleF(FLT_width0, FLT_height1, FLT_width1, FLT_height1);
-            var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
-            var down = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
+            var back = new RectangleF(FLT_Width3, FLT_Height1, FLT_Width1, FLT_Height1);
+            var up = new RectangleF(FLT_Width1, FLT_Height0, FLT_Width1, FLT_Height1);
+            var front = new RectangleF(FLT_Width1, FLT_Height1, FLT_Width1, FLT_Height1);
+            var left = new RectangleF(FLT_Width0, FLT_Height1, FLT_Width1, FLT_Height1);
+            var right = new RectangleF(FLT_Width2, FLT_Height1, FLT_Width1, FLT_Height1);
+            var down = new RectangleF(FLT_Width1, FLT_Height2, FLT_Width1, FLT_Height1);
 
             const float A = -FLT_Length;
             const float B = FLT_Length;
