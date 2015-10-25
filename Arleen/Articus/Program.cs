@@ -17,7 +17,6 @@ namespace Articus
     {
         private const string STR_SandboxName = "Sandbox";
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Launch()
         {
             var realmComponents = ModuleLoader.Instance.GetComponents(typeof(Realm));
@@ -26,7 +25,6 @@ namespace Articus
             {
                 var tmp = ModuleLoader.Instance.Load(realmComponent);
                 Facade.Logbook.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
-                // TODO Visual Studio Complains here - BindingFailure - yet it works correctly
                 realm = tmp as Realm;
                 break;
             }
@@ -46,7 +44,7 @@ namespace Articus
             #pragma warning disable 618 // This is intended internal use
             Facade.Set(facadeCore);
             #pragma warning restore 618
-            Engine.Initialize(STR_SandboxName);
+            Engine.Initialize(STR_SandboxName + ".log");
             Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■  ■ ■■  ■■  ■■■ ■ ■");
             Facade.Logbook.Trace(TraceEventType.Verbose, "■   ■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
             Facade.Logbook.Trace(TraceEventType.Verbose, "■■■ ■■■ ■■■■ ■ ■ ■■  ■ ■  ■ ");
@@ -65,7 +63,7 @@ namespace Articus
             permissionSet.AddPermission(new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Articus.Folder));
 
             var appDomainSetup = new AppDomainSetup { ApplicationBase = Articus.Folder };
-            AppDomain sandboxDomain = AppDomain.CreateDomain(STR_SandboxName, null, appDomainSetup, permissionSet);
+            var sandboxDomain = AppDomain.CreateDomain(STR_SandboxName, null, appDomainSetup, permissionSet);
 
             Facade.Logbook.Trace(TraceEventType.Information, "Program.CreateSandbox from {0} to {1}.", AppDomain.CurrentDomain.FriendlyName, sandboxDomain.FriendlyName);
 
@@ -129,13 +127,14 @@ namespace Articus
             }
         }
 
+        [SecuritySafeCritical]
         private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             if (args.Length == 0)
             {
-                Engine.Initialize("Default");
+                Engine.Initialize("Default.log");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■ ■ ■   ■■■");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■   ■   ■ ■ ■ ■ ■    ■ ");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■ ■■■ ■■■ ■■■ ■ ■ ■    ■ ");
@@ -147,7 +146,7 @@ namespace Articus
             else if (args[0] == "discover")
             {
                 var dll = args[1];
-                Engine.Initialize("Discovery - " + Path.GetFileName(dll));
+                Engine.Initialize("Discovery - " + Path.GetFileName(dll) + ".log");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■■  ■■■ ■■■ ■■■ ■■■ ■ ■ ■■■ ■■■ ■ ■");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■  ■   ■   ■ ■ ■ ■ ■   ■ ■ ■ ■");
                 Facade.Logbook.Trace(TraceEventType.Verbose, "■ ■  ■  ■■■ ■   ■ ■ ■ ■ ■■■ ■■■ ■ ■");

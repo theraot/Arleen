@@ -147,7 +147,6 @@ namespace Arleen.Rendering.Utility
             }
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void Draw(Color color)
         {
             // We use GetTexture, that's why we mark SecurityPermission
@@ -258,7 +257,6 @@ namespace Arleen.Rendering.Utility
             return stringFormat;
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private Texture GetTexture()
         {
             if (_texture == null)
@@ -286,7 +284,6 @@ namespace Arleen.Rendering.Utility
             return null;
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         private void UpdateTexture()
         {
             SizeF size = GetSize();

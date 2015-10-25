@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Arleen.Geometry;
+using System;
 using System.ComponentModel;
-using System.Security.Permissions;
-using Arleen.Geometry;
+using System.Security;
 
 namespace Arleen.Rendering.Sources
 {
@@ -49,12 +49,14 @@ namespace Arleen.Rendering.Sources
             return Facade.Create<CustomRenderer>(render);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         protected override void OnInitilaize()
         {
             _initialize();
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         protected override void OnRender()
         {
             _render();

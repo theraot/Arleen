@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Security.Permissions;
+using System.Security;
 
 namespace Arleen
 {
@@ -15,14 +15,17 @@ namespace Arleen
     /// C) There will be only one main Logbook per AppDomain. </remarks>
     public class Logbook : MarshalByRefObject
     {
+        // NOTE: the listeners are leaked. Listeners are meant to exist for the execution of the process.
         private readonly TraceSource _logSource;
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         private Logbook(SourceLevels level, bool allowDefaultListener)
         {
             var displayName = Engine.InternalName;
-            _logSource = new TraceSource(displayName) {
-                Switch = new SourceSwitch(displayName) {
+            _logSource = new TraceSource(displayName)
+            {
+                Switch = new SourceSwitch(displayName)
+                {
                     Level = level
                 }
             };
@@ -36,7 +39,7 @@ namespace Arleen
         /// Adds a new listener to the Logbook.
         /// </summary>
         /// <param name="listener">The new listener to be added.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         public void AddListener(TraceListener listener)
         {
             _logSource.Listeners.Add(listener);
@@ -136,13 +139,15 @@ namespace Arleen
             _logSource.TraceEvent(eventType, 0, UtcNowIsoFormat() + " " + message);
         }
 
+
         /// <summary>
         /// Creates a new instance of Logbook if no previous instance is available. Returns the existing (newly created or not) instance.
         /// </summary>
         /// <param name="level">The level for the messages that will be recorded.</param>
         /// <param name="allowDefaultListener">indicated whatever the default listener should be kept or not.</param>
-        /// <param name = "name">The name of the resource to log to.</param>
-        internal static Logbook Create(SourceLevels level, bool allowDefaultListener, string name)
+        /// <param name = "logFile">The name of the resource to log to.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CC0022:Should dispose object", Justification = "By Design")]
+        internal static Logbook Create(SourceLevels level, bool allowDefaultListener, string logFile)
         {
             // This should be called during initialization.
             // Double initialization is posible if multiple threads attemps to create the logbook...
@@ -150,16 +155,18 @@ namespace Arleen
             var result = new Logbook(level, allowDefaultListener);
             try
             {
-                var logFile = name + ".log";
+                // Do not convert to LINQ, foreach is more readable and means less instantiations.
                 foreach (char character in Path.GetInvalidFileNameChars())
                 {
                     logFile = logFile.Replace(character.ToString(), string.Empty);
                 }
-                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) { AutoFlush = true };
+                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) {AutoFlush = true};
                 result.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
             catch (Exception exception)
             {
+                // We have failed to create a logbook to which to write logs
+                #pragma warning disable CC0004 // Catch block cannot be empty
                 result.ReportException(exception, "trying to create the log file.", true);
                 try
                 {
@@ -171,8 +178,10 @@ namespace Arleen
                 }
                 catch (IOException)
                 {
+                    // We have also failed to write to the console, there is no way to report.
                     // Ignore.
                 }
+                #pragma warning restore CC0004 // Catch block cannot be empty
             }
             try
             {
@@ -191,7 +200,7 @@ namespace Arleen
         /// Changes the level for the messages that will be recorded.
         /// </summary>
         /// <param name="level"></param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         internal void ChangeLevel(SourceLevels level)
         {
             _logSource.Switch.Level = level;

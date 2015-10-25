@@ -1,28 +1,28 @@
+using Arleen.Geometry;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using Arleen.Geometry;
-using OpenTK.Graphics.OpenGL;
 
 namespace Arleen.Rendering.Sources
 {
     public sealed class SkyboxRenderer : RenderSource, IDisposable, ICameraRelative
     {
-        private const float FLT_height0 = 0.0f;
-        private const float FLT_height1 = 1.0f / 3.0f;
-        private const float FLT_height2 = FLT_height1 * 2;
+        private const float FLT_Height0 = 0.0f;
+        private const float FLT_Height1 = 1.0f / 3.0f;
+        private const float FLT_Height2 = FLT_Height1 * 2;
         private const float FLT_Length = 2.0f;
-        private const float FLT_width0 = 0.0f;
-        private const float FLT_width1 = 1.0f / 4.0f;
-        private const float FLT_width2 = FLT_width1 * 2;
-        private const float FLT_width3 = FLT_width1 * 3;
+        private const float FLT_Width0 = 0.0f;
+        private const float FLT_Width1 = 1.0f / 4.0f;
+        private const float FLT_Width2 = FLT_Width1 * 2;
+        private const float FLT_Width3 = FLT_Width1 * 3;
 
         private Stream _stream;
         private Action _render;
         private Texture _texture;
-        private int dataBuffer = -1;
-        private int indexBuffer = -1;
+        private int _dataBuffer = -1;
+        private int _indexBuffer = -1;
 
         [Obsolete("Use the Create method instead")]
         [EditorBrowsableAttribute(EditorBrowsableState.Never)]
@@ -39,8 +39,8 @@ namespace Arleen.Rendering.Sources
         public void Dispose()
         {
             _texture.Dispose();
-            GL.DeleteBuffer(dataBuffer);
-            GL.DeleteBuffer(indexBuffer);
+            GL.DeleteBuffer(_dataBuffer);
+            GL.DeleteBuffer(_indexBuffer);
         }
 
         protected override void OnInitilaize()
@@ -68,6 +68,7 @@ namespace Arleen.Rendering.Sources
             _stream = null;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         protected override void OnRender()
         {
             _render();
@@ -75,12 +76,12 @@ namespace Arleen.Rendering.Sources
 
         private void Build()
         {
-            var back = new RectangleF(FLT_width3, FLT_height1, FLT_width1, FLT_height1);
-            var up = new RectangleF(FLT_width1, FLT_height0, FLT_width1, FLT_height1);
-            var front = new RectangleF(FLT_width1, FLT_height1, FLT_width1, FLT_height1);
-            var left = new RectangleF(FLT_width0, FLT_height1, FLT_width1, FLT_height1);
-            var right = new RectangleF(FLT_width2, FLT_height1, FLT_width1, FLT_height1);
-            var down = new RectangleF(FLT_width1, FLT_height2, FLT_width1, FLT_height1);
+            var back = new RectangleF(FLT_Width3, FLT_Height1, FLT_Width1, FLT_Height1);
+            var up = new RectangleF(FLT_Width1, FLT_Height0, FLT_Width1, FLT_Height1);
+            var front = new RectangleF(FLT_Width1, FLT_Height1, FLT_Width1, FLT_Height1);
+            var left = new RectangleF(FLT_Width0, FLT_Height1, FLT_Width1, FLT_Height1);
+            var right = new RectangleF(FLT_Width2, FLT_Height1, FLT_Width1, FLT_Height1);
+            var down = new RectangleF(FLT_Width1, FLT_Height2, FLT_Width1, FLT_Height1);
 
             const float A = -FLT_Length;
             const float B = FLT_Length;
@@ -200,12 +201,12 @@ namespace Arleen.Rendering.Sources
                 14, 15, 16, 17
             };
 
-            GL.Arb.GenBuffers(1, out dataBuffer);
-            GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
+            GL.Arb.GenBuffers(1, out _dataBuffer);
+            GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, _dataBuffer);
             GL.Arb.BufferData(BufferTargetArb.ArrayBuffer, (IntPtr)(data.Length * sizeof(float)), data, BufferUsageArb.StaticDraw);
 
-            GL.Arb.GenBuffers(1, out indexBuffer);
-            GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
+            GL.Arb.GenBuffers(1, out _indexBuffer);
+            GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, _indexBuffer);
             GL.Arb.BufferData(BufferTargetArb.ElementArrayBuffer, (IntPtr)(indexes.Length * sizeof(byte)), indexes, BufferUsageArb.StaticDraw);
         }
 
@@ -213,11 +214,11 @@ namespace Arleen.Rendering.Sources
         {
             RenderTarget.Current.Camera.Location.PlaceInverted(Location.Mode.OrientationOnly);
             _texture.Bind();
-            GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, dataBuffer);
+            GL.Arb.BindBuffer(BufferTargetArb.ArrayBuffer, _dataBuffer);
             GL.VertexPointer(3, VertexPointerType.Float, 0, new IntPtr(0));
             GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, new IntPtr(sizeof(float) * 3 * 18));
-            GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, indexBuffer);
-            GL.DrawElements(BeginMode.Quads, 24, DrawElementsType.UnsignedByte, new IntPtr(0));
+            GL.Arb.BindBuffer(BufferTargetArb.ElementArrayBuffer, _indexBuffer);
+            GL.DrawElements(PrimitiveType.Quads, 24, DrawElementsType.UnsignedByte, new IntPtr(0));
         }
     }
 }

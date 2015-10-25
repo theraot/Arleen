@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Security.Permissions;
+using System.Security;
 using System.Threading;
 
 namespace Arleen
@@ -65,12 +65,12 @@ namespace Arleen
         /// <summary>
         /// Initialized the engine
         /// </summary>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void Initialize(string name)
+        /// <param name="logFile">The name of the desired log file</param>
+        public static void Initialize(string logFile)
         {
             if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
             {
-                InitializeExtracted(name);
+                InitializeExtracted(logFile);
                 Thread.VolatileWrite(ref _status, INT_Initialized);
             }
         }
@@ -79,7 +79,6 @@ namespace Arleen
         /// Runs the specified realm.
         /// </summary>
         /// <param name="realm">The realm to run.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void Run(Realm realm)
         {
             if (Thread.VolatileRead(ref _status) != INT_Initialized)
@@ -111,8 +110,8 @@ namespace Arleen
             }
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        private static void InitializeExtracted(string name)
+        [SecuritySafeCritical]
+        private static void InitializeExtracted(string logFile)
         {
             // Note: this method is not thread safe.
 
@@ -127,7 +126,7 @@ namespace Arleen
             var location = assembly.Location;
             Folder = Path.GetDirectoryName(location);
             // Let this method throw if Folder is null
-            if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            if (Folder != null && !Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
                 Folder += Path.DirectorySeparatorChar;
@@ -145,7 +144,7 @@ namespace Arleen
             // *********************************
 
             #pragma warning disable 618 // This is intended internal use
-            FacadeCore.Initialize(name, true);
+            FacadeCore.Initialize(logFile, true);
             #pragma warning restore 618
 
             if (Facade.Configuration.ForceDebugMode)
@@ -203,22 +202,6 @@ namespace Arleen
 
                 // Exit
                 Facade.Logbook.Trace(TraceEventType.Information, "Goodbye, see you soon.");
-
-                if (DebugMode)
-                {
-                    try
-                    {
-                        // Test for Console
-                        GC.KeepAlive(Console.WindowHeight);
-                        Console.WriteLine("[Press a key to exit]");
-                        Console.ReadKey();
-                    }
-                    catch (IOException exception)
-                    {
-                        GC.KeepAlive(exception);
-                        // Running without console
-                    }
-                }
             }
             catch (Exception exception)
             {

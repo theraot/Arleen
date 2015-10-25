@@ -74,6 +74,8 @@ namespace Arleen.Geometry
         public virtual void Update(int width, int height)
         {
             // Empty
+            GC.KeepAlive(width);
+            GC.KeepAlive(height);
         }
 
         internal void UpdateProjectionMatrices()

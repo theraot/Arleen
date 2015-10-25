@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Security;
 using System.Security.Permissions;
 
 namespace Arleen.Rendering
@@ -20,7 +21,6 @@ namespace Arleen.Rendering
         /// Creates a new instance of Texture.
         /// </summary>
         /// <param name="stream">The bitmap stream that will be loaded to video memory.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public Texture(Stream stream)
         {
             try
@@ -46,7 +46,6 @@ namespace Arleen.Rendering
         /// </summary>
         /// <param name="bitmap">The bitmap that will be loaded to video memory.</param>
         /// <param name="rectangle">The rectangle of the bitmap to use.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public Texture(Bitmap bitmap, Rectangle rectangle)
         {
             try
@@ -72,7 +71,6 @@ namespace Arleen.Rendering
         /// <param name="bitmap">The bitmap that will be loaded to video memory.</param>
         /// <param name="minFilter">Mipmap Filter for texture reduction.</param>
         /// <param name="magFilter">Mipmap filter for texture magnification.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public Texture(Bitmap bitmap, TextureMinFilter minFilter, TextureMagFilter magFilter)
         {
             try
@@ -166,7 +164,7 @@ namespace Arleen.Rendering
             _index = 0;
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         public void Update(Bitmap bitmap, Rectangle rectangle)
         {
             if (_index != 0)
@@ -198,7 +196,7 @@ namespace Arleen.Rendering
             }
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        [SecuritySafeCritical]
         private static int LoadTexture(Bitmap bitmap, Rectangle rectangle, TextureMinFilter minFilter, TextureMagFilter magFilter)
         {
             var texture = new int[1];
