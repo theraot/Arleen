@@ -23,14 +23,12 @@ namespace Arleen.Geometry
             var s2 = Math.Sin(roll / 2.0);
             var c3 = Math.Cos(-elevation / 2.0);
             var s3 = Math.Sin(-elevation / 2.0);
-            var c1c2 = c1 * c2;
-            var s1s2 = s1 * s2;
             return new Quaterniond
                 (
-                    (c1c2 * s3) + (s1s2 * c3),
+                    (c1 * c2 * s3) + (s1 * s2 * c3),
                     (s1 * c2 * c3) + (c1 * s2 * s3),
                     (c1 * s2 * c3) - (s1 * c2 * s3),
-                    (c1c2 * c3) - (s1s2 * s3)
+                    (c1 * c2 * c3) - (s1 * s2 * s3)
                 );
         }
 
