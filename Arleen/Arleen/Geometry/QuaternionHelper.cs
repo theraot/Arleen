@@ -41,11 +41,12 @@ namespace Arleen.Geometry
         /// <returns>A new <see cref="Quaternion"/> creating by extrapolation a rotation.</returns>
         public static Quaternion Extrapolate(Quaternion origin, Quaternion rotation, float factor)
         {
+            // TODO test
             Vector3 axis;
             float angle;
             rotation.ToAxisAngle(out axis, out angle);
-            var full_loop = (float)(2 * Math.PI / angle);
-            var dt = factor % full_loop;
+            var fullLoop = (float)(2 * Math.PI / angle);
+            var dt = factor % fullLoop;
             return origin * Quaternion.FromAxisAngle(axis, angle * dt);
         }
 
