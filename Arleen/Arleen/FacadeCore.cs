@@ -41,7 +41,7 @@ namespace Arleen
             // Take the AppDomain first
             result.AppDomain = AppDomain.CurrentDomain;
             // Take the Assembly second
-            result.Assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            result.Assembly = Assembly.GetExecutingAssembly();
             // Always create logbook before creating Resources
             result.Logbook = Logbook.Create(Engine.DebugMode ? SourceLevels.All : SourceLevels.Information, true, logFile);
             // We get the culture name via TextInfo because it always includes the region.
