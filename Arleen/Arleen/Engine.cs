@@ -126,7 +126,7 @@ namespace Arleen
             var location = assembly.Location;
             Folder = Path.GetDirectoryName(location);
             // Let this method throw if Folder is null
-            if (!Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            if (Folder != null && !Folder.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 // On Windows, if you run from the root directoy it will have a trailing directory separator but will not otherwise... so we addd it
                 Folder += Path.DirectorySeparatorChar;
