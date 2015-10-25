@@ -1,4 +1,5 @@
-﻿using Arleen;
+﻿using System.Collections.Generic;
+using Arleen;
 using Arleen.Game;
 using Arleen.Geometry;
 using Arleen.Rendering;
@@ -20,7 +21,8 @@ namespace Experior
 
         protected override Scene Load()
         {
-            var viewingVolume = new ViewingVolume.Perspective {
+            var viewingVolume = new ViewingVolume.Perspective
+            {
                 FieldOfView = 45,
                 FarPlane = FLT_FarPlane,
                 NearPlane = FLT_NearPlane,
@@ -33,17 +35,42 @@ namespace Experior
             _textRenderer2 = TextRenderer.Create(string.Empty, _font, true);
             //---
             var scene = new Scene();
-            var brickwall = Facade.Resources.LoadStream("brickwall.png");
-            var sources = AggregateRenderSource.Create(new RenderSource[] {
+            var renderSources = new List<RenderSource>
+            {
                 BackgroundColorRenderSource.Create(Color.LightSkyBlue, 1.0),
                 SkyboxRenderer.Create(Facade.Resources.LoadStream("skybox.png")),
-                BoxRenderer.Create(brickwall, new Location { Position = new Vector3d(0, 0, -5) }),
-                BoxRenderer.Create(brickwall, new Location { Position = new Vector3d(1.5, 0, -5) }, Transformation.Identity.Scale(2.0f)),
-                BoxRenderer.Create(brickwall, new Location { Position = new Vector3d(-2.5, 0, -5) }, Transformation.Identity.Scale(4.0f))
-            });
+            };
+            CreateWalls(renderSources);
+            var sources = AggregateRenderSource.Create(renderSources);
             scene.RenderTargets.Add(new RenderTarget(new RectangleF(0.0f, 0.0f, 1.0f, 0.5f), _camera1, sources, _textRenderer1));
             scene.RenderTargets.Add(new RenderTarget(new RectangleF(0.0f, 0.5f, 1.0f, 0.5f), _camera2, sources, _textRenderer2));
             return scene;
+        }
+
+        private static void CreateWalls(List<RenderSource> renderSources)
+        {
+            const int Steps = 12;
+            var brickwall = Facade.Resources.LoadStream("brickwall.png");
+            var length = new Vector3d(5, 0, 0);
+            var target = QuaterniondHelper.CreateFromEulerAngles(2 * MathHelper.Pi / Steps, 0, 0);
+            for (int index = 0; index < Steps; index++)
+            {
+                var quaterniond = QuaterniondHelper.Extrapolate(Quaterniond.Identity, target, index);
+                var position = Vector3d.Transform(length, Matrix4d.Transpose(Matrix4d.CreateFromQuaternion(quaterniond)));
+                renderSources.Add
+                    (
+                        BoxRenderer.Create
+                            (
+                                brickwall,
+                                new Location
+                                {
+                                    Position = position + (index == 0 ? new Vector3d(0, 1, 0) : Vector3d.Zero),
+                                    Orientation = quaterniond.Inverted()
+                                },
+                                Transformation.Identity.Scale((1 + index) * 1.0f / Steps)
+                            )
+                    );
+            }
         }
 
         protected override void UpdateFrame(RenderInfo renderInfo)
@@ -52,7 +79,7 @@ namespace Experior
             (
                 renderInfo,
                 _camera1,
-                QuaterniondHelper.CreateFromEulerAngles(0.004, 0.002, 0.001),
+                QuaterniondHelper.CreateFromEulerAngles(MathHelper.Pi / 1000, 0, 0),
                 new Vector3d(0, 0, -0.001),
                 _textRenderer1
             );
@@ -60,7 +87,7 @@ namespace Experior
             (
                 renderInfo,
                 _camera2,
-                QuaterniondHelper.CreateFromEulerAngles(-0.004, 0.002, 0.001),
+                QuaterniondHelper.CreateFromEulerAngles(-MathHelper.Pi / 1000, 0, 0),
                 new Vector3d(0, 0, -0.001),
                 _textRenderer2
             );
