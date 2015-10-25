@@ -89,6 +89,7 @@ namespace Arleen.Rendering.Sources
             _stream = null;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         protected override void OnRender()
         {
             _render();

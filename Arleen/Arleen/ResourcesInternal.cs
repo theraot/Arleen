@@ -42,6 +42,7 @@ namespace Arleen
         /// <summary>
         /// Retrieve a LocalizedTexts with the localized texts for the calling assembly.
         /// </summary>
+        /// <param name="language">The language for which to load the texts.</param>
         /// <returns>a new LocalizedTexts object for the calling assembly</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TextLocalization LoadTexts(string language)
@@ -98,19 +99,19 @@ namespace Arleen
             // - %AppData%\InternalName\Lang\langcode\AssemblyName.json
             // - Assembly!Namespace.Lang.langcode.json
 
-            var _language = language.Split('-');
+            var languageArray = language.Split('-');
 
             var prefixes = new List<string>();
 
-            var composite = string.Empty;
+            var composite = new StringBuilder();
 
-            foreach (var sublanguage in _language)
+            foreach (var sublanguage in languageArray)
             {
-                if (composite != string.Empty)
+                if (composite.Length > 0)
                 {
-                    composite += "-";
+                    composite.Append("-");
                 }
-                composite += sublanguage.Trim();
+                composite.Append(sublanguage.Trim());
                 prefixes.Add("Lang." + composite);
             }
 

@@ -45,6 +45,7 @@ namespace Arleen.Game
         protected internal virtual void UpdateFrame(RenderInfo renderInfo)
         {
             // Empty
+            GC.KeepAlive(renderInfo);
         }
     }
 }

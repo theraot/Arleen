@@ -27,7 +27,7 @@ namespace Arleen
         public TextLocalization TextLocalization { get; private set; }
 
         [Obsolete("Do not create Facade instances - intended for internal use")]
-        public static FacadeCore Initialize(string name, bool set)
+        public static FacadeCore Initialize(string logFile, bool set)
         {
             var result = new FacadeCore();
             if (set)
@@ -43,7 +43,7 @@ namespace Arleen
             // Take the Assembly second
             result.Assembly = System.Reflection.Assembly.GetExecutingAssembly();
             // Always create logbook before creating Resources
-            result.Logbook = Logbook.Create(Engine.DebugMode ? SourceLevels.All : SourceLevels.Information, true, name);
+            result.Logbook = Logbook.Create(Engine.DebugMode ? SourceLevels.All : SourceLevels.Information, true, logFile);
             // We get the culture name via TextInfo because it always includes the region.
             // If we get the name of the culture directly it will only have the region if it is not the default one.
             result.SystemLanguage = CultureInfo.CurrentCulture.TextInfo.CultureName;

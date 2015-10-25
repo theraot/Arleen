@@ -151,18 +151,25 @@ namespace Articus
             if (!File.Exists(module))
             {
                 Facade.Logbook.Trace(TraceEventType.Information, "Discovering types for module {0}", assemblyFile);
-                var process = new Process {
-                    StartInfo = {
-                        FileName = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath,
-                        Arguments = "discover \"" + assemblyFile + "\""
+                using
+                (
+                    var process = new Process
+                    {
+                        StartInfo =
+                        {
+                            FileName = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath,
+                            Arguments = "discover \"" + assemblyFile + "\""
+                        }
                     }
-                };
-                process.Start();
-                process.WaitForExit();
+                )
+                {
+                    process.Start();
+                    process.WaitForExit();
+                }
             }
             try
             {
-                string data = File.ReadAllText(module);
+                var data = File.ReadAllText(module);
                 var found = JsonConvert.DeserializeObject<IEnumerable<Component>>(data);
                 foreach (var component in found)
                 {

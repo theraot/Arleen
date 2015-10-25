@@ -49,12 +49,14 @@ namespace Arleen.Rendering.Sources
             return Facade.Create<CustomRenderer>(render);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         protected override void OnInitilaize()
         {
             _initialize();
         }
 
         [SecuritySafeCritical]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         protected override void OnRender()
         {
             _render();

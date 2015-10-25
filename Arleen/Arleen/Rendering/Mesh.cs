@@ -144,6 +144,7 @@ namespace Arleen.Rendering
         /// <summary>
         /// Renders the current Mesh.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CC0016:Copy Event To Variable Before Fire", Justification = "False Positive")]
         public void Render()
         {
             _render();

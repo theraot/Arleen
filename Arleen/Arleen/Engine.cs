@@ -65,11 +65,12 @@ namespace Arleen
         /// <summary>
         /// Initialized the engine
         /// </summary>
-        public static void Initialize(string name)
+        /// <param name="logFile">The name of the desired log file</param>
+        public static void Initialize(string logFile)
         {
             if (Interlocked.CompareExchange(ref _status, INT_Initializing, INT_NotInitialized) == INT_NotInitialized)
             {
-                InitializeExtracted(name);
+                InitializeExtracted(logFile);
                 Thread.VolatileWrite(ref _status, INT_Initialized);
             }
         }
@@ -110,7 +111,7 @@ namespace Arleen
         }
 
         [SecuritySafeCritical]
-        private static void InitializeExtracted(string name)
+        private static void InitializeExtracted(string logFile)
         {
             // Note: this method is not thread safe.
 
@@ -143,7 +144,7 @@ namespace Arleen
             // *********************************
 
             #pragma warning disable 618 // This is intended internal use
-            FacadeCore.Initialize(name, true);
+            FacadeCore.Initialize(logFile, true);
             #pragma warning restore 618
 
             if (Facade.Configuration.ForceDebugMode)
