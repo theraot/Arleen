@@ -25,7 +25,6 @@ namespace Articus
             {
                 var tmp = ModuleLoader.Instance.Load(realmComponent);
                 Facade.Logbook.Trace(TraceEventType.Information, "Loaded: {0}", tmp.ToString());
-                // TODO Visual Studio Complains here - BindingFailure - yet it works correctly
                 realm = tmp as Realm;
                 break;
             }
