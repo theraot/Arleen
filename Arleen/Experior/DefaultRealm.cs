@@ -12,6 +12,7 @@ namespace Experior
     {
         private const float FLT_FarPlane = 1000.0f;
         private const float FLT_NearPlane = 0.01f;
+        private Font _font;
         private Camera _camera1;
         private Camera _camera2;
         private TextRenderer _textRenderer1;
@@ -27,8 +28,9 @@ namespace Experior
             };
             _camera1 = new Camera(viewingVolume);
             _camera2 = new Camera(viewingVolume);
-            _textRenderer1 = TextRenderer.Create(string.Empty, new Font("Verdana", 12, FontStyle.Regular), true);
-            _textRenderer2 = TextRenderer.Create(string.Empty, new Font("Verdana", 12, FontStyle.Regular), true);
+            _font = new Font("Verdana", 12, FontStyle.Regular);
+            _textRenderer1 = TextRenderer.Create(string.Empty, _font, true);
+            _textRenderer2 = TextRenderer.Create(string.Empty, _font, true);
             //---
             var scene = new Scene();
             var brickwall = Facade.Resources.LoadStream("brickwall.png");
