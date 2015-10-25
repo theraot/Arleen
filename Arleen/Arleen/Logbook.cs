@@ -166,10 +166,8 @@ namespace Arleen
                 {
                     logFile = logFile.Replace(character.ToString(), string.Empty);
                 }
-                using (var logStreamWriter = new StreamWriter(Engine.Folder + logFile) {AutoFlush = true})
-                {
-                    result.AddListener(new TextWriterTraceListener(logStreamWriter));
-                }
+                var logStreamWriter = new StreamWriter(Engine.Folder + logFile) {AutoFlush = true};
+                result.AddListener(new TextWriterTraceListener(logStreamWriter));
             }
             catch (Exception exception)
             {
